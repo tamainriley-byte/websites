@@ -141,7 +141,7 @@ export function Pricing() {
                             : "text-muted-foreground"
                         }`}
                       >
-                        Book on WhatsApp
+                        Message Parissa
                       </span>
                     </span>
                     <span className="flex items-center gap-3">

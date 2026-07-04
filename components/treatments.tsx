@@ -4,7 +4,7 @@ const locations = [
     description:
       "Unwind at the Calm & Contour studio for massage, body and facial treatments in a serene, private setting.",
     image: "/images/paris-portrait.jpeg",
-    alt: "Paris Elizabeth in her Calm & Contour studio with a contouring tool",
+    alt: "Parissa in her Calm & Contour studio with a contouring tool",
   },
   {
     title: "Villa & Home",

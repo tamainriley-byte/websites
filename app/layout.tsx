@@ -12,7 +12,7 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: 'Mallorca VIP Mobile Massage | Calm and Contour by Paris Elizabeth',
+  title: 'Mallorca VIP Mobile Massage | Calm & Contour',
   description:
     'Luxury mobile massage in Mallorca. Studio treatments and VIP home service to your villa, yacht or hotel across the Balearic Isles. Book via WhatsApp.',
   generator: 'v0.app',
