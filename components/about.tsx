@@ -5,25 +5,25 @@ export function About() {
         <div className="relative">
           <img
             src="/images/paris-portrait.jpeg"
-            alt="Paris Elizabeth in her studio holding a wooden body-contouring tool"
+            alt="Parissa in her studio holding a wooden body-contouring tool"
             className="aspect-[4/5] w-full rounded-2xl object-cover shadow-sm"
           />
           <img
             src="/images/paris-seaside.jpeg"
-            alt="Paris Elizabeth treating a guest at a seaside massage table in Mallorca"
+            alt="Parissa treating a guest at a seaside massage table in Mallorca"
             className="absolute -bottom-8 -right-4 hidden w-44 rounded-2xl border-4 border-background object-cover shadow-lg md:block lg:w-56"
           />
         </div>
 
         <div>
           <span className="text-xs uppercase tracking-[0.3em] text-primary">
-            Calm &amp; Contour by Paris Elizabeth
+            Calm &amp; Contour by Parissa
           </span>
           <h2 className="mt-4 text-balance font-serif text-4xl font-medium leading-tight md:text-5xl">
             A boutique body studio, brought to you
           </h2>
           <p className="mt-6 text-pretty leading-relaxed text-muted-foreground">
-            Calm and Contour Clinic by Paris Elizabeth is a boutique body studio
+            Calm and Contour Clinic by Parissa is a boutique body studio
             specialising in massage, body and facial treatments and lymphatic
             drainage. Every treatment is tailored to leave you feeling restored,
             sculpted and deeply cared for.

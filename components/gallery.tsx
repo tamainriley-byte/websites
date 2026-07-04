@@ -16,12 +16,12 @@ const images = [
   },
   {
     src: "/images/paris-seaside.jpeg",
-    alt: "Paris Elizabeth treating a guest at a seaside massage table",
+    alt: "Parissa treating a guest at a seaside massage table",
     className: "",
   },
   {
     src: "/images/paris-deck.jpeg",
-    alt: "Paris Elizabeth preparing a massage table on a seaside deck in Mallorca",
+    alt: "Parissa preparing a massage table on a seaside deck in Mallorca",
     className: "",
   },
 ]
