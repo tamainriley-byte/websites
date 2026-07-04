@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Treatments", href: "#treatments" },
   { label: "Pricing", href: "#pricing" },
   { label: "Gallery", href: "#gallery" },
+  { label: "Book", href: "/book" },
 ]
 
 export function SiteHeader() {
