@@ -35,7 +35,7 @@ export function CtaFooter() {
             className="mt-9 inline-flex min-h-12 items-center gap-2 rounded-full bg-whatsapp px-8 py-3 text-base font-medium text-whatsapp-foreground shadow-lg transition-transform hover:scale-[1.03]"
           >
             <MessageCircle className="size-5" aria-hidden="true" />
-            Book on WhatsApp
+            Message Parissa
           </a>
           <p className="mt-4 text-sm text-background/70">{WHATSAPP_DISPLAY}</p>
         </div>
@@ -48,7 +48,7 @@ export function CtaFooter() {
               Calm &amp; Contour
             </span>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-background/70">
-              Boutique massage, body and facial treatments by Paris Elizabeth.
+              Boutique massage, body and facial treatments by Parissa.
               Studio &amp; VIP mobile service across Mallorca.
             </p>
           </div>
@@ -74,8 +74,8 @@ export function CtaFooter() {
         </div>
         <div className="border-t border-background/15">
           <p className="mx-auto max-w-6xl px-5 py-6 text-xs text-background/50 md:px-8">
-            © {new Date().getFullYear()} Calm and Contour Clinic by Paris
-            Elizabeth. All rights reserved.
+            © {new Date().getFullYear()} Calm and Contour Clinic by Parissa.
+            All rights reserved.
           </p>
         </div>
       </footer>

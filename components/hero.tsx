@@ -42,7 +42,7 @@ export function Hero() {
             className="inline-flex min-h-12 items-center gap-2 rounded-full bg-whatsapp px-7 py-3 text-base font-medium text-whatsapp-foreground shadow-lg transition-transform hover:scale-[1.03]"
           >
             <MessageCircle className="size-5" aria-hidden="true" />
-            Book on WhatsApp
+            Message Parissa
           </a>
           <a
             href="#pricing"
@@ -51,6 +51,11 @@ export function Hero() {
             View treatments &amp; pricing
           </a>
         </div>
+
+        <p className="mt-4 max-w-md text-pretty text-sm leading-relaxed text-cream/75">
+          Message her where you&apos;re staying, your dates and the style you
+          want. She&apos;ll reply personally.
+        </p>
       </div>
     </section>
   )

@@ -72,8 +72,8 @@ export function SiteHeader() {
           className="inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground shadow-sm transition-transform hover:scale-[1.03] md:px-5"
         >
           <MessageCircle className="size-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Book on WhatsApp</span>
-          <span className="sm:hidden">Book</span>
+          <span className="hidden sm:inline">Message Parissa</span>
+          <span className="sm:hidden">Message</span>
         </a>
       </div>
     </header>
