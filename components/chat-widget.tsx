@@ -9,7 +9,7 @@ const SESSION_KEY = "cc_chat_session"
 const REG_KEY = "cc_chat_registered"
 
 const GREETING =
-  "Hi, I'm Parissa 🌿 I bring the full massage to your villa, yacht or hotel anywhere in Mallorca. Tell me where you're staying and the style you'd like, and I'll take care of the rest."
+  "Hi, I'm Parissa 🌿 Pop your mobile in below and let's chat, I bring the full massage to your villa, yacht or hotel anywhere in Mallorca."
 
 function newSessionId() {
   return (
@@ -18,11 +18,6 @@ function newSessionId() {
     "_" +
     Math.random().toString(36).slice(2, 10)
   )
-}
-
-function looksLikePhone(text: string) {
-  const digits = (text.match(/\d/g) || []).length
-  return digits >= 7 && /^[\s+\d().\-]+$/.test(text.trim())
 }
 
 // A small human-feeling pause so replies don't appear instantly.
@@ -37,10 +32,8 @@ export function ChatWidget() {
   const [input, setInput] = useState("")
   const [sending, setSending] = useState(false)
   const [registered, setRegistered] = useState(false)
-  const [showPhone, setShowPhone] = useState(false)
   const [phone, setPhone] = useState("")
   const sessionRef = useRef<string>("")
-  const userTurnsRef = useRef(0)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // Init session id + registration flag.
@@ -99,9 +92,6 @@ export function ChatWidget() {
         const data = await res.json()
         if (cancelled) return
         if (Array.isArray(data.messages) && data.messages.length > 0) {
-          userTurnsRef.current = data.messages.filter(
-            (m: { role: Msg["role"] }) => m.role === "user",
-          ).length
           setMessages(
             data.messages.map((m: { role: Msg["role"]; content: string }) => ({
               role: m.role,
@@ -126,16 +116,14 @@ export function ChatWidget() {
       top: scrollRef.current.scrollHeight,
       behavior: "smooth",
     })
-  }, [messages, sending, showPhone])
+  }, [messages, sending])
 
-  async function registerPhone(value: string, fromChat: boolean) {
+  async function registerPhone(value: string) {
     const trimmed = value.trim()
-    if (!trimmed) return
+    const digits = (trimmed.match(/\d/g) || []).length
+    if (digits < 7) return
     setSending(true)
     const startedAt = Date.now()
-    if (fromChat) {
-      setMessages((m) => [...m, { role: "user", content: trimmed }])
-    }
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -152,7 +140,6 @@ export function ChatWidget() {
         setMessages((m) => [...m, { role: "assistant", content: data.reply }])
       }
       setRegistered(true)
-      setShowPhone(false)
       setPhone("")
       try {
         localStorage.setItem(REG_KEY, "1")
@@ -162,7 +149,7 @@ export function ChatWidget() {
         ...m,
         {
           role: "assistant",
-          content: "Sorry, that didn't save — could you try again?",
+          content: "Sorry, that didn't save, could you try again?",
         },
       ])
     } finally {
@@ -174,15 +161,7 @@ export function ChatWidget() {
     const text = input.trim()
     if (!text || sending) return
     setInput("")
-
-    // If they typed their number, treat it as registering their account.
-    if (!registered && looksLikePhone(text)) {
-      await registerPhone(text, true)
-      return
-    }
-
     setMessages((m) => [...m, { role: "user", content: text }])
-    userTurnsRef.current += 1
     setSending(true)
     const startedAt = Date.now()
     try {
@@ -198,18 +177,16 @@ export function ChatWidget() {
       const data = await res.json()
       const reply =
         data.reply ||
-        "Thanks — tell me a little more and I'll sort it out for you."
+        "Thanks, tell me a little more and I'll sort it out for you."
       await humanPause(startedAt)
       setMessages((m) => [...m, { role: "assistant", content: reply }])
-      // Only invite the number once they've chatted a little.
-      if (!registered && userTurnsRef.current >= 3) setShowPhone(true)
     } catch {
       await humanPause(startedAt)
       setMessages((m) => [
         ...m,
         {
           role: "assistant",
-          content: "Sorry, I didn't catch that — please try again in a moment.",
+          content: "Sorry, I didn't catch that, please try again in a moment.",
         },
       ])
     } finally {
@@ -290,62 +267,61 @@ export function ChatWidget() {
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* Inline phone capture */}
-              {showPhone && !registered && (
-                <div className="mt-2 rounded-2xl bg-white p-3 shadow-sm">
-                  <p className="text-xs font-medium text-[#111b21]">
-                    Save your booking — add your mobile and Parissa confirms your
-                    time.
-                  </p>
-                  <div className="mt-2 flex gap-2">
-                    <input
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      inputMode="tel"
-                      placeholder="+44 7700 900000"
-                      className="min-w-0 flex-1 rounded-full border border-[#d1d7db] px-3 py-2 text-sm outline-none focus:border-whatsapp"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") registerPhone(phone, false)
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => registerPhone(phone, false)}
-                      disabled={sending}
-                      className="rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground disabled:opacity-60"
-                    >
-                      Save
-                    </button>
-                  </div>
+            {/* Bottom bar: mobile gate until registered, then composer */}
+            {!registered ? (
+              <div className="bg-[#f0f2f5] px-3 py-3">
+                <p className="mb-2 text-center text-xs font-medium text-[#111b21]">
+                  Enter your mobile and chat directly with Parissa
+                </p>
+                <div className="flex items-center gap-2">
+                  <input
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    inputMode="tel"
+                    autoFocus
+                    placeholder="Your mobile number"
+                    className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") registerPhone(phone)
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => registerPhone(phone)}
+                    disabled={sending || (phone.match(/\d/g) || []).length < 7}
+                    className="shrink-0 rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
+                  >
+                    Start chat
+                  </button>
                 </div>
-              )}
-            </div>
-
-            {/* Composer */}
-            <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault()
-                    send()
-                  }
-                }}
-                placeholder="Type a message"
-                className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
-              />
-              <button
-                type="button"
-                onClick={send}
-                disabled={sending || !input.trim()}
-                aria-label="Send"
-                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
-              >
-                <Send className="size-5" aria-hidden="true" />
-              </button>
-            </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      send()
+                    }
+                  }}
+                  placeholder="Type a message"
+                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
+                />
+                <button
+                  type="button"
+                  onClick={send}
+                  disabled={sending || !input.trim()}
+                  aria-label="Send"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
+                >
+                  <Send className="size-5" aria-hidden="true" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
