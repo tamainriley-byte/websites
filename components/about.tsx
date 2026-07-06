@@ -4,13 +4,13 @@ export function About() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-2 md:gap-16 md:px-8">
         <div className="relative">
           <img
-            src="/images/paris-portrait.jpeg"
-            alt="Parissa in her studio holding a wooden body-contouring tool"
+            src="/images/paris-seaside.jpeg"
+            alt="Parissa giving a massage on a wooden deck by the sea in Mallorca"
             className="aspect-[4/5] w-full rounded-2xl object-cover shadow-sm"
           />
           <img
-            src="/images/paris-seaside.jpeg"
-            alt="Parissa treating a guest at a seaside massage table in Mallorca"
+            src="/images/paris-portrait.jpeg"
+            alt="Parissa in her studio holding a wooden body-contouring tool"
             className="absolute -bottom-8 -right-4 hidden w-44 rounded-2xl border-4 border-background object-cover shadow-lg md:block lg:w-56"
           />
         </div>
