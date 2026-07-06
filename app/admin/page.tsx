@@ -21,6 +21,14 @@ function formatDate(value: string) {
   })
 }
 
+function flag(country: string | null) {
+  if (!country || country.length !== 2) return ""
+  const cc = country.toUpperCase()
+  return String.fromCodePoint(
+    ...[...cc].map((c) => 127397 + c.charCodeAt(0)),
+  )
+}
+
 export default async function AdminPage() {
   const authed = await isAuthed()
 
@@ -83,58 +91,67 @@ export default async function AdminPage() {
             </p>
           ) : (
             <ul className="mt-5 flex flex-col gap-4">
-              {conversations.map((c) => (
-                <li
-                  key={c.session_id}
-                  className="rounded-2xl border border-border bg-card p-5 shadow-sm"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    {c.phone ? (
-                      <a
-                        href={`tel:${c.phone}`}
-                        className="font-medium text-foreground hover:underline"
-                      >
-                        {c.name ? `${c.name} · ` : ""}
-                        {c.phone}
-                      </a>
-                    ) : (
-                      <span className="font-medium text-muted-foreground">
-                        Anonymous visitor
+              {conversations.map((c) => {
+                const place = [c.city, c.country].filter(Boolean).join(", ")
+                return (
+                  <li
+                    key={c.session_id}
+                    className="rounded-2xl border border-border bg-card p-5 shadow-sm"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      {c.phone ? (
+                        <a
+                          href={`tel:${c.phone}`}
+                          className="font-medium text-foreground hover:underline"
+                        >
+                          {c.name ? `${c.name} · ` : ""}
+                          {c.phone}
+                        </a>
+                      ) : (
+                        <span className="font-medium text-muted-foreground">
+                          Anonymous visitor
+                        </span>
+                      )}
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                        {formatDate(c.last_at)}
                       </span>
-                    )}
-                    <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                      {formatDate(c.last_at)}
-                    </span>
-                  </div>
+                    </div>
 
-                  <div className="mt-4 flex flex-col gap-2">
-                    {c.messages.map((m) => (
-                      <div
-                        key={m.id}
-                        className={`flex ${
-                          m.role === "user" ? "justify-end" : "justify-start"
-                        }`}
-                      >
+                    {/* Source details */}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {flag(c.country)} {place || "Location unknown"}
+                      {c.device ? ` · ${c.device}` : ""}
+                      {c.ip ? ` · IP ${c.ip}` : ""}
+                    </p>
+                    {c.referer ? (
+                      <p className="text-xs text-muted-foreground">
+                        via {c.referer}
+                      </p>
+                    ) : null}
+
+                    <div className="mt-4 flex flex-col gap-2">
+                      {c.messages.map((m) => (
                         <div
-                          className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-                            m.role === "user"
-                              ? "rounded-br-sm bg-secondary text-foreground"
-                              : "rounded-bl-sm bg-muted text-foreground"
+                          key={m.id}
+                          className={`flex ${
+                            m.role === "user" ? "justify-end" : "justify-start"
                           }`}
                         >
-                          {m.content}
+                          <div
+                            className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+                              m.role === "user"
+                                ? "rounded-br-sm bg-secondary text-foreground"
+                                : "rounded-bl-sm bg-muted text-foreground"
+                            }`}
+                          >
+                            {m.content}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {!c.phone && (
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      No number captured yet.
-                    </p>
-                  )}
-                </li>
-              ))}
+                      ))}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           )}
         </section>
