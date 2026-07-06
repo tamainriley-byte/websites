@@ -13,19 +13,6 @@ type Plan = {
 
 const plans: Plan[] = [
   {
-    name: "Studio",
-    subtitle: "Calm & Contour studio",
-    perks: [
-      "Private boutique studio setting",
-      "Massage, body & facial treatments",
-      "Lymphatic drainage available",
-    ],
-    options: [
-      { duration: "60 min", price: "€75", service: "60 min studio massage" },
-      { duration: "90 min", price: "€125", service: "90 min studio massage" },
-    ],
-  },
-  {
     name: "VIP Home Service",
     subtitle: "Villa · Yacht · Hotel",
     featured: true,
@@ -37,14 +24,27 @@ const plans: Plan[] = [
     options: [
       {
         duration: "60 min",
-        price: "€145",
+        price: "€120",
         service: "60 min VIP home service massage",
       },
       {
         duration: "90 min",
-        price: "€180",
+        price: "€145",
         service: "90 min VIP home service massage",
       },
+    ],
+  },
+  {
+    name: "Studio",
+    subtitle: "Calm & Contour studio",
+    perks: [
+      "Private boutique studio setting",
+      "Massage, body & facial treatments",
+      "Lymphatic drainage available",
+    ],
+    options: [
+      { duration: "60 min", price: "€75", service: "60 min studio massage" },
+      { duration: "90 min", price: "€125", service: "90 min studio massage" },
     ],
   },
 ]
