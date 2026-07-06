@@ -25,6 +25,12 @@ function looksLikePhone(text: string) {
   return digits >= 7 && /^[\s+\d().\-]+$/.test(text.trim())
 }
 
+// A small human-feeling pause so replies don't appear instantly.
+async function humanPause(startedAt: number) {
+  const wait = Math.max(0, 1100 - (Date.now() - startedAt))
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait))
+}
+
 export function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([])
@@ -34,6 +40,7 @@ export function ChatWidget() {
   const [showPhone, setShowPhone] = useState(false)
   const [phone, setPhone] = useState("")
   const sessionRef = useRef<string>("")
+  const userTurnsRef = useRef(0)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // Init session id + registration flag.
@@ -92,6 +99,9 @@ export function ChatWidget() {
         const data = await res.json()
         if (cancelled) return
         if (Array.isArray(data.messages) && data.messages.length > 0) {
+          userTurnsRef.current = data.messages.filter(
+            (m: { role: Msg["role"] }) => m.role === "user",
+          ).length
           setMessages(
             data.messages.map((m: { role: Msg["role"]; content: string }) => ({
               role: m.role,
@@ -122,6 +132,7 @@ export function ChatWidget() {
     const trimmed = value.trim()
     if (!trimmed) return
     setSending(true)
+    const startedAt = Date.now()
     if (fromChat) {
       setMessages((m) => [...m, { role: "user", content: trimmed }])
     }
@@ -136,6 +147,7 @@ export function ChatWidget() {
         }),
       })
       const data = await res.json()
+      await humanPause(startedAt)
       if (data.reply) {
         setMessages((m) => [...m, { role: "assistant", content: data.reply }])
       }
@@ -170,7 +182,9 @@ export function ChatWidget() {
     }
 
     setMessages((m) => [...m, { role: "user", content: text }])
+    userTurnsRef.current += 1
     setSending(true)
+    const startedAt = Date.now()
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -184,16 +198,18 @@ export function ChatWidget() {
       const data = await res.json()
       const reply =
         data.reply ||
-        "Thanks — pop your mobile in and I'll confirm everything personally."
+        "Thanks — tell me a little more and I'll sort it out for you."
+      await humanPause(startedAt)
       setMessages((m) => [...m, { role: "assistant", content: reply }])
-      if (!registered) setShowPhone(true)
+      // Only invite the number once they've chatted a little.
+      if (!registered && userTurnsRef.current >= 3) setShowPhone(true)
     } catch {
+      await humanPause(startedAt)
       setMessages((m) => [
         ...m,
         {
           role: "assistant",
-          content:
-            "Sorry, I didn't catch that — please try again in a moment.",
+          content: "Sorry, I didn't catch that — please try again in a moment.",
         },
       ])
     } finally {
