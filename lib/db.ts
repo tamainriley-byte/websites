@@ -60,8 +60,21 @@ export type ChatSession = {
   session_id: string
   phone: string | null
   name: string | null
+  ip: string | null
+  country: string | null
+  city: string | null
+  device: string | null
+  referer: string | null
   created_at: string
   last_at: string
+}
+
+export type SessionMeta = {
+  ip?: string | null
+  country?: string | null
+  city?: string | null
+  device?: string | null
+  referer?: string | null
 }
 
 let schemaReady: Promise<void> | null = null
@@ -91,6 +104,12 @@ export function ensureChatSchema() {
       await pool.query(
         `CREATE INDEX IF NOT EXISTS chat_messages_session_idx ON chat_messages (session_id, id);`,
       )
+      // Source / device columns (added over time).
+      await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS ip TEXT;`)
+      await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS country TEXT;`)
+      await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS city TEXT;`)
+      await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS device TEXT;`)
+      await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS referer TEXT;`)
     })().catch((err) => {
       // Reset so a later call can retry.
       schemaReady = null
@@ -107,6 +126,31 @@ export async function touchSession(sessionId: string) {
      ON CONFLICT (session_id)
      DO UPDATE SET last_at = now()`,
     [sessionId],
+  )
+}
+
+// Store where the visitor came from. Keeps the first value seen for each
+// field (COALESCE) so we record their entry point, not later navigation.
+export async function setSessionMeta(sessionId: string, meta: SessionMeta) {
+  await pool.query(
+    `INSERT INTO chat_sessions (session_id, ip, country, city, device, referer)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     ON CONFLICT (session_id)
+     DO UPDATE SET
+       ip = COALESCE(chat_sessions.ip, EXCLUDED.ip),
+       country = COALESCE(chat_sessions.country, EXCLUDED.country),
+       city = COALESCE(chat_sessions.city, EXCLUDED.city),
+       device = COALESCE(chat_sessions.device, EXCLUDED.device),
+       referer = COALESCE(chat_sessions.referer, EXCLUDED.referer),
+       last_at = now()`,
+    [
+      sessionId,
+      meta.ip ?? null,
+      meta.country ?? null,
+      meta.city ?? null,
+      meta.device ?? null,
+      meta.referer ?? null,
+    ],
   )
 }
 
@@ -161,7 +205,8 @@ export type Conversation = ChatSession & {
 // All conversations for the admin view, newest activity first, with messages.
 export async function getConversations(): Promise<Conversation[]> {
   const sessions = await pool.query<ChatSession>(
-    `SELECT session_id, phone, name, created_at, last_at
+    `SELECT session_id, phone, name, ip, country, city, device, referer,
+            created_at, last_at
      FROM chat_sessions
      WHERE session_id IN (SELECT DISTINCT session_id FROM chat_messages)
      ORDER BY last_at DESC`,
