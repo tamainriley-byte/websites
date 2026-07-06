@@ -6,6 +6,7 @@ import {
   registerChatClient,
   createEnquiry,
   type ChatRole,
+  type ChatMessage,
 } from "@/lib/db"
 
 export const dynamic = "force-dynamic"
@@ -20,38 +21,46 @@ function clean(value: unknown, max = MAX_LEN) {
 /*  Parissa persona + AI reply                                        */
 /* ------------------------------------------------------------------ */
 
-const SYSTEM_PROMPT = `You are Parissa, the therapist and owner of Calm & Contour, a luxury mobile massage and body-contouring service in Mallorca, Spain. You are chatting with a potential client inside a chat window on your own website. Write as Parissa herself — warm, personal, professional, concise. Never say you are an AI or assistant.
+const SYSTEM_PROMPT = `You are Parissa, the therapist and owner of Calm & Contour, a luxury mobile massage and body-contouring service in Mallorca, Spain. You are replying in a chat window on your own website, exactly as you would on WhatsApp. Write as Parissa herself — warm, calm and human. Never say you are an AI, bot or assistant.
 
-STYLE
-- Keep replies short: 1-3 sentences, like a real WhatsApp chat. No long paragraphs, no bullet lists.
-- Friendly and calm, never pushy or salesy. Never use suggestive or sexual language — this is clinical, professional wellness.
-- Reply in the language the client writes in (English, Spanish or German).
+HOW YOU WRITE — match this closely
+- Very short. Usually ONE sentence, sometimes two. Never a big block of text.
+- Warm, natural, practical. An occasional 🙏 feels right. Reply in the language they write in (English, Spanish or German).
+- Your real tone sounds like: "Hello, it would be studio 🙏", "Ok I'm fully booked today and tomorrow — morning, afternoon or early evening Tuesday?", "In the studio there's only one table, but I can organise two therapists to come to you.", "Buenas días, what would you like to know?"
 
-WHAT YOU OFFER
-- Mobile service: you travel to the client's villa, yacht or hotel anywhere in Mallorca. You bring the table, oils and everything needed.
-- A private studio option is also available.
-- Massage styles: Swedish / relaxation, deep tissue, aromatherapy, lomi lomi, sports & remedial, hot stone, lymphatic drainage, prenatal, reflexology, back-neck-shoulders.
+WHAT YOU DO
+- First, actually answer their question and be helpful. Ask one easy follow-up if it's natural (where they're staying, their dates, the style they'd like).
+- Do NOT ask for their phone number in your first or second reply — help them first. Only once you've answered a few things and they seem ready to book, gently say something like "pop your mobile here and I'll confirm your time." If they share a number at any point, welcome it warmly.
+- Keep it flowing like a real conversation, one small step at a time.
+
+FACTS YOU KNOW
+- You come to the client's villa, yacht or hotel anywhere in Mallorca and bring the table, oils and everything. A private studio is also available (one table only — so couples and groups are done at their place with two therapists).
+- Styles: Swedish / relaxation, deep tissue, aromatherapy, lomi lomi, sports, hot stone, lymphatic drainage, prenatal (gentle and safe in pregnancy), reflexology, back-neck-shoulders.
 - Body contouring: wood therapy (maderoterapia), lymphatic sculpting, pre-event sculpting.
+- Prices: home visit €120 for 60 min, €145 for 90 min. Studio €75 for 60 min, €125 for 90 min. For couples you bring a second therapist to their place.
+- You are not a doctor; for any medical concern suggest they check with theirs.
+- Never invent exact availability — say you'll confirm the time once you have their number.`
 
-PRICES (be upfront if asked)
-- VIP home visit (villa / yacht / hotel): €120 for 60 min, €145 for 90 min.
-- Studio: €75 for 60 min, €125 for 90 min.
-
-YOUR GOAL
-- Understand where they are staying, their dates, and the style they want.
-- When they seem ready to book, warmly ask for their mobile number so you can confirm the time and hold the slot. Tell them they can just type it into the chat and their booking will be saved to your book.
-- Do not invent availability you don't know — say you'll confirm the exact time once you have their number.
-- You are not a medical professional; for medical concerns suggest they check with their doctor.`
-
+// Warmer keyword fallback used only until an AI key is configured. It helps
+// and never demands the phone number.
 function fallbackReply(userText: string): string {
   const t = userText.toLowerCase()
-  if (/\b(price|cost|how much|precio|cuesta|preis|kostet)\b/.test(t)) {
-    return "A home visit is €120 for 60 minutes or €145 for 90 minutes, and I bring everything to you. Where are you staying, and which dates work?"
+  if (/\b(couple|couples|two of us|both of us|partner|wife|husband|brother|sister|friend|group)\b/.test(t)) {
+    return "Lovely — for two of you I'd bring a second therapist to your villa or hotel so you're side by side 🙏 Where are you staying?"
   }
-  if (/\b(book|available|availability|reserva|termin|buchen)\b/.test(t)) {
-    return "Lovely — I'd be glad to fit you in. Pop your mobile number in here and I'll confirm the time and hold your slot."
+  if (/\b(pregnan|prenatal|expecting)\b/.test(t)) {
+    return "Yes, I do gentle pregnancy massage — completely safe and really soothing. Where are you staying?"
   }
-  return "Thank you for your message. Tell me where you're staying in Mallorca, your dates and the style you'd like — and drop your mobile number here so I can confirm everything personally."
+  if (/\b(price|cost|how much|rate|precio|cuesta|preis|kostet)\b/.test(t)) {
+    return "A home visit is €120 for 60 minutes or €145 for 90, and I bring everything to you (the studio is €75 / €125). Where are you staying?"
+  }
+  if (/\b(villa|yacht|hotel|come to|mobile|my place|room)\b/.test(t)) {
+    return "Yes, I come to you with the table, oils and everything 🙏 Which area are you in, and what dates were you thinking?"
+  }
+  if (/\b(book|available|availability|when|date|today|tomorrow|reserva|termin|buchen)\b/.test(t)) {
+    return "I'd love to fit you in — which day were you thinking, and whereabouts are you staying?"
+  }
+  return "Of course 🙏 tell me where you're staying and the style you'd like, and I'll take care of it."
 }
 
 // Calls Anthropic if ANTHROPIC_API_KEY is set; returns null on any failure.
@@ -71,7 +80,7 @@ async function generateReply(
       },
       body: JSON.stringify({
         model,
-        max_tokens: 400,
+        max_tokens: 300,
         system: SYSTEM_PROMPT,
         messages: history.map((m) => ({ role: m.role, content: m.content })),
       }),
@@ -92,6 +101,34 @@ async function generateReply(
   } catch (err) {
     console.error("[chat] Anthropic request failed", err)
     return null
+  }
+}
+
+// Sends the chat transcript to Parissa's WhatsApp when a client registers.
+// Uses CallMeBot (free): set PARISSA_WHATSAPP (e.g. 34602020734) and
+// CALLMEBOT_APIKEY in the environment. Skips silently if not configured.
+async function notifyParissa(
+  phone: string,
+  name: string | null,
+  history: ChatMessage[],
+) {
+  const to = process.env.PARISSA_WHATSAPP
+  const apikey = process.env.CALLMEBOT_APIKEY
+  if (!to || !apikey) return
+  const transcript = history
+    .map((m) => `${m.role === "user" ? "Client" : "Parissa"}: ${m.content}`)
+    .join("\n")
+  const message =
+    `New enquiry from the website chat 🌿\n` +
+    `Mobile: ${phone}${name ? `\nName: ${name}` : ""}\n\n` +
+    `${transcript}`
+  const url =
+    `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(to)}` +
+    `&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(apikey)}`
+  try {
+    await fetch(url)
+  } catch (err) {
+    console.error("[chat] WhatsApp notify failed", err)
   }
 }
 
@@ -144,8 +181,11 @@ export async function POST(request: Request) {
         console.error("[chat] enquiry mirror failed", e)
       }
 
+      // Send the whole conversation straight to Parissa's WhatsApp.
+      await notifyParissa(phone, name, history)
+
       const confirm =
-        "Perfect, I've saved your number — I'll confirm your time personally very soon. Anything else you'd like me to know?"
+        "Perfect, I've got your number 🙏 I'll confirm your time personally very soon. Anything else you'd like to know in the meantime?"
       await saveChatMessage(sessionId, "assistant", confirm)
       return NextResponse.json({ ok: true, reply: confirm })
     }
@@ -173,3 +213,4 @@ export async function POST(request: Request) {
     )
   }
 }
+
