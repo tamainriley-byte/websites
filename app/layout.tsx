@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Cormorant_Garamond } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
+import { ChatWidget } from '@/components/chat-widget'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const cormorant = Cormorant_Garamond({
@@ -68,6 +69,7 @@ gtag('config', 'AW-17683159555');`}
       </head>
       <body className="font-sans antialiased">
         {children}
+        <ChatWidget />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
