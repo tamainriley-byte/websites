@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { MessageCircle, ChevronDown } from "lucide-react"
+import { MessageCircle, ChevronDown, Menu, X } from "lucide-react"
 import { whatsappLink, trackWhatsAppConversion } from "@/lib/whatsapp"
 
 const navLinks = [
@@ -19,6 +19,7 @@ const services = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -27,13 +28,14 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  const linkColor = scrolled ? "text-foreground" : "text-cream"
+  const solid = scrolled || mobileOpen
+  const linkColor = solid ? "text-foreground" : "text-cream"
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled
-          ? "bg-background/90 backdrop-blur-md border-b border-border"
+        solid
+          ? "bg-background/95 backdrop-blur-md border-b border-border"
           : "bg-transparent"
       }`}
     >
@@ -47,7 +49,7 @@ export function SiteHeader() {
           </span>
           <span
             className={`text-[10px] uppercase tracking-[0.3em] ${
-              scrolled ? "text-muted-foreground" : "text-cream/80"
+              solid ? "text-muted-foreground" : "text-cream/80"
             }`}
           >
             Mallorca VIP Massage
@@ -99,20 +101,70 @@ export function SiteHeader() {
           </a>
         </nav>
 
-        <a
-          href={whatsappLink(
-            "Hello Calm & Contour, I'd like to book a massage in Mallorca.",
-          )}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackWhatsAppConversion()}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground shadow-sm transition-transform hover:scale-[1.03] md:px-5"
-        >
-          <MessageCircle className="size-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Message Parissa</span>
-          <span className="sm:hidden">Message</span>
-        </a>
+        <div className="flex items-center gap-2">
+          <a
+            href={whatsappLink(
+              "Hello Calm & Contour, I'd like to book a massage in Mallorca.",
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsAppConversion()}
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground shadow-sm transition-transform hover:scale-[1.03] md:px-5"
+          >
+            <MessageCircle className="size-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Message Parissa</span>
+            <span className="sm:hidden">Message</span>
+          </a>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => setMobileOpen((v) => !v)}
+            className={`inline-flex size-11 items-center justify-center rounded-full transition-colors md:hidden ${linkColor}`}
+          >
+            {mobileOpen ? (
+              <X className="size-6" aria-hidden="true" />
+            ) : (
+              <Menu className="size-6" aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
+
+      {mobileOpen && (
+        <nav className="border-t border-border bg-background px-5 pb-6 pt-2 md:hidden">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className="block border-b border-border/50 py-3 text-base text-foreground"
+            >
+              {link.label}
+            </a>
+          ))}
+          <p className="mt-4 mb-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            Services
+          </p>
+          {services.map((s) => (
+            <a
+              key={s.href}
+              href={s.href}
+              onClick={() => setMobileOpen(false)}
+              className="block border-b border-border/50 py-3 text-base text-foreground"
+            >
+              {s.label}
+            </a>
+          ))}
+          <a
+            href="/book"
+            onClick={() => setMobileOpen(false)}
+            className="block py-3 text-base text-foreground"
+          >
+            Book
+          </a>
+        </nav>
+      )}
     </header>
   )
 }
+
