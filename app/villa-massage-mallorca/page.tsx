@@ -1,20 +1,20 @@
 import type { Metadata } from "next"
-import { MessageCircle, MapPin, Clock, Sparkles } from "lucide-react"
+import { MessageCircle, ShieldCheck, Users, Sparkles, Clock } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { CtaFooter } from "@/components/cta-footer"
 
 const WA =
-  "https://wa.me/34602020734?text=Hello%20Calm%20%26%20Contour%2C%20I'd%20like%20to%20book%20a%20villa%20massage%20in%20Mallorca."
+  "https://wa.me/34602020734?text=Hello%20Calm%20%26%20Contour%2C%20I'd%20like%20to%20book%20a%20private%20villa%20massage%20in%20Mallorca."
 
 export const metadata: Metadata = {
-  title: "Villa Massage Mallorca | In-Villa, Poolside & Couples | Calm & Contour",
+  title: "Private Villa Massage Mallorca | Discreet In-Villa Spa | Calm & Contour",
   description:
-    "In-villa massage in Mallorca brought to your door. Poolside, couples and group treatments with Parissa, full setup provided. From €120. Book on WhatsApp.",
+    "Discreet private massage at your villa in Mallorca. Qualified, insured, vetted therapists, NDA available for high-profile guests, couples and groups by arrangement. From €120.",
   alternates: { canonical: "https://www.calmandcontour.com/villa-massage-mallorca" },
   openGraph: {
-    title: "Villa Massage Mallorca | Calm & Contour",
+    title: "Private Villa Massage Mallorca | Calm & Contour",
     description:
-      "Luxury in-villa massage anywhere in Mallorca, poolside or in the comfort of your villa. From €120.",
+      "A discreet, professional in-villa spa across Mallorca by Parissa & Friends. Qualified, insured, vetted therapists. NDA on request.",
     url: "https://www.calmandcontour.com/villa-massage-mallorca",
     images: ["/images/villa-terrace.png"],
   },
@@ -23,14 +23,14 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "MassageService",
-  name: "Calm & Contour Villa Massage Mallorca",
+  name: "Calm & Contour Private Villa Massage Mallorca",
   image: "https://www.calmandcontour.com/images/villa-terrace.png",
   url: "https://www.calmandcontour.com/villa-massage-mallorca",
   telephone: "+34602020734",
   priceRange: "€€€",
   areaServed: [
-    "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Andratx", "Alcúdia", "Pollensa", "Calvià", "Mallorca",
+    "Son Vida", "Portals Nous", "Puerto Portals", "Bendinat", "Santa Ponsa",
+    "Andratx", "Pollensa", "Deia", "Calvià", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",
@@ -44,26 +44,30 @@ const jsonLd = {
     "@type": "Offer",
     priceCurrency: "EUR",
     price: "120",
-    description: "60 minute mobile massage to your villa, yacht or hotel",
+    description: "60 minute private massage at your villa in Mallorca",
   },
 }
 
 const faqs = [
   {
-    q: "Do you come to my villa, hotel or yacht?",
-    a: "Yes. Parissa brings the table, oils and everything to you, anywhere in Mallorca, whether that is a private villa, a hotel suite or a yacht at anchor or in port.",
+    q: "Is the service discreet and confidential?",
+    a: "Completely. Our therapists are used to working in private residences and around household staff, families and high-profile guests. We keep every booking private, and we are happy to sign a non-disclosure agreement on request.",
   },
   {
-    q: "How far do you travel?",
-    a: "Across the whole island. Popular areas include Portals Nous, Puerto Portals, Palma, Santa Ponsa, Magaluf, Andratx, Alcúdia and Pollensa. The studio is in Portals Nous, about 10 minutes from Magaluf and 15 from Palma.",
+    q: "Are the therapists qualified and insured?",
+    a: "Yes. Every therapist working under Parissa & Friends is fully qualified, insured and personally vetted by Parissa. You get the same standard whether it is Parissa herself or a member of her team.",
   },
   {
-    q: "How much is a home visit?",
-    a: "A mobile home visit is €120 for 60 minutes or €145 for 90 minutes, with the full setup brought to you. Studio treatments are €75 and €125.",
+    q: "Can you treat couples or a group at the villa?",
+    a: "Yes. For couples we bring a second therapist so you are treated side by side, and for larger groups, events, hen parties or birthdays we arrange multiple therapists so everyone is looked after at once.",
   },
   {
-    q: "Can you treat couples?",
-    a: "Yes. For two people Parissa brings a second therapist so you are treated side by side at your villa or hotel.",
+    q: "What do you bring, and where do you set up?",
+    a: "We bring professional tables, fresh linens, oils and everything needed. We set up wherever suits you, a shaded terrace, poolside, a spa room or a bedroom, and leave it exactly as we found it.",
+  },
+  {
+    q: "How much is a villa visit?",
+    a: "A private villa visit is €120 for 60 minutes or €145 for 90 minutes per person. Couples and groups are quoted on request. Just message us with your villa location and dates.",
   },
 ]
 
@@ -80,21 +84,22 @@ export default function Page() {
       <section className="relative overflow-hidden">
         <img
           src="/images/villa-terrace.png"
-          alt="Massage table set up on a Mallorca villa terrace overlooking the sea"
+          alt="Private massage table set up on a Mallorca villa terrace overlooking the sea"
           className="absolute inset-0 size-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/55" />
         <div className="relative mx-auto max-w-3xl px-5 pb-20 pt-36 text-center text-cream md:pb-28 md:pt-44">
           <p className="text-xs uppercase tracking-[0.3em] text-cream/80">
-            Mallorca · In Your Villa
+            Discreet · Private · In Your Villa
           </p>
           <h1 className="mt-4 text-balance font-serif text-4xl font-medium leading-tight md:text-6xl">
-            Villa Massage in Mallorca
+            Private Villa Massage in Mallorca
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-cream/85">
-            Luxury massage set up on your villa terrace or by the pool. Parissa arrives
-            with the table, oils and everything, so you simply lie back and unwind
-            wherever you are on the island.
+            A private spa brought to your villa by Parissa &amp; Friends, a small
+            team of qualified, insured and personally vetted therapists. Discreet,
+            professional and tailored to you, poolside, on the terrace or in the
+            comfort of your own room.
           </p>
           <a
             href={WA}
@@ -103,36 +108,35 @@ export default function Page() {
             <MessageCircle className="size-5" aria-hidden="true" />
             Message Parissa
           </a>
-          <p className="mt-4 text-sm text-cream/70">From €120 · Villa · Poolside · Couples</p>
+          <p className="mt-4 text-sm text-cream/70">From €120 · NDA available on request</p>
         </div>
       </section>
 
       {/* Intro */}
       <section className="mx-auto max-w-3xl px-5 py-16 md:py-20">
         <h2 className="font-serif text-3xl font-medium text-foreground md:text-4xl">
-          A boutique treatment, wherever you are staying
+          A professional spa, in the privacy of your villa
         </h2>
         <p className="mt-5 leading-relaxed text-muted-foreground">
-          Calm &amp; Contour brings a boutique villa massage to you anywhere in Mallorca. Parissa,
-          a qualified therapist specialising in massage, lymphatic drainage and
-          body contouring. Instead of travelling to a spa, the spa comes to you.
-          Every treatment is tailored, unhurried and delivered with the same
-          boutique care whether you are in a hilltop villa, a hotel suite or on a
-          yacht.
+          Calm &amp; Contour brings a genuine spa experience to private villas
+          across Mallorca. Rather than book a table at a hotel spa, you have a
+          qualified therapist arrive at your door with everything needed, and you
+          never have to leave the privacy of where you are staying. It is the
+          service of choice for guests who value both quality and discretion.
         </p>
       </section>
 
-      {/* How it works */}
+      {/* Trust / discretion */}
       <section className="bg-secondary/40">
         <div className="mx-auto max-w-5xl px-5 py-16 md:py-20">
           <h2 className="text-center font-serif text-3xl font-medium text-foreground md:text-4xl">
-            How it works
+            Why villa guests choose us
           </h2>
           <div className="mt-10 grid gap-8 md:grid-cols-3">
             {[
-              { icon: MessageCircle, t: "Message Parissa", d: "Tell us where you are staying, your dates and the style you would like." },
-              { icon: MapPin, t: "We come to you", d: "Parissa arrives with the table, oils and everything for a full setup." },
-              { icon: Sparkles, t: "You unwind", d: "Relax in your own space and feel restored, sculpted and cared for." },
+              { icon: ShieldCheck, t: "Discreet & confidential", d: "Used to private residences, families and high-profile guests. NDA signed on request, every booking kept private." },
+              { icon: Sparkles, t: "Qualified & insured", d: "Every therapist under Parissa & Friends is fully qualified, insured and personally vetted, the same standard every visit." },
+              { icon: Users, t: "Couples & groups", d: "A second therapist for couples, and multiple therapists for events, hen parties and celebrations." },
             ].map((s) => (
               <div key={s.t} className="text-center">
                 <s.icon className="mx-auto size-8 text-foreground" aria-hidden="true" />
@@ -144,20 +148,22 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Areas + pricing */}
+      {/* Treatments + pricing */}
       <section className="mx-auto max-w-3xl px-5 py-16 md:py-20">
         <h2 className="font-serif text-3xl font-medium text-foreground md:text-4xl">
-          Areas we cover
+          Treatments we bring to your villa
         </h2>
         <p className="mt-5 leading-relaxed text-muted-foreground">
-          We travel across Mallorca, with most visits to Portals Nous, Puerto
-          Portals, Palma, Santa Ponsa, Magaluf, Bendinat, Andratx, Alcúdia and
-          Pollensa. If you are staying somewhere else on the island, just ask.
+          Deep tissue, Swedish and relaxation, sports, hot stone, aromatherapy,
+          lymphatic drainage, prenatal and reflexology, plus facials and body
+          contouring. Tell us what you would like and we tailor each treatment to
+          you. We cover Son Vida, Portals Nous, Bendinat, Santa Ponsa, Andratx,
+          Deià, Pollensa and villas across the island.
         </p>
         <div className="mt-8 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">
             <Clock className="size-5" aria-hidden="true" />
-            <span className="font-serif text-xl">Mobile home visit</span>
+            <span className="font-serif text-xl">Private villa visit</span>
           </div>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
@@ -168,14 +174,14 @@ export default function Page() {
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
-            Full setup brought to you. Couples treated side by side with a second therapist.
+            Per person. Couples and groups quoted on request, with additional therapists arranged.
           </p>
           <a
             href={WA}
             className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-6 py-2.5 text-sm font-medium text-whatsapp-foreground shadow-sm transition-transform hover:scale-[1.03]"
           >
             <MessageCircle className="size-4" aria-hidden="true" />
-            Check availability
+            Enquire discreetly
           </a>
         </div>
       </section>
