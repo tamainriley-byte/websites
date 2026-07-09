@@ -6,6 +6,7 @@ import {
   registerChatClient,
   setSessionMeta,
   createEnquiry,
+  getSessionPhone,
   type ChatRole,
   type ChatMessage,
 } from "@/lib/db"
@@ -16,6 +17,17 @@ const MAX_LEN = 2000
 
 function clean(value: unknown, max = MAX_LEN) {
   return typeof value === "string" ? value.trim().slice(0, max) : ""
+}
+
+// Pull a plausible mobile number out of a chat message (7 to 15 digits).
+function extractPhone(text: string): string | null {
+  const m = text.match(/\+?\d[\d\s().-]{5,}\d/g)
+  if (!m) return null
+  for (const cand of m) {
+    const digits = (cand.match(/\d/g) || []).length
+    if (digits >= 7 && digits <= 15) return cand.trim()
+  }
+  return null
 }
 
 // Turn a user-agent string into a short readable label.
@@ -85,7 +97,14 @@ FACTS YOU KNOW
 - Facials and body contouring: facial treatments and facial reset, wood therapy (maderoterapia), lymphatic sculpting, pre-event sculpting.
 - Prices: home visit €120 for 60 min, €145 for 90 min. Studio €75 for 60 min, €125 for 90 min. For couples you bring a second therapist to their place.
 - You are not a doctor; for any medical concern suggest they check with theirs.
-- Never invent exact availability, say you'll confirm the time personally.`
+- Never invent exact availability. Every booking is provisional until Parissa confirms it herself.
+
+HOW A BOOKING HAPPENS
+- Let them ask whatever they like first. Answer warmly and never demand their number before they have had their questions answered.
+- When they seem ready to book, or give you a day or time, gently gather three things across the chat: the treatment they would like, the day and rough time, and where they are staying (villa, hotel or yacht, and the area or address).
+- Once you have those, ask for their mobile number so you can confirm and pass it to Parissa. Ask naturally, once, as the last step.
+- When you have the number and the details, confirm provisionally in your own warm words. For example: "Perfect, I'll pencil you in for Saturday around 5pm at your villa in Portals and pass it straight to Parissa. Consider it booked, she'll message you very shortly to confirm the final details." Vary the wording every time and never use a dash.
+- If they gave their number earlier, thank them and keep helping, you do not need to ask again.`
 
 // Warmer keyword fallback used only until an AI key is configured.
 // It actually answers the common questions and never loops the same line.
@@ -287,6 +306,32 @@ export async function POST(request: Request) {
     }
 
     await saveChatMessage(sessionId, "user", text)
+
+    // If they share a mobile number in chat and we have not captured one yet,
+    // grab it, mirror it to enquiries and alert Parissa with the transcript.
+    const shared = extractPhone(text)
+    if (shared) {
+      try {
+        const existing = await getSessionPhone(sessionId)
+        if (!existing) {
+          await registerChatClient(sessionId, shared, null)
+          const sofar = await getChatHistory(sessionId)
+          const summary = sofar
+            .filter((m) => m.role === "user")
+            .map((m) => m.content)
+            .slice(-6)
+            .join(" | ")
+          try {
+            await createEnquiry(shared, `[Chat] ${summary}`)
+          } catch (e) {
+            console.error("[chat] enquiry mirror failed", e)
+          }
+          await notifyParissa(shared, null, sofar)
+        }
+      } catch (e) {
+        console.error("[chat] inline capture failed", e)
+      }
+    }
 
     const history = await getChatHistory(sessionId)
     const llmHistory = history.map((m) => ({ role: m.role, content: m.content }))
