@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { getEnquiries, getConversations } from "@/lib/db"
-import { isAuthed, logout } from "./actions"
+import { isAuthed, logout, setBooked } from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
 
 export const metadata: Metadata = {
@@ -67,7 +67,8 @@ export default async function AdminPage() {
               {conversations.length}{" "}
               {conversations.length === 1 ? "chat" : "chats"} ·{" "}
               {enquiries.length}{" "}
-              {enquiries.length === 1 ? "enquiry" : "enquiries"}
+              {enquiries.length === 1 ? "enquiry" : "enquiries"} ·{" "}
+              {enquiries.filter((e) => e.status === "booked").length} booked
             </p>
           </div>
           <form action={logout}>
@@ -167,30 +168,59 @@ export default async function AdminPage() {
             </p>
           ) : (
             <ul className="mt-5 flex flex-col gap-4">
-              {enquiries.map((enquiry) => (
-                <li
-                  key={enquiry.id}
-                  className="rounded-2xl border border-border bg-card p-5 shadow-sm"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <a
-                      href={`tel:${enquiry.phone}`}
-                      className="font-medium text-foreground hover:underline"
-                    >
-                      {enquiry.phone}
-                    </a>
-                    <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-xs font-medium uppercase tracking-wide text-secondary-foreground">
-                      {enquiry.status}
-                    </span>
-                  </div>
-                  <p className="mt-3 whitespace-pre-wrap text-pretty leading-relaxed text-foreground">
-                    {enquiry.message}
-                  </p>
-                  <p className="mt-4 text-xs uppercase tracking-wide text-muted-foreground">
-                    {formatDate(enquiry.created_at)}
-                  </p>
-                </li>
-              ))}
+              {enquiries.map((enquiry) => {
+                const isBooked = enquiry.status === "booked"
+                return (
+                  <li
+                    key={enquiry.id}
+                    className="rounded-2xl border border-border bg-card p-5 shadow-sm"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <a
+                        href={`tel:${enquiry.phone}`}
+                        className="font-medium text-foreground hover:underline"
+                      >
+                        {enquiry.phone}
+                      </a>
+                      <span
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide ${
+                          isBooked
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground"
+                        }`}
+                      >
+                        {isBooked ? "Booked ✓" : enquiry.status}
+                      </span>
+                    </div>
+                    <p className="mt-3 whitespace-pre-wrap text-pretty leading-relaxed text-foreground">
+                      {enquiry.message}
+                    </p>
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                        {formatDate(enquiry.created_at)}
+                      </p>
+                      <form action={setBooked}>
+                        <input type="hidden" name="id" value={enquiry.id} />
+                        <input
+                          type="hidden"
+                          name="booked"
+                          value={isBooked ? "0" : "1"}
+                        />
+                        <button
+                          type="submit"
+                          className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                            isBooked
+                              ? "border border-border text-muted-foreground hover:bg-muted"
+                              : "bg-primary text-primary-foreground hover:opacity-90"
+                          }`}
+                        >
+                          {isBooked ? "Undo booked" : "Mark booked"}
+                        </button>
+                      </form>
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           )}
         </section>

@@ -2,6 +2,8 @@
 
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
+import { updateEnquiryStatus } from "@/lib/db"
 
 const COOKIE_NAME = "admin_auth"
 
@@ -33,6 +35,17 @@ export async function login(_prevState: unknown, formData: FormData) {
   })
 
   redirect("/admin")
+}
+
+// Toggle a lead between "new" and "booked" — the number that unlocks true
+// cost-per-booking in the weekly report.
+export async function setBooked(formData: FormData) {
+  if (!(await isAuthed())) return
+  const id = Number(formData.get("id"))
+  if (!Number.isInteger(id) || id <= 0) return
+  const booked = formData.get("booked") === "1"
+  await updateEnquiryStatus(id, booked ? "booked" : "new")
+  revalidatePath("/admin")
 }
 
 export async function logout() {

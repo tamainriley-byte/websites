@@ -42,6 +42,48 @@ export async function getEnquiries() {
   return result.rows
 }
 
+// "booked" marks a confirmed booking; anything else counts as just a lead.
+export async function updateEnquiryStatus(id: number, status: string) {
+  await pool.query(`UPDATE enquiries SET status = $2 WHERE id = $1`, [
+    id,
+    status,
+  ])
+}
+
+export type WeeklyStats = {
+  leads: number
+  uniqueLeads: number
+  booked: number
+  bookedAllTime: number
+}
+
+// Lead + booking counts for the weekly report. Unique leads dedupe by phone
+// (the same client can arrive via both the chat mirror and the form).
+export async function getWeeklyStats(days = 7): Promise<WeeklyStats> {
+  const week = await pool.query<{
+    leads: string
+    unique_leads: string
+    booked: string
+  }>(
+    `SELECT COUNT(*) AS leads,
+            COUNT(DISTINCT phone) AS unique_leads,
+            COUNT(*) FILTER (WHERE status = 'booked') AS booked
+     FROM enquiries
+     WHERE created_at >= now() - ($1 || ' days')::interval`,
+    [days],
+  )
+  const allTime = await pool.query<{ booked: string }>(
+    `SELECT COUNT(*) AS booked FROM enquiries WHERE status = 'booked'`,
+  )
+  const w = week.rows[0]
+  return {
+    leads: Number(w?.leads ?? 0),
+    uniqueLeads: Number(w?.unique_leads ?? 0),
+    booked: Number(w?.booked ?? 0),
+    bookedAllTime: Number(allTime.rows[0]?.booked ?? 0),
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /*  Chat (in-site "WhatsApp" conversations)                           */
 /* ------------------------------------------------------------------ */
