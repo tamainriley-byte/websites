@@ -207,32 +207,42 @@ async function generateReply(
   }
 }
 
-// Sends the chat transcript to Parissa's WhatsApp when a client registers.
-// Uses CallMeBot (free): set PARISSA_WHATSAPP (e.g. 34602020734) and
-// CALLMEBOT_APIKEY in the environment. Skips silently if not configured.
-async function notifyParissa(
+// Alerts the owners on WhatsApp the moment a client shares their number.
+// Sends to Parissa (PARISSA_WHATSAPP + CALLMEBOT_APIKEY) and, if configured,
+// to the owner too (OWNER_WHATSAPP + OWNER_CALLMEBOT_APIKEY). CallMeBot is the
+// free bridge; each recipient needs their own apikey. Skips silently if unset.
+async function notifyOwners(
   phone: string,
   name: string | null,
   history: ChatMessage[],
 ) {
-  const to = process.env.PARISSA_WHATSAPP
-  const apikey = process.env.CALLMEBOT_APIKEY
-  if (!to || !apikey) return
+  const recipients = [
+    { to: process.env.PARISSA_WHATSAPP, key: process.env.CALLMEBOT_APIKEY },
+    { to: process.env.OWNER_WHATSAPP, key: process.env.OWNER_CALLMEBOT_APIKEY },
+  ].filter((r) => r.to && r.key) as Array<{ to: string; key: string }>
+  if (recipients.length === 0) return
+
   const transcript = history
     .map((m) => `${m.role === "user" ? "Client" : "Parissa"}: ${m.content}`)
     .join("\n")
   const message =
-    `New enquiry from the website chat 🌿\n` +
+    `New lead 🌿 A potential client has just entered their phone number and the AI is chatting to them now.\n\n` +
     `Mobile: ${phone}${name ? `\nName: ${name}` : ""}\n\n` +
-    `${transcript || "(no messages yet)"}`
-  const url =
-    `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(to)}` +
-    `&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(apikey)}`
-  try {
-    await fetch(url)
-  } catch (err) {
-    console.error("[chat] WhatsApp notify failed", err)
-  }
+    `Chat so far:\n${transcript || "(no messages yet)"}\n\n` +
+    `If the conversation finishes or they go cold, we'll let you know and you should call them right away.`
+
+  await Promise.all(
+    recipients.map(async (r) => {
+      const url =
+        `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(r.to)}` +
+        `&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(r.key)}`
+      try {
+        await fetch(url)
+      } catch (err) {
+        console.error("[chat] WhatsApp notify failed", err)
+      }
+    }),
+  )
 }
 
 /* ------------------------------------------------------------------ */
@@ -291,8 +301,8 @@ export async function POST(request: Request) {
         console.error("[chat] enquiry mirror failed", e)
       }
 
-      // Send straight to Parissa's WhatsApp.
-      await notifyParissa(phone, name, history)
+      // Alert Parissa (and the owner) on WhatsApp.
+      await notifyOwners(phone, name, history)
 
       const confirm =
         "Lovely, thank you 🙏 I've got your number and I'll message you personally very shortly. Meanwhile, where are you staying and what would you like?"
@@ -308,7 +318,7 @@ export async function POST(request: Request) {
     await saveChatMessage(sessionId, "user", text)
 
     // If they share a mobile number in chat and we have not captured one yet,
-    // grab it, mirror it to enquiries and alert Parissa with the transcript.
+    // grab it, mirror it to enquiries and alert the owners with the transcript.
     const shared = extractPhone(text)
     if (shared) {
       try {
@@ -326,7 +336,7 @@ export async function POST(request: Request) {
           } catch (e) {
             console.error("[chat] enquiry mirror failed", e)
           }
-          await notifyParissa(shared, null, sofar)
+          await notifyOwners(shared, null, sofar)
         }
       } catch (e) {
         console.error("[chat] inline capture failed", e)
