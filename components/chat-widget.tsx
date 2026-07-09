@@ -6,10 +6,9 @@ import { MessageCircle, X, Send } from "lucide-react"
 type Msg = { role: "user" | "assistant"; content: string }
 
 const SESSION_KEY = "cc_chat_session"
-const REG_KEY = "cc_chat_registered"
 
 const GREETING =
-  "Hi, I'm Parissa 🌿 Pop your mobile in below and let's chat, I bring the full massage to your villa, yacht or hotel anywhere in Mallorca."
+  "Hi, I'm Parissa 🌿 Ask me anything about the massage, prices or areas, or just tell me where you're staying and what you'd like and I'll get you booked in."
 
 function newSessionId() {
   return (
@@ -31,12 +30,10 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Msg[]>([])
   const [input, setInput] = useState("")
   const [sending, setSending] = useState(false)
-  const [registered, setRegistered] = useState(false)
-  const [phone, setPhone] = useState("")
   const sessionRef = useRef<string>("")
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // Init session id + registration flag.
+  // Init session id.
   useEffect(() => {
     let id = ""
     try {
@@ -45,7 +42,6 @@ export function ChatWidget() {
         id = newSessionId()
         localStorage.setItem(SESSION_KEY, id)
       }
-      setRegistered(localStorage.getItem(REG_KEY) === "1")
     } catch {
       id = newSessionId()
     }
@@ -54,23 +50,13 @@ export function ChatWidget() {
 
   const openChat = useCallback(() => setOpen(true), [])
 
-  // Any existing WhatsApp button on the site opens this chat instead.
+  // The green WhatsApp buttons across the site go straight to the WhatsApp app
+  // (least friction, the client's number comes with them). This floating bubble
+  // is the on-site option for people who want to ask questions first. A dedicated
+  // element can open it by dispatching the "open-parissa-chat" event.
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null
-      const link = target?.closest?.(
-        'a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href*="web.whatsapp.com"]',
-      ) as HTMLAnchorElement | null
-      if (link) {
-        // Let the site's conversion tracking onClick run, just stop the jump.
-        e.preventDefault()
-        openChat()
-      }
-    }
-    document.addEventListener("click", handler)
     window.addEventListener("open-parissa-chat", openChat as EventListener)
     return () => {
-      document.removeEventListener("click", handler)
       window.removeEventListener("open-parissa-chat", openChat as EventListener)
     }
   }, [openChat])
@@ -117,45 +103,6 @@ export function ChatWidget() {
       behavior: "smooth",
     })
   }, [messages, sending])
-
-  async function registerPhone(value: string) {
-    const trimmed = value.trim()
-    const digits = (trimmed.match(/\d/g) || []).length
-    if (digits < 7) return
-    setSending(true)
-    const startedAt = Date.now()
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          type: "register",
-          sessionId: sessionRef.current,
-          phone: trimmed,
-        }),
-      })
-      const data = await res.json()
-      await humanPause(startedAt)
-      if (data.reply) {
-        setMessages((m) => [...m, { role: "assistant", content: data.reply }])
-      }
-      setRegistered(true)
-      setPhone("")
-      try {
-        localStorage.setItem(REG_KEY, "1")
-      } catch {}
-    } catch {
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          content: "Sorry, that didn't save, could you try again?",
-        },
-      ])
-    } finally {
-      setSending(false)
-    }
-  }
 
   async function send() {
     const text = input.trim()
@@ -269,59 +216,31 @@ export function ChatWidget() {
               )}
             </div>
 
-            {/* Bottom bar: mobile gate until registered, then composer */}
-            {!registered ? (
-              <div className="bg-[#f0f2f5] px-3 py-3">
-                <p className="mb-2 text-center text-xs font-medium text-[#111b21]">
-                  Enter your mobile and chat directly with Parissa
-                </p>
-                <div className="flex items-center gap-2">
-                  <input
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    inputMode="tel"
-                    autoFocus
-                    placeholder="Your mobile number"
-                    className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") registerPhone(phone)
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => registerPhone(phone)}
-                    disabled={sending || (phone.match(/\d/g) || []).length < 7}
-                    className="shrink-0 rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
-                  >
-                    Start chat
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
-                <input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault()
-                      send()
-                    }
-                  }}
-                  placeholder="Type a message"
-                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
-                />
-                <button
-                  type="button"
-                  onClick={send}
-                  disabled={sending || !input.trim()}
-                  aria-label="Send"
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
-                >
-                  <Send className="size-5" aria-hidden="true" />
-                </button>
-              </div>
-            )}
+            {/* Composer, always available so clients can ask straight away */}
+            <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault()
+                    send()
+                  }
+                }}
+                placeholder="Ask about the massage, or say hello…"
+                className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
+              />
+              <button
+                type="button"
+                onClick={send}
+                disabled={sending || !input.trim()}
+                aria-label="Send"
+                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
+              >
+                <Send className="size-5" aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
       )}
