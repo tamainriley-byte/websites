@@ -196,6 +196,16 @@ export async function registerChatClient(
   )
 }
 
+export async function getSessionPhone(
+  sessionId: string,
+): Promise<string | null> {
+  const r = await pool.query<{ phone: string | null }>(
+    `SELECT phone FROM chat_sessions WHERE session_id = $1`,
+    [sessionId],
+  )
+  return r.rows[0]?.phone ?? null
+}
+
 export type Conversation = ChatSession & {
   message_count: number
   last_message: string | null
