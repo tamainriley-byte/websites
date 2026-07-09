@@ -50,13 +50,26 @@ export function ChatWidget() {
 
   const openChat = useCallback(() => setOpen(true), [])
 
-  // The green WhatsApp buttons across the site go straight to the WhatsApp app
-  // (least friction, the client's number comes with them). This floating bubble
-  // is the on-site option for people who want to ask questions first. A dedicated
-  // element can open it by dispatching the "open-parissa-chat" event.
+  // Every green WhatsApp button on the site opens THIS on-site chat instead of
+  // jumping out to WhatsApp. The whole conversation stays on the platform: the AI
+  // speaks as Parissa, gathers their details and address, books them in, and saves
+  // everything to /admin as a contact.
   useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null
+      const link = target?.closest?.(
+        'a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href*="web.whatsapp.com"]',
+      ) as HTMLAnchorElement | null
+      if (link) {
+        // Let the site's conversion tracking onClick run, then keep them here.
+        e.preventDefault()
+        openChat()
+      }
+    }
+    document.addEventListener("click", handler)
     window.addEventListener("open-parissa-chat", openChat as EventListener)
     return () => {
+      document.removeEventListener("click", handler)
       window.removeEventListener("open-parissa-chat", openChat as EventListener)
     }
   }, [openChat])
