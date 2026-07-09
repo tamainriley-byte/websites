@@ -6,7 +6,7 @@ import { whatsappLink, trackWhatsAppConversion } from "@/lib/whatsapp"
 
 const navLinks = [
   { label: "About", href: "/#about" },
-  { label: "Treatments", href: "/#treatments" },
+  { label: "Treatments", href: "/treatments" },
   { label: "Pricing", href: "/#pricing" },
   { label: "Gallery", href: "/#gallery" },
 ]
@@ -14,6 +14,10 @@ const navLinks = [
 const services = [
   { label: "Mobile Massage", href: "/mobile-massage-mallorca" },
   { label: "Villa Massage", href: "/villa-massage-mallorca" },
+  { label: "Yacht Massage", href: "/yacht-massage-mallorca" },
+  { label: "Massage Near Me", href: "/massage-near-me" },
+  { label: "Massage in Palma", href: "/massage-palma" },
+  { label: "All Treatments", href: "/treatments" },
 ]
 
 export function SiteHeader() {
