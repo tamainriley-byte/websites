@@ -70,6 +70,12 @@ export function CtaFooter() {
               <MessageCircle className="size-4" aria-hidden="true" />
               {WHATSAPP_DISPLAY}
             </a>
+            <a
+              href="/reddit-users-said"
+              className="transition-colors hover:text-background"
+            >
+              Mobile massage in Mallorca — your questions answered
+            </a>
           </div>
         </div>
         <div className="border-t border-background/15">
