@@ -257,35 +257,6 @@ export function ChatWidget() {
               </button>
             </div>
 
-            {/* One-tap number capture (hidden once saved) */}
-            {!phoneSaved && (
-              <div className="flex items-center gap-2 border-b border-black/5 bg-[#fff8e7] px-3 py-2">
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      savePhone()
-                    }
-                  }}
-                  placeholder="Your mobile, so Parissa can confirm"
-                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-3 py-1.5 text-sm outline-none focus:border-whatsapp"
-                />
-                <button
-                  type="button"
-                  onClick={savePhone}
-                  disabled={savingPhone || !phone.trim()}
-                  className="shrink-0 rounded-full bg-whatsapp px-3 py-1.5 text-xs font-medium text-whatsapp-foreground disabled:opacity-50"
-                >
-                  {savingPhone ? "Saving…" : "Save"}
-                </button>
-              </div>
-            )}
-
             {/* Messages */}
             <div
               ref={scrollRef}
@@ -319,31 +290,63 @@ export function ChatWidget() {
               )}
             </div>
 
-            {/* Composer, always available so clients can ask straight away */}
-            <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault()
-                    send()
-                  }
-                }}
-                placeholder="Ask about the massage, or say hello…"
-                className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
-              />
-              <button
-                type="button"
-                onClick={send}
-                disabled={sending || !input.trim()}
-                aria-label="Send"
-                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
-              >
-                <Send className="size-5" aria-hidden="true" />
-              </button>
-            </div>
+            {/* One composer box: first it captures the mobile (autocomplete
+                offers the visitor's own number = one tap), then it becomes
+                the normal message box. */}
+            {!phoneSaved ? (
+              <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      savePhone()
+                    }
+                  }}
+                  placeholder="Enter your mobile to start chatting to Parissa"
+                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
+                />
+                <button
+                  type="button"
+                  onClick={savePhone}
+                  disabled={savingPhone || !phone.trim()}
+                  aria-label="Start chat"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
+                >
+                  <Send className="size-5" aria-hidden="true" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      send()
+                    }
+                  }}
+                  placeholder="Ask about the massage, or say hello…"
+                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
+                />
+                <button
+                  type="button"
+                  onClick={send}
+                  disabled={sending || !input.trim()}
+                  aria-label="Send"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
+                >
+                  <Send className="size-5" aria-hidden="true" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
