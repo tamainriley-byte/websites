@@ -1,6 +1,11 @@
 import type { Metadata } from "next"
 import { getEnquiries, getConversations, ensureChatSchema } from "@/lib/db"
-import { gcalConfigured, gcalConnected } from "@/lib/gcal"
+import {
+  gcalConfigured,
+  gcalConnected,
+  upcomingEvents,
+  type UpcomingEvent,
+} from "@/lib/gcal"
 import { isAuthed, logout, setBooked } from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
 
@@ -57,6 +62,9 @@ export default async function AdminPage() {
     getConversations().catch(() => []),
     gcalConnected().catch(() => false),
   ])
+  const events: UpcomingEvent[] | null = calendarConnected
+    ? await upcomingEvents(14).catch(() => null)
+    : null
 
   return (
     <main className="min-h-[100svh] bg-background px-5 py-16 md:py-20">
@@ -107,6 +115,41 @@ export default async function AdminPage() {
             </a>
           ) : null}
         </div>
+
+        {/* --- Upcoming bookings (Parissa's calendar, next 14 days) --- */}
+        {events !== null && (
+          <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+            <h2 className="font-serif text-xl font-medium text-foreground">
+              Upcoming · next 14 days
+            </h2>
+            {events.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">
+                Nothing in the calendar yet.
+              </p>
+            ) : (
+              <ul className="mt-4 space-y-2">
+                {events.map((e, i) => {
+                  const newDay = i === 0 || events[i - 1].day !== e.day
+                  return (
+                    <li key={i}>
+                      {newDay && (
+                        <p className="mb-1 mt-3 text-xs font-medium uppercase tracking-wide text-muted-foreground first:mt-0">
+                          {e.day}
+                        </p>
+                      )}
+                      <div className="flex items-baseline gap-3 text-sm">
+                        <span className="shrink-0 tabular-nums text-muted-foreground">
+                          {e.time}
+                        </span>
+                        <span className="text-foreground">{e.summary}</span>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </section>
+        )}
 
         {/* --- Chat conversations --- */}
         <section className="mt-12">

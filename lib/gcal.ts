@@ -220,6 +220,63 @@ export async function availabilityText(days = 7): Promise<string | null> {
   }
 }
 
+/* --------------------- upcoming bookings (admin view) --------------- */
+
+export type UpcomingEvent = {
+  day: string // e.g. "Mon 14 Jul"
+  time: string // e.g. "17:00-18:30" or "all day"
+  summary: string
+}
+
+// Next `days` days of events from the connected calendar, for /admin.
+// One list per therapist later — for now Parissa's primary calendar.
+export async function upcomingEvents(days = 14): Promise<UpcomingEvent[] | null> {
+  try {
+    const token = await accessToken()
+    if (!token) return null
+    const timeMin = new Date()
+    const timeMax = new Date(timeMin.getTime() + days * 86400000)
+    const params = new URLSearchParams({
+      timeMin: timeMin.toISOString(),
+      timeMax: timeMax.toISOString(),
+      singleEvents: "true",
+      orderBy: "startTime",
+      maxResults: "50",
+    })
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`,
+      { headers: { authorization: `Bearer ${token}` } },
+    )
+    if (!res.ok) {
+      console.error("[gcal] events list failed", res.status, await res.text())
+      return null
+    }
+    const data = (await res.json()) as {
+      items?: Array<{
+        summary?: string
+        start?: { dateTime?: string; date?: string }
+        end?: { dateTime?: string; date?: string }
+      }>
+    }
+    return (data.items ?? []).map((e) => {
+      const startMs = e.start?.dateTime ? Date.parse(e.start.dateTime) : null
+      const endMs = e.end?.dateTime ? Date.parse(e.end.dateTime) : null
+      const dayRef = startMs ?? Date.parse(`${e.start?.date}T12:00:00Z`)
+      return {
+        day: fmtDay(dayRef),
+        time:
+          startMs && endMs
+            ? `${fmtTime(startMs)}-${fmtTime(endMs)}`
+            : "all day",
+        summary: e.summary || "(untitled)",
+      }
+    })
+  } catch (err) {
+    console.error("[gcal] upcoming events failed", err)
+    return null
+  }
+}
+
 /* --------------------- booking ------------------------------------- */
 
 export type BookingInput = {
