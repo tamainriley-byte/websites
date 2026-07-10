@@ -1,9 +1,11 @@
 import { getWeeklyStats } from "@/lib/db"
 
 /* ------------------------------------------------------------------ */
-/*  Weekly owner report: leads, bookings, cost per booking, and a     */
-/*  plain scale / hold / cut recommendation. Sent by /api/report      */
-/*  (Vercel Cron, Mondays) via Resend's HTTP API.                     */
+/*  Daily owner report: today's leads/bookings plus the rolling       */
+/*  7-day economics (cost per lead / per booking) and a plain         */
+/*  scale / hold / cut recommendation. Sent by /api/report            */
+/*  (Vercel Cron, daily 18:00 UTC = 8pm Mallorca in summer)           */
+/*  via Resend's HTTP API.                                            */
 /* ------------------------------------------------------------------ */
 
 // The economics gate from the roadmap: a booking is worth ~€35 margin, so
@@ -11,7 +13,7 @@ import { getWeeklyStats } from "@/lib/db"
 // spend, or a new city) to make sense.
 const MARGIN_EUR = 35
 
-export type WeeklyReport = {
+export type PeriodReport = {
   periodDays: number
   from: string
   to: string
@@ -22,6 +24,12 @@ export type WeeklyReport = {
   bookingsAllTime: number
   costPerLeadEur: number | null
   costPerBookingEur: number | null
+}
+
+export type DailyDigest = {
+  today: PeriodReport
+  week: PeriodReport
+  // Always derived from the 7-day numbers; a single day is too noisy to act on.
   recommendation: string
 }
 
@@ -29,27 +37,23 @@ function round2(n: number) {
   return Math.round(n * 100) / 100
 }
 
-function recommend(report: {
-  leads: number
-  bookings: number
-  costPerBookingEur: number | null
-}): string {
-  if (report.leads === 0) {
-    return "No leads this week. Check the Search campaign is running and the site chat is working before reading anything into the numbers."
+function recommend(week: PeriodReport): string {
+  if (week.uniqueLeads === 0) {
+    return "No leads in the last 7 days. Check the Search campaign is running and the site chat is working before reading anything into the numbers."
   }
-  if (report.bookings === 0 || report.costPerBookingEur === null) {
-    return "No bookings marked this week, so cost-per-booking can't be trusted yet. If any of these leads did book, mark them 'Booked' in /admin — that toggle is what makes this number real."
+  if (week.bookings === 0 || week.costPerBookingEur === null) {
+    return "No bookings marked in the last 7 days, so cost-per-booking can't be trusted yet. If any of these leads did book, mark them 'Booked' in /admin — that toggle is what makes this number real."
   }
-  if (report.costPerBookingEur <= MARGIN_EUR * 0.7) {
-    return `SCALE: cost per booking is comfortably under the ~€${MARGIN_EUR} margin. There's room to raise ad spend or add a therapist.`
+  if (week.costPerBookingEur <= MARGIN_EUR * 0.7) {
+    return `SCALE: 7-day cost per booking is comfortably under the ~€${MARGIN_EUR} margin. There's room to raise ad spend or add a therapist.`
   }
-  if (report.costPerBookingEur <= MARGIN_EUR) {
-    return `HOLD: cost per booking is close to the ~€${MARGIN_EUR} margin. Keep spend level and watch next week before scaling.`
+  if (week.costPerBookingEur <= MARGIN_EUR) {
+    return `HOLD: 7-day cost per booking is close to the ~€${MARGIN_EUR} margin. Keep spend level and watch the next few days before scaling.`
   }
-  return `CUT / FIX: cost per booking is above the ~€${MARGIN_EUR} margin. Cut spend on the weakest keywords or fix the funnel before spending more.`
+  return `CUT / FIX: 7-day cost per booking is above the ~€${MARGIN_EUR} margin. Cut spend on the weakest keywords or fix the funnel before spending more.`
 }
 
-export async function buildWeeklyReport(days = 7): Promise<WeeklyReport> {
+async function buildPeriodReport(days: number): Promise<PeriodReport> {
   const stats = await getWeeklyStats(days)
 
   // No Google Ads API access, so spend is estimated from the daily budget
@@ -60,11 +64,6 @@ export async function buildWeeklyReport(days = 7): Promise<WeeklyReport> {
   const to = new Date()
   const from = new Date(to.getTime() - days * 24 * 60 * 60 * 1000)
 
-  const costPerLead =
-    stats.uniqueLeads > 0 ? round2(adSpend / stats.uniqueLeads) : null
-  const costPerBooking =
-    stats.booked > 0 ? round2(adSpend / stats.booked) : null
-
   return {
     periodDays: days,
     from: from.toISOString().slice(0, 10),
@@ -74,52 +73,70 @@ export async function buildWeeklyReport(days = 7): Promise<WeeklyReport> {
     uniqueLeads: stats.uniqueLeads,
     bookings: stats.booked,
     bookingsAllTime: stats.bookedAllTime,
-    costPerLeadEur: costPerLead,
-    costPerBookingEur: costPerBooking,
-    recommendation: recommend({
-      leads: stats.uniqueLeads,
-      bookings: stats.booked,
-      costPerBookingEur: costPerBooking,
-    }),
+    costPerLeadEur:
+      stats.uniqueLeads > 0 ? round2(adSpend / stats.uniqueLeads) : null,
+    costPerBookingEur:
+      stats.booked > 0 ? round2(adSpend / stats.booked) : null,
   }
+}
+
+export async function buildDailyDigest(): Promise<DailyDigest> {
+  const [today, week] = await Promise.all([
+    buildPeriodReport(1),
+    buildPeriodReport(7),
+  ])
+  return { today, week, recommendation: recommend(week) }
 }
 
 function eur(n: number | null) {
   return n === null ? "—" : `€${n.toFixed(2)}`
 }
 
-export function reportText(r: WeeklyReport): string {
+export function digestText(d: DailyDigest): string {
   return [
-    `Calm & Contour — weekly report (${r.from} to ${r.to})`,
+    `Calm & Contour — daily report (${d.today.to})`,
     ``,
-    `Ad spend (est. €${(r.adSpendEur / r.periodDays).toFixed(0)}/day): €${r.adSpendEur.toFixed(2)}`,
-    `Leads: ${r.uniqueLeads} unique (${r.leads} enquiries)`,
-    `Cost per lead: ${eur(r.costPerLeadEur)}`,
-    `Bookings marked: ${r.bookings} this week (${r.bookingsAllTime} all time)`,
-    `Cost per booking: ${eur(r.costPerBookingEur)}`,
+    `TODAY (last 24h)`,
+    `Leads: ${d.today.uniqueLeads} unique (${d.today.leads} enquiries)`,
+    `Bookings marked: ${d.today.bookings}`,
     ``,
-    `Recommendation: ${r.recommendation}`,
+    `LAST 7 DAYS (${d.week.from} to ${d.week.to})`,
+    `Ad spend (est. €${(d.week.adSpendEur / d.week.periodDays).toFixed(0)}/day): €${d.week.adSpendEur.toFixed(2)}`,
+    `Leads: ${d.week.uniqueLeads} unique (${d.week.leads} enquiries)`,
+    `Cost per lead: ${eur(d.week.costPerLeadEur)}`,
+    `Bookings marked: ${d.week.bookings} (${d.week.bookingsAllTime} all time)`,
+    `Cost per booking: ${eur(d.week.costPerBookingEur)}`,
+    ``,
+    `Recommendation: ${d.recommendation}`,
     ``,
     `Mark bookings at https://calmandcontour.com/admin — the toggle is what makes cost-per-booking real.`,
   ].join("\n")
 }
 
-export function reportHtml(r: WeeklyReport): string {
+export function digestHtml(d: DailyDigest): string {
   const row = (label: string, value: string) =>
     `<tr><td style="padding:6px 16px 6px 0;color:#6b7280;">${label}</td><td style="padding:6px 0;font-weight:600;">${value}</td></tr>`
+  const heading = (text: string) =>
+    `<h3 style="font-family:Arial,sans-serif;font-size:13px;letter-spacing:0.05em;text-transform:uppercase;color:#6b7280;margin:20px 0 4px;">${text}</h3>`
   return `
   <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;color:#1f2937;">
-    <h2 style="font-weight:500;">Calm &amp; Contour — weekly report</h2>
-    <p style="color:#6b7280;">${r.from} to ${r.to}</p>
+    <h2 style="font-weight:500;">Calm &amp; Contour — daily report</h2>
+    <p style="color:#6b7280;">${d.today.to}</p>
+    ${heading("Today (last 24h)")}
     <table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
-      ${row("Ad spend (estimated)", `€${r.adSpendEur.toFixed(2)}`)}
-      ${row("Leads (unique)", `${r.uniqueLeads} <span style="font-weight:400;color:#6b7280;">(${r.leads} enquiries)</span>`)}
-      ${row("Cost per lead", eur(r.costPerLeadEur))}
-      ${row("Bookings marked", `${r.bookings} <span style="font-weight:400;color:#6b7280;">(${r.bookingsAllTime} all time)</span>`)}
-      ${row("Cost per booking", eur(r.costPerBookingEur))}
+      ${row("Leads (unique)", `${d.today.uniqueLeads} <span style="font-weight:400;color:#6b7280;">(${d.today.leads} enquiries)</span>`)}
+      ${row("Bookings marked", `${d.today.bookings}`)}
+    </table>
+    ${heading(`Last 7 days (${d.week.from} to ${d.week.to})`)}
+    <table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+      ${row("Ad spend (estimated)", `€${d.week.adSpendEur.toFixed(2)}`)}
+      ${row("Leads (unique)", `${d.week.uniqueLeads} <span style="font-weight:400;color:#6b7280;">(${d.week.leads} enquiries)</span>`)}
+      ${row("Cost per lead", eur(d.week.costPerLeadEur))}
+      ${row("Bookings marked", `${d.week.bookings} <span style="font-weight:400;color:#6b7280;">(${d.week.bookingsAllTime} all time)</span>`)}
+      ${row("Cost per booking", eur(d.week.costPerBookingEur))}
     </table>
     <p style="font-family:Arial,sans-serif;font-size:14px;background:#f3f4f6;border-radius:8px;padding:12px 16px;">
-      <strong>Recommendation:</strong> ${r.recommendation}
+      <strong>Recommendation:</strong> ${d.recommendation}
     </p>
     <p style="font-family:Arial,sans-serif;font-size:12px;color:#6b7280;">
       Mark confirmed bookings at <a href="https://calmandcontour.com/admin">calmandcontour.com/admin</a> — that toggle is what makes cost-per-booking real.
@@ -130,7 +147,7 @@ export function reportHtml(r: WeeklyReport): string {
 // Sends via Resend (https://resend.com). Needs RESEND_API_KEY; recipient
 // defaults to the owner, override with REPORT_EMAIL_TO. Returns false (and
 // logs) instead of throwing so the cron never hard-fails.
-export async function sendReportEmail(report: WeeklyReport): Promise<boolean> {
+export async function sendReportEmail(digest: DailyDigest): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
     console.warn("[report] RESEND_API_KEY not set, skipping email send")
@@ -151,13 +168,13 @@ export async function sendReportEmail(report: WeeklyReport): Promise<boolean> {
       body: JSON.stringify({
         from,
         to: [to],
-        subject: `Calm & Contour weekly: ${report.uniqueLeads} leads, ${report.bookings} bookings, ${
-          report.costPerBookingEur === null
+        subject: `Calm & Contour daily: ${digest.today.uniqueLeads} leads today, ${digest.today.bookings} booked, 7-day ${
+          digest.week.costPerBookingEur === null
             ? "cost/booking n/a"
-            : `€${report.costPerBookingEur.toFixed(0)}/booking`
+            : `€${digest.week.costPerBookingEur.toFixed(0)}/booking`
         }`,
-        text: reportText(report),
-        html: reportHtml(report),
+        text: digestText(digest),
+        html: digestHtml(digest),
       }),
     })
     if (!res.ok) {

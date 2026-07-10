@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server"
-import { buildWeeklyReport, sendReportEmail } from "@/lib/report"
+import { buildDailyDigest, sendReportEmail } from "@/lib/report"
 import { isAuthed } from "@/app/admin/actions"
 
 export const dynamic = "force-dynamic"
 
-// Weekly owner report. Fired by Vercel Cron (see vercel.json, Mondays 07:00
-// UTC) which authenticates with `Authorization: Bearer ${CRON_SECRET}` when
-// that env var is set. A signed-in owner can also hit /api/report in the
-// browser to preview or resend it. Add ?send=0 to preview without emailing.
+// Daily owner report. Fired by Vercel Cron (see vercel.json, daily 18:00 UTC
+// = 8pm Mallorca in summer) which authenticates with `Authorization: Bearer
+// ${CRON_SECRET}` when that env var is set. A signed-in owner can also hit
+// /api/report in the browser to preview or resend it. Add ?send=0 to preview
+// without emailing.
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const auth = request.headers.get("authorization")
@@ -20,14 +21,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const report = await buildWeeklyReport()
+    const digest = await buildDailyDigest()
     const shouldSend = url.searchParams.get("send") !== "0"
-    const emailed = shouldSend ? await sendReportEmail(report) : false
-    return NextResponse.json({ ...report, emailed })
+    const emailed = shouldSend ? await sendReportEmail(digest) : false
+    return NextResponse.json({ ...digest, emailed })
   } catch (error) {
     console.error("[report] failed", error)
     return NextResponse.json(
-      { error: "Failed to build the weekly report." },
+      { error: "Failed to build the daily report." },
       { status: 500 },
     )
   }

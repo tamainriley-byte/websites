@@ -56,9 +56,9 @@ You need the env vars below (a `.env.local`) for the DB and AI chat to work loca
 - `PARISSA_WHATSAPP` = 34602020734 — Parissa's number for lead alerts.
 - `CALLMEBOT_APIKEY` = 2536053 — Parissa's CallMeBot key (free WhatsApp bridge; UNRELIABLE, see gotchas).
 - `OWNER_WHATSAPP` + `OWNER_CALLMEBOT_APIKEY` = NOT set. Add to also alert the owner (Terry). Each recipient must activate CallMeBot for their own number.
-- `RESEND_API_KEY` = NOT set. Required for the weekly email report to actually send (free Resend account → API key). Until set, `/api/report` still computes the numbers but skips the email.
+- `RESEND_API_KEY` = NOT set. Required for the daily email report to actually send (free Resend account → API key). Until set, `/api/report` still computes the numbers but skips the email.
 - `REPORT_EMAIL_TO` = optional, defaults to tamainriley@gmail.com. `REPORT_EMAIL_FROM` = optional, defaults to `onboarding@resend.dev` (works without domain verification, but only delivers to the Resend account owner's inbox — verify calmandcontour.com in Resend to send from the domain).
-- `ADS_DAILY_BUDGET_EUR` = optional, defaults to 25. Used to estimate weekly ad spend in the report (no Google Ads API access).
+- `ADS_DAILY_BUDGET_EUR` = optional, defaults to 25. Used to estimate ad spend in the report (no Google Ads API access).
 - `CRON_SECRET` = optional but recommended. When set, Vercel Cron authenticates to `/api/report` with it; a signed-in owner can always open `/api/report` in the browser regardless.
 
 ---
@@ -75,7 +75,7 @@ app/
   book/page.tsx                Booking form page
   api/chat/route.ts            CHAT BACKEND (AI reply, capture, notify) — key file
   api/enquiries/route.ts       Booking-form submissions
-  api/report/route.ts          Weekly report endpoint (Vercel Cron, Mondays 07:00 UTC)
+  api/report/route.ts          Daily report endpoint (Vercel Cron, daily 18:00 UTC ≈ 8pm Mallorca)
   mobile-massage-mallorca/     SEO service page
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
@@ -90,10 +90,10 @@ components/
   ui/                          shadcn-style primitives
 lib/
   db.ts                        All Postgres queries + types
-  report.ts                    Weekly report: stats → recommendation → Resend email
+  report.ts                    Daily report (today + rolling 7 days): stats → recommendation → Resend email
   whatsapp.ts                  whatsappLink() + trackWhatsAppConversion() (Google Ads event)
   utils.ts                     cn() helper
-vercel.json                    Cron: /api/report every Monday 07:00 UTC
+vercel.json                    Cron: /api/report daily 18:00 UTC (≈ 8pm Mallorca)
 public/images/                 Site imagery (hero-cove, villa-terrace, yacht-cabin, hotel-suite, body-contour, paris-*)
 types/gtag.d.ts                gtag typing
 ```
@@ -145,7 +145,7 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 6. Four new SEO service pages: yacht, massage-near-me, massage-palma, treatments.
 7. Header nav wired: Treatments → /treatments; Services menu lists all six pages (desktop + mobile).
 8. **Booked toggle** in `/admin` (Mark booked / Undo booked per enquiry + booked count in the header). `admin/page.tsx`, `admin/actions.ts`, `updateEnquiryStatus` in `db.ts`.
-9. **Weekly email report** (leads, cost per lead, bookings, cost per booking, SCALE/HOLD/CUT recommendation) via `/api/report` + Vercel Cron, emailed with Resend once `RESEND_API_KEY` is set. `lib/report.ts`, `api/report/route.ts`, `vercel.json`.
+9. **Daily email report** (today's leads/bookings + rolling 7-day cost per lead / cost per booking + SCALE/HOLD/CUT recommendation) via `/api/report` + Vercel Cron, emailed with Resend once `RESEND_API_KEY` is set. `lib/report.ts`, `api/report/route.ts`, `vercel.json`.
 
 ---
 
@@ -153,7 +153,7 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 
 **Reporting & economics (highest near-term value)**
 - ~~Add a **"booked" toggle** in `/admin`~~ DONE — each enquiry card has a Mark booked / Undo booked button (`setBooked` in `admin/actions.ts`, sets `enquiries.status = 'booked'`).
-- ~~**Weekly email report**~~ BUILT, needs activation: `/api/report` + `lib/report.ts` compute ad spend (est.), leads, cost per lead, cost per booking and a SCALE/HOLD/CUT recommendation vs the ~€35 margin; Vercel Cron fires it Mondays 07:00 UTC (`vercel.json`). **To activate: set `RESEND_API_KEY` in Vercel and redeploy.** Preview any time by opening `/api/report?send=0` while signed into `/admin`.
+- ~~**Daily email report**~~ BUILT, needs activation: `/api/report` + `lib/report.ts` compute today's leads/bookings plus rolling 7-day ad spend (est.), cost per lead, cost per booking and a SCALE/HOLD/CUT recommendation vs the ~€35 margin; Vercel Cron fires it daily at 18:00 UTC = 8pm Mallorca in summer, 7pm in winter (cron is UTC; adjust `vercel.json` in late October if the owner cares). **To activate: set `RESEND_API_KEY` in Vercel and redeploy.** Preview any time by opening `/api/report?send=0` while signed into `/admin`.
 - "Go cold" nudge: scheduled job (Vercel Cron) that finds a captured lead with no client reply for ~15 min and pings the owner to call. Not built.
 
 **Notifications / reliability**
@@ -180,7 +180,7 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 
 The direction is a booking + payment platform. Build order:
 
-- **Phase 1 (LIVE):** on-site AI chat captures leads to `/admin`; weekly email report + cost-per-booking (needs the booked toggle).
+- **Phase 1 (LIVE):** on-site AI chat captures leads to `/admin`; daily email report + cost-per-booking (needs the booked toggle).
 - **Phase 2 — Booking management:** confirmed date/time with client self-reschedule; special-requests field; "what happens in your massage" explainer; **therapist availability via Google Calendar** (free API, OAuth per therapist; app reads free/busy and writes bookings).
 - **Phase 3 — Payments (Stripe):** card on file for VIP members. NEVER store raw card numbers — use Stripe SetupIntent / Payment Element / Checkout (card vaulted by Stripe, app holds only a token). In-app 60→90 min extensions and add-ons charge the saved card. Optional booking deposit to cut no-shows.
 - **Phase 4 — Retention:** post-massage feedback (how they feel, more/less of); one-tap re-book.
