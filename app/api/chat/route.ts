@@ -7,6 +7,7 @@ import {
   setSessionMeta,
   createEnquiry,
   getSessionPhone,
+  getSessionState,
   markBookedByPhone,
   pool,
   type ChatRole,
@@ -424,9 +425,16 @@ export async function POST(request: Request) {
 
     await saveChatMessage(sessionId, "user", text)
 
+    // Takeover: Parissa is handling this chat herself from /admin, so the AI
+    // stays silent. Her replies reach the widget via its history polling.
+    const state = await getSessionState(sessionId)
+    if (state.ai_muted) {
+      return NextResponse.json({ reply: null, muted: true })
+    }
+
     // If they share a mobile number in chat and we have not captured one yet,
     // grab it, mirror it to enquiries and alert the owners with the transcript.
-    let phone = await getSessionPhone(sessionId)
+    let phone = state.phone
     const shared = extractPhone(text)
     if (shared && !phone) {
       try {

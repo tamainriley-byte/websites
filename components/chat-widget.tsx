@@ -126,6 +126,40 @@ export function ChatWidget() {
     })
   }, [messages, sending])
 
+  // While the chat is open, check for new messages every few seconds so
+  // Parissa's replies from /admin appear live in the conversation.
+  useEffect(() => {
+    if (!open) return
+    const timer = setInterval(async () => {
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            type: "history",
+            sessionId: sessionRef.current,
+          }),
+        })
+        const data = await res.json()
+        if (Array.isArray(data.messages)) {
+          setMessages((current) =>
+            data.messages.length > current.length
+              ? data.messages.map(
+                  (m: { role: Msg["role"]; content: string }) => ({
+                    role: m.role,
+                    content: m.content,
+                  }),
+                )
+              : current,
+          )
+        }
+      } catch {
+        // network blip, try again next tick
+      }
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [open])
+
   // When the visitor leaves the page mid-conversation, tell the server so
   // Parissa gets the final transcript straight away ("they've gone, call now").
   useEffect(() => {
@@ -204,6 +238,9 @@ export function ChatWidget() {
         }),
       })
       const data = await res.json()
+      // Parissa has taken over this chat: no AI reply — her message will
+      // arrive via polling when she answers from /admin.
+      if (data.muted) return
       const reply =
         data.reply ||
         "Thanks, tell me a little more and I'll sort it out for you."

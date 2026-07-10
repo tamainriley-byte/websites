@@ -109,6 +109,7 @@ export type ChatSession = {
   referer: string | null
   created_at: string
   last_at: string
+  ai_muted: boolean
 }
 
 export type SessionMeta = {
@@ -156,6 +157,11 @@ export function ensureChatSchema() {
       // went cold) so she's only pinged once per conversation.
       await pool.query(
         `ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS closed_notified_at TIMESTAMPTZ;`,
+      )
+      // Takeover: when true the AI stays silent and Parissa replies herself
+      // from /admin.
+      await pool.query(
+        `ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS ai_muted BOOLEAN NOT NULL DEFAULT false;`,
       )
       // Small key/value store (Google Calendar refresh token, etc.).
       await pool.query(`
@@ -261,6 +267,25 @@ export async function getSessionPhone(
   return r.rows[0]?.phone ?? null
 }
 
+// Phone + takeover flag in one query (used on every chat message).
+export async function getSessionState(
+  sessionId: string,
+): Promise<{ phone: string | null; ai_muted: boolean }> {
+  const r = await pool.query<{ phone: string | null; ai_muted: boolean }>(
+    `SELECT phone, ai_muted FROM chat_sessions WHERE session_id = $1`,
+    [sessionId],
+  )
+  return r.rows[0] ?? { phone: null, ai_muted: false }
+}
+
+// Takeover toggle: true = AI silent, Parissa replies from /admin.
+export async function setAiMuted(sessionId: string, muted: boolean) {
+  await pool.query(
+    `UPDATE chat_sessions SET ai_muted = $2 WHERE session_id = $1`,
+    [sessionId, muted],
+  )
+}
+
 /* ------------------------------------------------------------------ */
 /*  App settings (key/value)                                          */
 /* ------------------------------------------------------------------ */
@@ -291,7 +316,7 @@ export async function setSetting(key: string, value: string) {
 export async function findColdSessions(minutes = 15): Promise<ChatSession[]> {
   const r = await pool.query<ChatSession>(
     `SELECT session_id, phone, name, ip, country, city, device, referer,
-            created_at, last_at
+            created_at, last_at, ai_muted
      FROM chat_sessions
      WHERE phone IS NOT NULL
        AND closed_notified_at IS NULL
@@ -339,7 +364,7 @@ export type Conversation = ChatSession & {
 export async function getConversations(): Promise<Conversation[]> {
   const sessions = await pool.query<ChatSession>(
     `SELECT session_id, phone, name, ip, country, city, device, referer,
-            created_at, last_at
+            created_at, last_at, ai_muted
      FROM chat_sessions
      WHERE session_id IN (SELECT DISTINCT session_id FROM chat_messages)
      ORDER BY last_at DESC`,

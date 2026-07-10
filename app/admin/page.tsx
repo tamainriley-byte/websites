@@ -6,7 +6,7 @@ import {
   upcomingEvents,
   type UpcomingEvent,
 } from "@/lib/gcal"
-import { isAuthed, logout, setBooked } from "./actions"
+import { isAuthed, logout, setBooked, sendReply, setTakeover } from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
 
 export const metadata: Metadata = {
@@ -219,6 +219,49 @@ export default async function AdminPage() {
                           </div>
                         </div>
                       ))}
+                    </div>
+
+                    {/* Reply as Parissa + takeover toggle */}
+                    <div className="mt-4 border-t border-border/60 pt-3">
+                      <form action={sendReply} className="flex items-center gap-2">
+                        <input type="hidden" name="sessionId" value={c.session_id} />
+                        <input
+                          name="text"
+                          placeholder={
+                            c.ai_muted
+                              ? "Reply as Parissa (AI is muted)…"
+                              : "Reply as Parissa…"
+                          }
+                          autoComplete="off"
+                          className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm outline-none focus:border-primary"
+                        />
+                        <button
+                          type="submit"
+                          className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+                        >
+                          Send
+                        </button>
+                      </form>
+                      <form action={setTakeover} className="mt-2">
+                        <input type="hidden" name="sessionId" value={c.session_id} />
+                        <input
+                          type="hidden"
+                          name="muted"
+                          value={c.ai_muted ? "0" : "1"}
+                        />
+                        <button
+                          type="submit"
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${
+                            c.ai_muted
+                              ? "bg-primary text-primary-foreground"
+                              : "border border-border text-muted-foreground hover:bg-muted"
+                          }`}
+                        >
+                          {c.ai_muted
+                            ? "AI muted — you're replying · Hand back to AI"
+                            : "Take over (mute AI)"}
+                        </button>
+                      </form>
                     </div>
                   </li>
                 )

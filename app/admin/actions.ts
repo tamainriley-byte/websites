@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { updateEnquiryStatus } from "@/lib/db"
+import { updateEnquiryStatus, saveChatMessage, setAiMuted } from "@/lib/db"
 
 const COOKIE_NAME = "admin_auth"
 
@@ -45,6 +45,29 @@ export async function setBooked(formData: FormData) {
   if (!Number.isInteger(id) || id <= 0) return
   const booked = formData.get("booked") === "1"
   await updateEnquiryStatus(id, booked ? "booked" : "new")
+  revalidatePath("/admin")
+}
+
+// Parissa replies in a conversation from /admin. Her message appears in the
+// visitor's chat window (the widget polls for new messages while open).
+export async function sendReply(formData: FormData) {
+  if (!(await isAuthed())) return
+  const sessionId = String(formData.get("sessionId") ?? "").slice(0, 100)
+  const text = String(formData.get("text") ?? "")
+    .trim()
+    .slice(0, 2000)
+  if (!sessionId || !text) return
+  await saveChatMessage(sessionId, "assistant", text)
+  revalidatePath("/admin")
+}
+
+// Take over / hand back: while muted the AI stays silent in that chat.
+export async function setTakeover(formData: FormData) {
+  if (!(await isAuthed())) return
+  const sessionId = String(formData.get("sessionId") ?? "").slice(0, 100)
+  const muted = formData.get("muted") === "1"
+  if (!sessionId) return
+  await setAiMuted(sessionId, muted)
   revalidatePath("/admin")
 }
 
