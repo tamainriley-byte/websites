@@ -119,7 +119,7 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 
 ## 7. How the lead flow works (end to end)
 
-1. Every green "WhatsApp/Message Parissa" button on the site is intercepted by `chat-widget.tsx` and opens the **on-site chat** — it does NOT jump to WhatsApp. The whole conversation stays on the platform. (The Google Ads conversion event still fires on that click.)
+1. **Green "WhatsApp/Message Parissa" buttons go to REAL WhatsApp — never intercept them.** (They were intercepted into the on-site chat on 8–10 Jul 2026 and leads collapsed from ~3/day to zero; reverted 10 Jul. WhatsApp-direct is the proven converting channel; the Google Ads conversion event fires on the click.) The on-site AI chat is an *additional* path via the floating "Chat with Parissa" bubble only.
 2. The chat has **no phone-number gate**, but shows a one-tap **mobile capture bar** (`type=tel autocomplete=tel` → the phone offers the visitor's own number) until a number is saved. Numbers typed in chat are also captured inline (`extractPhone`).
 3. `app/api/chat/route.ts` generates replies with Claude (system prompt = warm, texts like Parissa, never says it's an AI; suggests coming to them first; gathers style + 60/90 minutes + day/time + address; asks for the mobile last if not captured). If `ANTHROPIC_API_KEY` is missing it falls back to keyword replies.
 4. **Google Calendar (once connected):** the AI is given Parissa's real free slots (next 7 days, from free/busy) and only offers those times. When the client agrees all details it calls the `book_appointment` tool → event written to her calendar, the lead auto-marked `booked` in enquiries, and Parissa WhatsApp'd "Confirmed booking ✅". Not connected → provisional bookings as before.
