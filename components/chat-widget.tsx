@@ -33,6 +33,7 @@ export function ChatWidget() {
   const [phone, setPhone] = useState("")
   const [phoneSaved, setPhoneSaved] = useState(false)
   const [savingPhone, setSavingPhone] = useState(false)
+  const [phoneError, setPhoneError] = useState(false)
   const sessionRef = useRef<string>("")
   const scrollRef = useRef<HTMLDivElement>(null)
   const phoneSavedRef = useRef(false)
@@ -151,6 +152,13 @@ export function ChatWidget() {
   async function savePhone() {
     const value = phone.trim()
     if (!value || savingPhone) return
+    // A real mobile has 7-15 digits; stop partial numbers before they start.
+    const digits = (value.match(/\d/g) || []).length
+    if (digits < 7 || digits > 15) {
+      setPhoneError(true)
+      return
+    }
+    setPhoneError(false)
     setSavingPhone(true)
     const startedAt = Date.now()
     try {
@@ -294,13 +302,23 @@ export function ChatWidget() {
                 offers the visitor's own number = one tap), then it becomes
                 the normal message box. */}
             {!phoneSaved ? (
-              <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
+              <div className="bg-[#f0f2f5] px-3 py-2">
+                {phoneError && (
+                  <p className="mb-1 px-2 text-xs text-red-600">
+                    That number looks too short, please enter your full mobile
+                    with country code.
+                  </p>
+                )}
+                <div className="flex items-center gap-2">
                 <input
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value)
+                    setPhoneError(false)
+                  }}
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -309,7 +327,9 @@ export function ChatWidget() {
                     }
                   }}
                   placeholder="Enter your mobile to start chatting to Parissa"
-                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
+                  className={`min-w-0 flex-1 rounded-full border bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp ${
+                    phoneError ? "border-red-400" : "border-[#d1d7db]"
+                  }`}
                 />
                 <button
                   type="button"
@@ -320,6 +340,7 @@ export function ChatWidget() {
                 >
                   <Send className="size-5" aria-hidden="true" />
                 </button>
+                </div>
               </div>
             ) : (
               <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
