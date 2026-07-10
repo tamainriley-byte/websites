@@ -60,6 +60,7 @@ You need the env vars below (a `.env.local`) for the DB and AI chat to work loca
 - `REPORT_EMAIL_TO` = optional, defaults to tamainriley@gmail.com. `REPORT_EMAIL_FROM` = optional, defaults to `onboarding@resend.dev` (works without domain verification, but only delivers to the Resend account owner's inbox — verify calmandcontour.com in Resend to send from the domain).
 - `ADS_DAILY_BUDGET_EUR` = optional, defaults to 25. Used to estimate ad spend in the report (no Google Ads API access).
 - `CRON_SECRET` = optional but recommended. When set, Vercel Cron authenticates to `/api/report` with it; a signed-in owner can always open `/api/report` in the browser regardless.
+- `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` = NOT set. Required for Google Calendar booking. Setup: Google Cloud Console → new project → enable "Google Calendar API" → OAuth consent screen (External, add Parissa's email as test user) → Credentials → OAuth client ID (Web application) with redirect URI `https://calmandcontour.com/api/gcal/callback` → copy ID+secret into Vercel and redeploy. Then sign into `/admin` and click "Connect calendar" while signed into Parissa's Google account (one time). After that the chat AI sees her real free/busy and books confirmed appointments straight into her calendar.
 
 ---
 
@@ -75,7 +76,10 @@ app/
   book/page.tsx                Booking form page
   api/chat/route.ts            CHAT BACKEND (AI reply, capture, notify) — key file
   api/enquiries/route.ts       Booking-form submissions
-  api/report/route.ts          Daily report endpoint (Vercel Cron, daily 18:00 UTC ≈ 8pm Mallorca)
+  api/report/route.ts          Daily report endpoint (Vercel Cron, daily 18:00 UTC ≈ 8pm Mallorca) + cold-lead sweep backstop
+  api/gcal/auth/route.ts       Starts Google Calendar OAuth (open while signed into /admin)
+  api/gcal/callback/route.ts   OAuth callback, stores Parissa's refresh token
+  couples-massage-mallorca/    SEO service page (couples, side-by-side, two therapists)
   mobile-massage-mallorca/     SEO service page
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
@@ -89,11 +93,14 @@ components/
   hero, about, treatments, pricing, gallery, book-form, admin-login-form
   ui/                          shadcn-style primitives
 lib/
-  db.ts                        All Postgres queries + types
+  db.ts                        All Postgres queries + types (incl. app_settings, cold-lead queries)
+  gcal.ts                      Google Calendar: OAuth tokens, availability (free/busy), createBooking
+  notify.ts                    Owner WhatsApp notifications: new-lead ping, final transcript, cold sweep
   report.ts                    Daily report (today + rolling 7 days): stats → recommendation → Resend email
   whatsapp.ts                  whatsappLink() + trackWhatsAppConversion() (Google Ads event)
   utils.ts                     cn() helper
 vercel.json                    Cron: /api/report daily 18:00 UTC (≈ 8pm Mallorca)
+GOOGLE-ADS.md                  Keyword-matched ad plan: 7 themed ad groups mapped 1:1 to service pages, RSA copy within limits, negatives, rollout checklist
 public/images/                 Site imagery (hero-cove, villa-terrace, yacht-cabin, hotel-suite, body-contour, paris-*)
 types/gtag.d.ts                gtag typing
 ```
@@ -113,11 +120,12 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 ## 7. How the lead flow works (end to end)
 
 1. Every green "WhatsApp/Message Parissa" button on the site is intercepted by `chat-widget.tsx` and opens the **on-site chat** — it does NOT jump to WhatsApp. The whole conversation stays on the platform. (The Google Ads conversion event still fires on that click.)
-2. The chat has **no phone-number gate** — the client can ask questions straight away.
-3. `app/api/chat/route.ts` generates replies with Claude (system prompt = warm, texts like Parissa, never says it's an AI, gathers treatment + day/time + address, then asks for the mobile as the last step and confirms provisionally). If `ANTHROPIC_API_KEY` is missing it falls back to keyword replies.
-4. When the client shares a number (either the register step or detected inline by `extractPhone`), the app: saves it to `chat_sessions`, mirrors a row to `enquiries`, and calls `notifyOwners`.
-5. `notifyOwners` sends a WhatsApp (via CallMeBot) to Parissa (and the owner, if `OWNER_*` env vars are set): "A potential client has just entered their phone number and the AI is chatting to them now. [details]. If the conversation finishes or they go cold, we'll let you know and you should call them right away."
-6. Everything is visible in `/admin`.
+2. The chat has **no phone-number gate**, but shows a one-tap **mobile capture bar** (`type=tel autocomplete=tel` → the phone offers the visitor's own number) until a number is saved. Numbers typed in chat are also captured inline (`extractPhone`).
+3. `app/api/chat/route.ts` generates replies with Claude (system prompt = warm, texts like Parissa, never says it's an AI; suggests coming to them first; gathers style + 60/90 minutes + day/time + address; asks for the mobile last if not captured). If `ANTHROPIC_API_KEY` is missing it falls back to keyword replies.
+4. **Google Calendar (once connected):** the AI is given Parissa's real free slots (next 7 days, from free/busy) and only offers those times. When the client agrees all details it calls the `book_appointment` tool → event written to her calendar, the lead auto-marked `booked` in enquiries, and Parissa WhatsApp'd "Confirmed booking ✅". Not connected → provisional bookings as before.
+5. On number capture: saved to `chat_sessions`, mirrored to `enquiries`, and `notifyOwners` WhatsApps Parissa (and owner if `OWNER_*` set) with the transcript so far.
+6. **Conversation end:** when the visitor closes the page (widget `pagehide` beacon → `type:"left"`) or goes quiet 15+ min (sweep piggybacked on chat traffic + daily cron), Parissa gets the FINAL transcript once: "They've left the chat 📞 Call this lead now." (`closed_notified_at` guards double-sends.)
+7. Everything is visible in `/admin`, which also shows Google Calendar connection status + connect button.
 
 ---
 
@@ -146,6 +154,11 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 7. Header nav wired: Treatments → /treatments; Services menu lists all six pages (desktop + mobile).
 8. **Booked toggle** in `/admin` (Mark booked / Undo booked per enquiry + booked count in the header). `admin/page.tsx`, `admin/actions.ts`, `updateEnquiryStatus` in `db.ts`.
 9. **Daily email report** (today's leads/bookings + rolling 7-day cost per lead / cost per booking + SCALE/HOLD/CUT recommendation) via `/api/report` + Vercel Cron, emailed with Resend once `RESEND_API_KEY` is set. `lib/report.ts`, `api/report/route.ts`, `vercel.json`.
+10. **AI chat fixed** — default model was retired (`claude-3-5-haiku-latest` → 404 since 19 Feb 2026, silent keyword fallback); now `claude-haiku-4-5`.
+11. **One-tap mobile capture bar** in the chat widget + **final-transcript notification** when the visitor leaves (beacon) or goes cold (sweep). `chat-widget.tsx`, `lib/notify.ts`, `db.ts`.
+12. **Google Calendar direct booking** — availability injected into the AI, `book_appointment` tool writes confirmed bookings to Parissa's calendar, auto-marks lead booked, WhatsApps her. Needs `GOOGLE_CLIENT_ID/SECRET` + one-time connect from /admin. `lib/gcal.ts`, `api/gcal/*`.
+13. **Couples massage page** (`/couples-massage-mallorca`, in the header Services menu) + `/treatments` H1 now "Massage Treatments in Mallorca".
+14. **GOOGLE-ADS.md** — full keyword-matched ad plan ready to paste into Google Ads.
 
 ---
 
@@ -154,14 +167,13 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 **Reporting & economics (highest near-term value)**
 - ~~Add a **"booked" toggle** in `/admin`~~ DONE — each enquiry card has a Mark booked / Undo booked button (`setBooked` in `admin/actions.ts`, sets `enquiries.status = 'booked'`).
 - ~~**Daily email report**~~ BUILT, needs activation: `/api/report` + `lib/report.ts` compute today's leads/bookings plus rolling 7-day ad spend (est.), cost per lead, cost per booking and a SCALE/HOLD/CUT recommendation vs the ~€35 margin; Vercel Cron fires it daily at 18:00 UTC = 8pm Mallorca in summer, 7pm in winter (cron is UTC; adjust `vercel.json` in late October if the owner cares). **To activate: set `RESEND_API_KEY` in Vercel and redeploy.** Preview any time by opening `/api/report?send=0` while signed into `/admin`.
-- "Go cold" nudge: scheduled job (Vercel Cron) that finds a captured lead with no client reply for ~15 min and pings the owner to call. Not built.
+- ~~"Go cold" nudge~~ DONE — page-close beacon + 15-min sweep send Parissa the final transcript (see section 7).
 
 **Notifications / reliability**
 - Replace CallMeBot with a reliable channel (email digest now; paid WhatsApp / transactional email later). To turn on the owner's alert now: set `OWNER_WHATSAPP` + `OWNER_CALLMEBOT_APIKEY` and redeploy.
 
 **Google Ads**
-- Rebuild keyword strategy (broad match + negatives; pause generic broad terms).
-- Themed ad groups + RSA headlines/descriptions per service page. Do NOT claim "voted best on Reddit" unless genuinely true (false-advertising / disapproval risk).
+- ~~Rebuild keyword strategy + themed ad groups~~ PLAN WRITTEN — see `GOOGLE-ADS.md` (7 ad groups mapped 1:1 to service pages, RSA copy pre-validated for the 30/90 char limits, shared negatives, rollout checklist). **To activate: paste it into the Google Ads account** (no API access from code). Do NOT claim "voted best on Reddit" unless genuinely true (false-advertising / disapproval risk).
 
 **Website**
 - Thread "Parissa & Friends" branding through site + chat; fix any "Paris Elizabeth" → Parissa in the About section.

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { getEnquiries, getConversations } from "@/lib/db"
+import { getEnquiries, getConversations, ensureChatSchema } from "@/lib/db"
+import { gcalConfigured, gcalConnected } from "@/lib/gcal"
 import { isAuthed, logout, setBooked } from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
 
@@ -50,9 +51,11 @@ export default async function AdminPage() {
     )
   }
 
-  const [enquiries, conversations] = await Promise.all([
+  await ensureChatSchema().catch(() => {})
+  const [enquiries, conversations, calendarConnected] = await Promise.all([
     getEnquiries(),
     getConversations().catch(() => []),
+    gcalConnected().catch(() => false),
   ])
 
   return (
@@ -79,6 +82,30 @@ export default async function AdminPage() {
               Sign out
             </button>
           </form>
+        </div>
+
+        {/* --- Google Calendar status --- */}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              Google Calendar {calendarConnected ? "· connected ✓" : "· not connected"}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {calendarConnected
+                ? "The chat AI reads Parissa's availability and books confirmed appointments straight into her calendar."
+                : gcalConfigured()
+                  ? "Connect Parissa's Google account so the AI can see her availability and book directly."
+                  : "Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Vercel first, then connect here."}
+            </p>
+          </div>
+          {!calendarConnected && gcalConfigured() ? (
+            <a
+              href="/api/gcal/auth"
+              className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+            >
+              Connect calendar
+            </a>
+          ) : null}
         </div>
 
         {/* --- Chat conversations --- */}

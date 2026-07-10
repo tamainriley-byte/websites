@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { buildDailyDigest, sendReportEmail } from "@/lib/report"
+import { sweepColdLeads } from "@/lib/notify"
 import { isAuthed } from "@/app/admin/actions"
 
 export const dynamic = "force-dynamic"
@@ -21,6 +22,9 @@ export async function GET(request: Request) {
   }
 
   try {
+    // Backstop for the go-cold notifications (they mainly piggyback on chat
+    // traffic; this catches anything left over once a day).
+    sweepColdLeads().catch(() => {})
     const digest = await buildDailyDigest()
     const shouldSend = url.searchParams.get("send") !== "0"
     const emailed = shouldSend ? await sendReportEmail(digest) : false

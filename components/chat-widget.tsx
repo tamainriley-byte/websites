@@ -30,8 +30,15 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Msg[]>([])
   const [input, setInput] = useState("")
   const [sending, setSending] = useState(false)
+  const [phone, setPhone] = useState("")
+  const [phoneSaved, setPhoneSaved] = useState(false)
+  const [savingPhone, setSavingPhone] = useState(false)
   const sessionRef = useRef<string>("")
   const scrollRef = useRef<HTMLDivElement>(null)
+  const phoneSavedRef = useRef(false)
+  const hasChattedRef = useRef(false)
+  phoneSavedRef.current = phoneSaved
+  hasChattedRef.current = messages.some((m) => m.role === "user")
 
   // Init session id.
   useEffect(() => {
@@ -90,6 +97,7 @@ export function ChatWidget() {
         })
         const data = await res.json()
         if (cancelled) return
+        if (data.hasPhone) setPhoneSaved(true)
         if (Array.isArray(data.messages) && data.messages.length > 0) {
           setMessages(
             data.messages.map((m: { role: Msg["role"]; content: string }) => ({
@@ -116,6 +124,59 @@ export function ChatWidget() {
       behavior: "smooth",
     })
   }, [messages, sending])
+
+  // When the visitor leaves the page mid-conversation, tell the server so
+  // Parissa gets the final transcript straight away ("they've gone, call now").
+  useEffect(() => {
+    const onLeave = () => {
+      if (!hasChattedRef.current || !sessionRef.current) return
+      try {
+        navigator.sendBeacon(
+          "/api/chat",
+          new Blob(
+            [JSON.stringify({ type: "left", sessionId: sessionRef.current })],
+            { type: "application/json" },
+          ),
+        )
+      } catch {
+        // best effort only
+      }
+    }
+    window.addEventListener("pagehide", onLeave)
+    return () => window.removeEventListener("pagehide", onLeave)
+  }, [])
+
+  // One-tap number save. autocomplete="tel" lets the phone's keyboard offer
+  // the visitor's own number, so this is a single tap on mobile.
+  async function savePhone() {
+    const value = phone.trim()
+    if (!value || savingPhone) return
+    setSavingPhone(true)
+    const startedAt = Date.now()
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          type: "register",
+          sessionId: sessionRef.current,
+          phone: value,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setPhoneSaved(true)
+        if (data.reply) {
+          await humanPause(startedAt)
+          setMessages((m) => [...m, { role: "assistant", content: data.reply }])
+        }
+      }
+    } catch {
+      // leave the bar up so they can retry
+    } finally {
+      setSavingPhone(false)
+    }
+  }
 
   async function send() {
     const text = input.trim()
@@ -195,6 +256,35 @@ export function ChatWidget() {
                 <X className="size-5" aria-hidden="true" />
               </button>
             </div>
+
+            {/* One-tap number capture (hidden once saved) */}
+            {!phoneSaved && (
+              <div className="flex items-center gap-2 border-b border-black/5 bg-[#fff8e7] px-3 py-2">
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      savePhone()
+                    }
+                  }}
+                  placeholder="Your mobile, so Parissa can confirm"
+                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-3 py-1.5 text-sm outline-none focus:border-whatsapp"
+                />
+                <button
+                  type="button"
+                  onClick={savePhone}
+                  disabled={savingPhone || !phone.trim()}
+                  className="shrink-0 rounded-full bg-whatsapp px-3 py-1.5 text-xs font-medium text-whatsapp-foreground disabled:opacity-50"
+                >
+                  {savingPhone ? "Saving…" : "Save"}
+                </button>
+              </div>
+            )}
 
             {/* Messages */}
             <div

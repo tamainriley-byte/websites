@@ -7,9 +7,17 @@ import {
   setSessionMeta,
   createEnquiry,
   getSessionPhone,
+  markBookedByPhone,
+  pool,
   type ChatRole,
-  type ChatMessage,
 } from "@/lib/db"
+import { availabilityText, createBooking } from "@/lib/gcal"
+import {
+  sendOwnerWhatsApp,
+  notifyOwners,
+  notifyConversationEnded,
+  sweepColdLeads,
+} from "@/lib/notify"
 
 export const dynamic = "force-dynamic"
 
@@ -86,9 +94,10 @@ HOW YOU WRITE, match this closely
 - Your real tone sounds like: "Hello, it would be studio 🙏", "Ok I'm fully booked today and tomorrow, morning, afternoon or early evening Tuesday?", "In the studio there's only one table, but I can organise two therapists to come to you.", "Buenas días, what would you like to know?"
 
 WHAT YOU DO
-- The client has already shared their mobile number, so you never need to ask for it. Just be helpful and answer their questions warmly.
+- Be helpful and answer their questions warmly, then gently move towards booking them in.
 - Ask one easy follow-up if natural (where they're staying, their dates, the style they'd like).
 - Keep it flowing like a real conversation, one small step at a time.
+- Suggest coming to them first (villa, yacht or hotel), it's the nicest experience and most clients prefer it. Offer the studio as the alternative.
 
 FACTS YOU KNOW
 - Your studio is at ${STUDIO_ADDRESS}, in Calvià, right by Puerto Portals marina. It is about 10 minutes from Magaluf, 15 minutes from Palma and Santa Ponsa. Share the address freely when asked.
@@ -97,14 +106,15 @@ FACTS YOU KNOW
 - Facials and body contouring: facial treatments and facial reset, wood therapy (maderoterapia), lymphatic sculpting, pre-event sculpting.
 - Prices: home visit €120 for 60 min, €145 for 90 min. Studio €75 for 60 min, €125 for 90 min. For couples you bring a second therapist to their place.
 - You are not a doctor; for any medical concern suggest they check with theirs.
-- Never invent exact availability. Every booking is provisional until Parissa confirms it herself.
+- Never invent availability. Only state times as free when they appear in the availability list below; without that list, every booking is provisional until Parissa confirms it herself.
 
 HOW A BOOKING HAPPENS
 - Let them ask whatever they like first. Answer warmly and never demand their number before they have had their questions answered.
-- When they seem ready to book, or give you a day or time, gently gather three things across the chat: the treatment they would like, the day and rough time, and where they are staying (villa, hotel or yacht, and the area or address).
-- Once you have those, ask for their mobile number so you can confirm and pass it to Parissa. Ask naturally, once, as the last step.
-- When you have the number and the details, confirm provisionally in your own warm words. For example: "Perfect, I'll pencil you in for Saturday around 5pm at your villa in Portals and pass it straight to Parissa. Consider it booked, she'll message you very shortly to confirm the final details." Vary the wording every time and never use a dash.
-- If they gave their number earlier, thank them and keep helping, you do not need to ask again.`
+- When they seem ready to book, or give you a day or time, gently gather four things across the chat: the treatment or style they would like, whether they want 60 or 90 minutes (mention the price difference naturally), the day and rough time, and where they are staying (villa, hotel or yacht, and the area or address).
+- If you do not have their mobile number yet, ask for it so you can confirm and pass it to Parissa. Ask naturally, once, as the last step. If it was captured earlier, never ask again.
+- If you know Parissa's real availability (it will be listed below when connected), only ever offer times inside her free slots, and if their preferred time is taken suggest the nearest free ones.
+- When the booking details are all agreed and you have the book_appointment tool available, call it once to put the booking straight into Parissa's calendar, then confirm warmly, for example: "Perfect, you're booked in for Saturday at 5pm at your villa in Portals, 90 minutes of deep tissue. Parissa will message you shortly to say hello." Vary the wording every time and never use a dash.
+- If you cannot book directly (no tool available), confirm provisionally instead: "I'll pencil you in and Parissa will confirm very shortly." Never invent exact availability in that case.`
 
 // Warmer keyword fallback used only until an AI key is configured.
 // It actually answers the common questions and never loops the same line.
@@ -166,9 +176,52 @@ function fallbackReply(userText: string): string {
   return fallbacks[userText.length % fallbacks.length]
 }
 
+// The one tool the AI has: writing a confirmed booking into Parissa's
+// Google Calendar. Only offered when her calendar is connected AND the
+// client's number is captured.
+const BOOK_TOOL = {
+  name: "book_appointment",
+  description:
+    "Book a confirmed appointment in Parissa's calendar. Only call this once the client has clearly agreed the treatment, the date, the start time, the duration (60 or 90 minutes) and the location. Times are Mallorca local time.",
+  input_schema: {
+    type: "object",
+    properties: {
+      date: { type: "string", description: "Date as YYYY-MM-DD" },
+      start_time: { type: "string", description: "Start time as HH:MM, 24h, Mallorca time" },
+      duration_minutes: { type: "integer", enum: [60, 90] },
+      treatment: { type: "string", description: "The treatment, e.g. deep tissue massage" },
+      location: {
+        type: "string",
+        description: "Where: 'studio' or the villa/hotel/yacht and area or address",
+      },
+    },
+    required: ["date", "start_time", "duration_minutes", "treatment", "location"],
+  },
+} as const
+
+type ContentBlock = {
+  type: string
+  text?: string
+  id?: string
+  name?: string
+  input?: Record<string, unknown>
+}
+
+// Short in-memory cache so availability isn't re-fetched on every message.
+let availCache: { text: string | null; at: number } | null = null
+async function cachedAvailability(): Promise<string | null> {
+  if (availCache && Date.now() - availCache.at < 60_000) return availCache.text
+  const text = await availabilityText(7)
+  availCache = { text, at: Date.now() }
+  return text
+}
+
 // Calls Anthropic if ANTHROPIC_API_KEY is set; returns null on any failure.
+// Runs a small tool loop so the AI can write confirmed bookings into
+// Parissa's calendar when everything is agreed.
 async function generateReply(
   history: Array<{ role: ChatRole; content: string }>,
+  phone: string | null,
 ): Promise<string | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return null
@@ -176,77 +229,100 @@ async function generateReply(
   // 404 and the chat silently degrades to keyword fallbacks. Keep this on a
   // current model ID (claude-haiku-4-5 is the cheapest/fastest tier).
   const model = process.env.PARISSA_MODEL || "claude-haiku-4-5"
+
+  const availability = await cachedAvailability()
+  let system = SYSTEM_PROMPT
+  if (phone) {
+    system += `\n\nThe client's mobile number is already saved (${phone}). Never ask for it again.`
+  }
+  if (availability) {
+    system += `\n\nPARISSA'S REAL AVAILABILITY, next 7 days, Mallorca time (only offer times inside these free slots):\n${availability}`
+  }
+  const canBook = Boolean(phone && availability !== null)
+
+  let messages: Array<{ role: string; content: unknown }> = history.map(
+    (m) => ({ role: m.role, content: m.content }),
+  )
+
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 300,
-        system: SYSTEM_PROMPT,
-        messages: history.map((m) => ({ role: m.role, content: m.content })),
-      }),
-    })
-    if (!res.ok) {
-      console.error("[chat] Anthropic error", res.status, await res.text())
-      return null
+    // At most 2 tool round-trips as a safety stop.
+    for (let i = 0; i < 3; i++) {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 500,
+          system,
+          messages,
+          ...(canBook ? { tools: [BOOK_TOOL] } : {}),
+        }),
+      })
+      if (!res.ok) {
+        console.error("[chat] Anthropic error", res.status, await res.text())
+        return null
+      }
+      const data = (await res.json()) as {
+        stop_reason?: string
+        content?: ContentBlock[]
+      }
+      const blocks = data.content ?? []
+
+      if (data.stop_reason === "tool_use" && canBook && i < 2) {
+        const toolUse = blocks.find((b) => b.type === "tool_use")
+        if (!toolUse?.id) return null
+        const input = (toolUse.input ?? {}) as Record<string, unknown>
+        const result = await createBooking({
+          date: String(input.date ?? ""),
+          start_time: String(input.start_time ?? ""),
+          duration_minutes: Number(input.duration_minutes ?? 60),
+          treatment: String(input.treatment ?? "Massage"),
+          location: String(input.location ?? ""),
+          phone: phone as string,
+        })
+        if (result.startsWith("BOOKED")) {
+          // Confirmed booking: flip the lead to booked and tell Parissa.
+          markBookedByPhone(phone as string).catch((e) =>
+            console.error("[chat] markBooked failed", e),
+          )
+          sendOwnerWhatsApp(
+            `Confirmed booking ✅ ${result.replace("BOOKED: ", "")}\nClient: ${phone}\nIt's in your Google Calendar. Full chat: https://calmandcontour.com/admin`,
+          ).catch((e) => console.error("[chat] booking notify failed", e))
+          availCache = null // calendar changed
+        }
+        messages = [
+          ...messages,
+          { role: "assistant", content: blocks },
+          {
+            role: "user",
+            content: [
+              { type: "tool_result", tool_use_id: toolUse.id, content: result },
+            ],
+          },
+        ]
+        continue
+      }
+
+      const text = blocks
+        .filter((b) => b.type === "text" && b.text)
+        .map((b) => b.text as string)
+        .join("")
+        .trim()
+      return text || null
     }
-    const data = (await res.json()) as {
-      content?: Array<{ type: string; text?: string }>
-    }
-    const text = (data.content ?? [])
-      .filter((b) => b.type === "text" && b.text)
-      .map((b) => b.text as string)
-      .join("")
-      .trim()
-    return text || null
+    return null
   } catch (err) {
     console.error("[chat] Anthropic request failed", err)
     return null
   }
 }
 
-// Alerts the owners on WhatsApp the moment a client shares their number.
-// Sends to Parissa (PARISSA_WHATSAPP + CALLMEBOT_APIKEY) and, if configured,
-// to the owner too (OWNER_WHATSAPP + OWNER_CALLMEBOT_APIKEY). CallMeBot is the
-// free bridge; each recipient needs their own apikey. Skips silently if unset.
-async function notifyOwners(
-  phone: string,
-  name: string | null,
-  history: ChatMessage[],
-) {
-  const recipients = [
-    { to: process.env.PARISSA_WHATSAPP, key: process.env.CALLMEBOT_APIKEY },
-    { to: process.env.OWNER_WHATSAPP, key: process.env.OWNER_CALLMEBOT_APIKEY },
-  ].filter((r) => r.to && r.key) as Array<{ to: string; key: string }>
-  if (recipients.length === 0) return
-
-  const transcript = history
-    .map((m) => `${m.role === "user" ? "Client" : "Parissa"}: ${m.content}`)
-    .join("\n")
-  const message =
-    `New lead 🌿 A potential client has just entered their phone number and the AI is chatting to them now.\n\n` +
-    `Mobile: ${phone}${name ? `\nName: ${name}` : ""}\n\n` +
-    `Chat so far:\n${transcript || "(no messages yet)"}\n\n` +
-    `If the conversation finishes or they go cold, we'll let you know and you should call them right away.`
-
-  await Promise.all(
-    recipients.map(async (r) => {
-      const url =
-        `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(r.to)}` +
-        `&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(r.key)}`
-      try {
-        await fetch(url)
-      } catch (err) {
-        console.error("[chat] WhatsApp notify failed", err)
-      }
-    }),
-  )
-}
+// Owner notifications (new-lead ping, final transcript, cold sweep) live in
+// lib/notify.ts so the report cron can reuse them.
 
 /* ------------------------------------------------------------------ */
 /*  Route                                                             */
@@ -265,8 +341,32 @@ export async function POST(request: Request) {
     await ensureChatSchema()
 
     if (type === "history") {
-      const messages = await getChatHistory(sessionId)
-      return NextResponse.json({ messages })
+      const [messages, phone] = await Promise.all([
+        getChatHistory(sessionId),
+        getSessionPhone(sessionId),
+      ])
+      return NextResponse.json({ messages, hasPhone: Boolean(phone) })
+    }
+
+    // Beacon from the widget: the visitor closed the page mid-conversation.
+    // If we have their number, send Parissa the final transcript now.
+    if (type === "left") {
+      const r = await pool.query<{
+        session_id: string
+        phone: string | null
+        name: string | null
+        city: string | null
+        country: string | null
+      }>(
+        `SELECT session_id, phone, name, city, country
+         FROM chat_sessions WHERE session_id = $1`,
+        [sessionId],
+      )
+      const session = r.rows[0]
+      if (session?.phone) {
+        await notifyConversationEnded(session, "left")
+      }
+      return NextResponse.json({ ok: true })
     }
 
     // Record where they came from (first-touch) for message + register.
@@ -318,29 +418,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Empty message." }, { status: 400 })
     }
 
+    // Opportunistic sweep: any chat traffic also checks for other leads
+    // that went cold, since Hobby-plan crons only run daily.
+    sweepColdLeads().catch(() => {})
+
     await saveChatMessage(sessionId, "user", text)
 
     // If they share a mobile number in chat and we have not captured one yet,
     // grab it, mirror it to enquiries and alert the owners with the transcript.
+    let phone = await getSessionPhone(sessionId)
     const shared = extractPhone(text)
-    if (shared) {
+    if (shared && !phone) {
       try {
-        const existing = await getSessionPhone(sessionId)
-        if (!existing) {
-          await registerChatClient(sessionId, shared, null)
-          const sofar = await getChatHistory(sessionId)
-          const summary = sofar
-            .filter((m) => m.role === "user")
-            .map((m) => m.content)
-            .slice(-6)
-            .join(" | ")
-          try {
-            await createEnquiry(shared, `[Chat] ${summary}`)
-          } catch (e) {
-            console.error("[chat] enquiry mirror failed", e)
-          }
-          await notifyOwners(shared, null, sofar)
+        await registerChatClient(sessionId, shared, null)
+        phone = shared
+        const sofar = await getChatHistory(sessionId)
+        const summary = sofar
+          .filter((m) => m.role === "user")
+          .map((m) => m.content)
+          .slice(-6)
+          .join(" | ")
+        try {
+          await createEnquiry(shared, `[Chat] ${summary}`)
+        } catch (e) {
+          console.error("[chat] enquiry mirror failed", e)
         }
+        await notifyOwners(shared, null, sofar)
       } catch (e) {
         console.error("[chat] inline capture failed", e)
       }
@@ -349,7 +452,7 @@ export async function POST(request: Request) {
     const history = await getChatHistory(sessionId)
     const llmHistory = history.map((m) => ({ role: m.role, content: m.content }))
 
-    let reply = await generateReply(llmHistory)
+    let reply = await generateReply(llmHistory, phone)
     if (!reply) reply = fallbackReply(text)
 
     await saveChatMessage(sessionId, "assistant", reply)

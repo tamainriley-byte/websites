@@ -17,6 +17,7 @@ const services = [
   { label: "Yacht Massage", href: "/yacht-massage-mallorca" },
   { label: "Massage Near Me", href: "/massage-near-me" },
   { label: "Massage in Palma", href: "/massage-palma" },
+  { label: "Couples Massage", href: "/couples-massage-mallorca" },
   { label: "All Treatments", href: "/treatments" },
 ]
 

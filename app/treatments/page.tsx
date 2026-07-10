@@ -56,7 +56,7 @@ export default function Page() {
             Mallorca · Studio &amp; Mobile
           </p>
           <h1 className="mt-4 text-balance font-serif text-4xl font-medium leading-tight md:text-6xl">
-            Treatments
+            Massage Treatments in Mallorca
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-cream/85">
             Massage, facials and body contouring, at the studio in Portals Nous or

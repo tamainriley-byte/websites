@@ -152,6 +152,19 @@ export function ensureChatSchema() {
       await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS city TEXT;`)
       await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS device TEXT;`)
       await pool.query(`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS referer TEXT;`)
+      // Set when Parissa has been sent the FINAL transcript (visitor left or
+      // went cold) so she's only pinged once per conversation.
+      await pool.query(
+        `ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS closed_notified_at TIMESTAMPTZ;`,
+      )
+      // Small key/value store (Google Calendar refresh token, etc.).
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS app_settings (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+      `)
     })().catch((err) => {
       // Reset so a later call can retry.
       schemaReady = null
@@ -246,6 +259,74 @@ export async function getSessionPhone(
     [sessionId],
   )
   return r.rows[0]?.phone ?? null
+}
+
+/* ------------------------------------------------------------------ */
+/*  App settings (key/value)                                          */
+/* ------------------------------------------------------------------ */
+
+export async function getSetting(key: string): Promise<string | null> {
+  const r = await pool.query<{ value: string }>(
+    `SELECT value FROM app_settings WHERE key = $1`,
+    [key],
+  )
+  return r.rows[0]?.value ?? null
+}
+
+export async function setSetting(key: string, value: string) {
+  await pool.query(
+    `INSERT INTO app_settings (key, value, updated_at)
+     VALUES ($1, $2, now())
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+    [key, value],
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Cold / finished conversation detection                            */
+/* ------------------------------------------------------------------ */
+
+// Captured leads (phone on file) whose conversation has gone quiet and who
+// haven't had a final-transcript notification yet.
+export async function findColdSessions(minutes = 15): Promise<ChatSession[]> {
+  const r = await pool.query<ChatSession>(
+    `SELECT session_id, phone, name, ip, country, city, device, referer,
+            created_at, last_at
+     FROM chat_sessions
+     WHERE phone IS NOT NULL
+       AND closed_notified_at IS NULL
+       AND last_at < now() - ($1 || ' minutes')::interval
+       AND session_id IN (
+         SELECT DISTINCT session_id FROM chat_messages WHERE role = 'user'
+       )`,
+    [minutes],
+  )
+  return r.rows
+}
+
+// Returns true if this call claimed the notification (guards double-sends
+// when the beacon and the sweep race each other).
+export async function claimClosedNotification(
+  sessionId: string,
+): Promise<boolean> {
+  const r = await pool.query(
+    `UPDATE chat_sessions SET closed_notified_at = now()
+     WHERE session_id = $1 AND closed_notified_at IS NULL AND phone IS NOT NULL`,
+    [sessionId],
+  )
+  return (r.rowCount ?? 0) > 0
+}
+
+// Marks the latest enquiry for this phone as booked (used when the AI writes
+// a confirmed booking into the calendar).
+export async function markBookedByPhone(phone: string) {
+  await pool.query(
+    `UPDATE enquiries SET status = 'booked'
+     WHERE id = (
+       SELECT id FROM enquiries WHERE phone = $1 ORDER BY created_at DESC LIMIT 1
+     )`,
+    [phone],
+  )
 }
 
 export type Conversation = ChatSession & {
