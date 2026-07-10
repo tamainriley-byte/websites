@@ -51,7 +51,7 @@ You need the env vars below (a `.env.local`) for the DB and AI chat to work loca
 ## 4. Environment variables (Vercel project `websites`)
 
 - `ADMIN_PASSWORD` = Mallorcamassage
-- `ANTHROPIC_API_KEY` = (set) — powers the AI chat. Model defaults to `claude-3-5-haiku-latest`, override with `PARISSA_MODEL`.
+- `ANTHROPIC_API_KEY` = (set) — powers the AI chat. Model defaults to `claude-haiku-4-5`, override with `PARISSA_MODEL`. (Was `claude-3-5-haiku-latest`, which Anthropic retired 19 Feb 2026 — the chat silently fell back to keyword replies until fixed on 10 Jul 2026. If the chat ever "goes robotic" again, check the model ID is still current.)
 - `DATABASE_URL` (+ the Neon/Postgres vars Vercel added) — Neon Postgres.
 - `PARISSA_WHATSAPP` = 34602020734 — Parissa's number for lead alerts.
 - `CALLMEBOT_APIKEY` = 2536053 — Parissa's CallMeBot key (free WhatsApp bridge; UNRELIABLE, see gotchas).
