@@ -30,7 +30,8 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Bendinat", "Andratx", "Alcúdia", "Pollensa", "Calvià", "Mallorca",
+    "Bendinat", "Andratx", "Alcúdia", "Pollensa", "Calvià", "El Arenal",
+    "Paguera", "Can Picafort", "Playa de Muro", "Cala d'Or", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",
@@ -48,10 +49,12 @@ const jsonLd = {
   },
 }
 
+// Ordered to match what people actually search (Google Ads search terms).
 const areas = [
-  "Portals Nous", "Puerto Portals", "Bendinat", "Palma", "Santa Ponsa",
-  "Magaluf", "Palmanova", "Andratx", "Port d'Andratx", "Camp de Mar",
-  "Alcúdia", "Pollensa", "Cala d'Or", "Calvià",
+  "Palma", "El Arenal", "Magaluf", "Palmanova", "Santa Ponsa", "Paguera",
+  "Portals Nous", "Puerto Portals", "Bendinat", "Calvià", "Andratx",
+  "Port d'Andratx", "Camp de Mar", "Alcúdia", "Can Picafort",
+  "Playa de Muro", "Pollensa", "Cala d'Or",
 ]
 
 const faqs = [
@@ -65,7 +68,7 @@ const faqs = [
   },
   {
     q: "Which areas do you cover?",
-    a: "The whole island. Most visits are around Portals, Palma, Santa Ponsa, Magaluf, Andratx and the north around Alcúdia and Pollensa. If you are elsewhere, just ask.",
+    a: "The whole island. In the southwest: Palma, El Arenal, Magaluf, Santa Ponsa, Paguera, Portals and Andratx. In the north and east: Alcúdia, Can Picafort, Playa de Muro, Pollensa and Cala d'Or. If you are elsewhere, just ask.",
   },
   {
     q: "How much does it cost?",

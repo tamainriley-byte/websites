@@ -30,7 +30,8 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Andratx", "Alcúdia", "Pollensa", "Calvià", "Mallorca",
+    "Andratx", "Alcúdia", "Pollensa", "Calvià", "El Arenal", "Paguera",
+    "Can Picafort", "Playa de Muro", "Cala d'Or", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",
@@ -150,9 +151,10 @@ export default function Page() {
           Areas we cover
         </h2>
         <p className="mt-5 leading-relaxed text-muted-foreground">
-          We travel across Mallorca, with most visits to Portals Nous, Puerto
-          Portals, Palma, Santa Ponsa, Magaluf, Bendinat, Andratx, Alcúdia and
-          Pollensa. If you are staying somewhere else on the island, just ask.
+          We travel across Mallorca: Palma, El Arenal, Magaluf, Santa Ponsa,
+          Paguera, Portals, Bendinat and Andratx in the southwest, and Alcúdia,
+          Can Picafort, Playa de Muro, Pollensa and Cala d&apos;Or in the north
+          and east. If you are staying somewhere else on the island, just ask.
         </p>
         <div className="mt-8 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">

@@ -158,6 +158,35 @@ let Google rotate. Use sitelinks to the other service pages.
 - Tell us how you want to feel afterwards and the session is built around you.
 - Facials and body contouring too: wood therapy, lymphatic sculpting and more.
 
+## 8. Town Searches → `/massage-near-me` ⭐ DATA-DRIVEN
+
+Built from the account's real search terms (10 Jul 2026): people search **"massage +
+their town"**, heavily north/east coast resorts. This group catches them all, and the
+first headline echoes the exact town they typed.
+
+**Keywords (broad):** massage magaluf · massage el arenal · massage alcudia · massage can picafort · massage playa de muro · massage pollensa · massage paguera · massage peguera · massage cala d'or · massage port andratx · massage santa ponsa · massage palmanova · massage cala millor · massage porto cristo · massage soller
+
+**Headlines**
+- {KeyWord:Massage In Mallorca}  ← dynamic: shows the searched town, e.g. "Massage Alcudia"
+- We Come To Your Hotel
+- Anywhere On The Island
+- North & East Coast Covered
+- Same-Day Where Possible
+- From €120 · At Your Place
+- Table & Oils Brought To You
+- Qualified Local Therapist
+
+**Descriptions**
+- Alcúdia, Can Picafort, Playa de Muro, Pollensa, Cala d'Or, Paguera and across Mallorca.
+- Mobile massage to your hotel, villa or yacht. The full setup comes to you, from €120.
+- No spa trip needed. Message us your town and we'll confirm your time in minutes.
+- Swedish, deep tissue, sports and lymphatic drainage, tailored to you.
+
+> Also seen in real searches: "lymphatic drainage massage" and "maderoterapia palma" —
+> add both as keywords to **ad group 7 (Treatment Styles)**: `lymphatic drainage massage
+> mallorca` · `maderoterapia palma` · `maderoterapia mallorca` · `wood therapy massage
+> mallorca`. They're her signature treatments with zero competition bidding on them.
+
 ---
 
 ## Shared negative keyword list (apply at campaign level)
@@ -175,7 +204,9 @@ that doesn't convert.
 
 ## Rollout checklist
 
-1. In the campaign, create the 7 ad groups above; move/add keywords as broad match.
+1. In the campaign, create the 8 ad groups above; move/add keywords as broad match.
+   **If you only do one, do #8 (Town Searches) — it's built from the account's real
+   search-term data.**
 2. One Responsive Search Ad per group using the headlines/descriptions verbatim
    (they're within the 30/90 character limits).
 3. Set each ad's **final URL** to its mapped service page (not the homepage).
