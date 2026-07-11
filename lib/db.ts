@@ -171,6 +171,15 @@ export function ensureChatSchema() {
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
       `)
+      // One-time cleanup: the first bot version replied with canned lines
+      // pointing people at WhatsApp; they linger in saved histories and
+      // replay when a visitor re-opens the chat. Remove them everywhere.
+      await pool.query(
+        `DELETE FROM chat_messages
+         WHERE role = 'assistant'
+           AND (content LIKE '%Can you WhatsApp me on +34602020734%'
+             OR content LIKE '%drop your mobile number here so I can confirm everything personally%')`,
+      )
     })().catch((err) => {
       // Reset so a later call can retry.
       schemaReady = null

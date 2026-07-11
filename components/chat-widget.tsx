@@ -8,7 +8,7 @@ type Msg = { role: "user" | "assistant"; content: string }
 const SESSION_KEY = "cc_chat_session"
 
 const GREETING =
-  "Hi, I'm Parissa 🌿 Ask me anything about the massage, prices or areas, or just tell me where you're staying and what you'd like and I'll get you booked in."
+  "Hi, I'm Parissa 🌿 Pop your mobile number in below to start, then ask me anything about the massage, prices or areas and I'll get you booked in."
 
 function newSessionId() {
   return (
@@ -58,12 +58,24 @@ export function ChatWidget() {
 
   const openChat = useCallback(() => setOpen(true), [])
 
-  // The green WhatsApp buttons go straight to real WhatsApp (that channel
-  // converts, don't intercept it — cutting it tanked leads in July 2026).
-  // This on-site chat is an ADDITIONAL path via the floating bubble only.
+  // OWNER DECISION (11 Jul 2026): every green button opens THIS chat — the
+  // number gate, working AI and direct calendar booking make it the funnel.
+  // The Google Ads conversion onClick fires before we keep them here.
   useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null
+      const link = target?.closest?.(
+        'a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href*="web.whatsapp.com"]',
+      ) as HTMLAnchorElement | null
+      if (link) {
+        e.preventDefault()
+        openChat()
+      }
+    }
+    document.addEventListener("click", handler)
     window.addEventListener("open-parissa-chat", openChat as EventListener)
     return () => {
+      document.removeEventListener("click", handler)
       window.removeEventListener("open-parissa-chat", openChat as EventListener)
     }
   }, [openChat])

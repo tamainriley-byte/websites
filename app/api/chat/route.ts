@@ -408,8 +408,7 @@ export async function POST(request: Request) {
       // Alert Parissa (and the owner) on WhatsApp.
       await notifyOwners(phone, name, history)
 
-      const confirm =
-        "Lovely, thank you 🙏 I've got your number and I'll message you personally very shortly. Meanwhile, where are you staying and what would you like?"
+      const confirm = "Lovely, thank you 🙏 How can I help you?"
       await saveChatMessage(sessionId, "assistant", confirm)
       return NextResponse.json({ ok: true, reply: confirm })
     }
