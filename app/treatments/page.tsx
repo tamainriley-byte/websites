@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Treatments | Massage, Facials & Body Contouring in Mallorca | Calm & Contour",
   description:
-    "Our treatments in Mallorca: Swedish, deep tissue, aromatherapy, hot stone, lymphatic drainage, prenatal and sports massage, plus facials and body contouring. Studio or mobile to your villa, yacht or hotel. From €85.",
+    "Our treatments in Mallorca: Swedish, deep tissue, aromatherapy, hot stone, lymphatic drainage, prenatal and sports massage, plus facials and body contouring. Studio or mobile to your villa, yacht or hotel. From €90.",
   alternates: { canonical: "https://www.calmandcontour.com/treatments" },
   openGraph: {
     title: "Treatments | Calm & Contour Mallorca",
@@ -173,15 +173,17 @@ export default function Page() {
           <div className="rounded-2xl border border-border bg-card p-6">
             <span className="font-serif text-xl text-foreground">Studio, Portals Nous</span>
             <ul className="mt-4 space-y-2 text-muted-foreground">
-              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€85</span></li>
-              <li className="flex justify-between"><span>90 minutes</span><span className="text-foreground">€135</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€90</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>90 minutes</span><span className="text-foreground">€135</span></li>
+              <li className="flex justify-between"><span>120 minutes</span><span className="text-foreground">€180</span></li>
             </ul>
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <span className="font-serif text-xl text-foreground">Mobile, to you</span>
             <ul className="mt-4 space-y-2 text-muted-foreground">
               <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€130</span></li>
-              <li className="flex justify-between"><span>90 minutes</span><span className="text-foreground">€155</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>90 minutes</span><span className="text-foreground">€155</span></li>
+              <li className="flex justify-between"><span>120 minutes</span><span className="text-foreground">€180</span></li>
             </ul>
           </div>
         </div>

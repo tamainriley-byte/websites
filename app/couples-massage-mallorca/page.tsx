@@ -55,7 +55,7 @@ const faqs = [
   },
   {
     q: "How much is a couples massage?",
-    a: "€130 per person for 60 minutes or €155 per person for 90 minutes, so €260 or €310 for two, with the full setup brought to you anywhere in Mallorca.",
+    a: "€130 per person for 60 minutes, €155 for 90 or €180 for 120, so €260, €310 or €360 for two, with the full setup brought to you anywhere in Mallorca.",
   },
   {
     q: "Can we choose different massage styles?",
@@ -161,9 +161,13 @@ export default function Page() {
               <span>60 minutes · two people</span>
               <span className="text-foreground">€260 (€130 pp)</span>
             </li>
-            <li className="flex justify-between">
+            <li className="flex justify-between border-b border-border/60 pb-2">
               <span>90 minutes · two people</span>
               <span className="text-foreground">€310 (€155 pp)</span>
+            </li>
+            <li className="flex justify-between">
+              <span>120 minutes · two people</span>
+              <span className="text-foreground">€360 (€180 pp)</span>
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">

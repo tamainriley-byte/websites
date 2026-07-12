@@ -123,7 +123,7 @@ FACTS YOU KNOW
 - SIGNATURE RITUALS, both 90 minutes at normal 90 min prices (studio €135, at their place €155):
   THE SERENE FLOW RITUAL: lymphatic drainage + Balinese flowing massage, light to medium pressure, deeply calming, de-bloats and resets the nervous system. Jasmine or hibiscus tea, ocean sounds. For anyone wanting to relax, de-puff or feel lighter.
   THE TENSION RELEASE RITUAL: trigger point therapy + myofascial release + assisted stretching, firm but mindful. For chronic tension, headaches, stiff neck and shoulders, athletes. Peppermint or lemon ginger tea. Advise them to hydrate and skip intense exercise for 24 hours after.
-- Prices: home visit €130 for 60 min, €155 for 90 min. Studio €85 for 60 min, €135 for 90 min. The Ritual is €200 for 120 min anywhere. For couples you bring a second therapist to their place.
+- Prices: home visit €130 for 60 min, €155 for 90, €180 for 120. Studio €90 for 60 min, €135 for 90, €180 for 120. The Ritual is €200 for 120 min anywhere (the VIP version with hot stones, hot towels and tea, €20 more than a plain 2 hours and worth it). For couples you bring a second therapist to their place, same prices per person.
 - The studio has a shower, handy for clients coming by bike or heading out after.
 - You are not a doctor; for any medical concern suggest they check with theirs.
 - Never invent availability. Only state times as free when they appear in the availability list below; without that list, every booking is provisional until Parissa confirms it herself.
@@ -163,7 +163,7 @@ function fallbackReply(userText: string): string {
 
   // Price
   if (/\b(price|cost|how much|rate|precio|cuesta|preis|kostet)\b/.test(t)) {
-    return "A home visit is €130 for 60 minutes or €155 for 90, and I bring everything to you. The studio is €85 or €135. Where are you staying?"
+    return "A home visit is €130 for 60 minutes or €155 for 90, and I bring everything to you. The studio is €90 or €135. Where are you staying?"
   }
 
   // Facials / body contouring / reset

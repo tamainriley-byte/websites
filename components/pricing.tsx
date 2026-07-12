@@ -32,6 +32,11 @@ const plans: Plan[] = [
         price: "€155",
         service: "90 min VIP home service massage",
       },
+      {
+        duration: "120 min",
+        price: "€180",
+        service: "120 min VIP home service massage",
+      },
     ],
   },
   {
@@ -43,8 +48,9 @@ const plans: Plan[] = [
       "Lymphatic drainage available",
     ],
     options: [
-      { duration: "60 min", price: "€85", service: "60 min studio massage" },
+      { duration: "60 min", price: "€90", service: "60 min studio massage" },
       { duration: "90 min", price: "€135", service: "90 min studio massage" },
+      { duration: "120 min", price: "€180", service: "120 min studio massage" },
     ],
   },
 ]

@@ -164,9 +164,12 @@ export default function Page() {
             <li className="flex justify-between">
               <span>90 minutes</span><span className="text-foreground">€155</span>
             </li>
+            <li className="flex justify-between">
+              <span>120 minutes</span><span className="text-foreground">€180</span>
+            </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
-            Studio treatments in Portals Nous from €85. Couples treated side by side with a second therapist.
+            Studio treatments in Portals Nous from €90. Couples treated side by side with a second therapist.
           </p>
           <a
             href={WA}

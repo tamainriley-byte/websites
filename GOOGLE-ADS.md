@@ -149,12 +149,12 @@ let Google rotate. Use sitelinks to the other service pages.
 - Lymphatic Drainage Mallorca
 - Prenatal Massage Available
 - Studio Or Mobile To You
-- Studio From €85 · 60 Min
+- Studio From €90 · 60 Min
 - Tailored To How You Feel
 
 **Descriptions**
 - Swedish, deep tissue, sports, hot stone, lymphatic drainage and prenatal massage.
-- At the Portals Nous studio from €85, or brought to you across Mallorca from €130.
+- At the Portals Nous studio from €90, or brought to you across Mallorca from €130.
 - Tell us how you want to feel afterwards and the session is built around you.
 - Facials and body contouring too: wood therapy, lymphatic sculpting and more.
 
@@ -194,14 +194,14 @@ in the account's real search terms with basically nobody bidding on them.
 - De-Bloat, Define, Recover
 - Specialist Therapist
 - Post-Flight Leg Rescue
-- Studio From €85 · 60 Min
+- Studio From €90 · 60 Min
 - Or We Come To You · €130
 - Maderoterapia Available
 - Popular Before Events
 
 **Descriptions**
 - Signature lymphatic drainage by specialist Parissa. De-bloat, define and recover.
-- Studio in Portals Nous from €85, or brought to your villa, hotel or yacht from €130.
+- Studio in Portals Nous from €90, or brought to your villa, hotel or yacht from €130.
 - Feel lighter after one session. Popular before events, beach days and after flights.
 - Pairs beautifully with wood therapy (maderoterapia) and lymphatic sculpting.
 
@@ -209,7 +209,7 @@ in the account's real search terms with basically nobody bidding on them.
 
 Owner call (11 Jul): push the studio. **Raise the campaign daily budget from €25 to
 €30** — the extra €5/day rides with this group and #9 (both land on studio pricing).
-Studio-intent searches were previously treated as wrong-fit; with studio at €85 they're
+Studio-intent searches were previously treated as wrong-fit; with studio at €90 they're
 now profitable traffic. Keep the shared negatives (jobs/courses/chairs etc.).
 
 **Keywords (broad):** massage studio portals nous · massage studio calvia · massage portals nous · massage puerto portals · massage studio near palma · massage bendinat · massage costa den blanes
@@ -217,7 +217,7 @@ now profitable traffic. Keep the shared negatives (jobs/courses/chairs etc.).
 **Headlines**
 - Massage Studio Portals Nous
 - By Puerto Portals Marina
-- Studio From €85 · 60 Min
+- Studio From €90 · 60 Min
 - 10 Min From Magaluf
 - 15 Min From Palma
 - Shower Available
@@ -226,7 +226,7 @@ now profitable traffic. Keep the shared negatives (jobs/courses/chairs etc.).
 
 **Descriptions**
 - Boutique massage studio in Portals Nous, right by Puerto Portals marina.
-- €85 for 60 minutes, €135 for 90. Deep tissue, Swedish, lymphatic drainage and more.
+- €90 for 60 minutes, €135 for 90. Deep tissue, Swedish, lymphatic drainage and more.
 - Easy parking, shower available, 10 minutes from Magaluf and 15 from Palma.
 - Prefer to stay put? We also come to your villa, hotel or yacht from €130.
 

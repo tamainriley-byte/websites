@@ -60,7 +60,7 @@ const faqs = [
   },
   {
     q: "How much is a home visit?",
-    a: "A mobile home visit is €130 for 60 minutes or €155 for 90 minutes, with the full setup brought to you. Studio treatments are €85 and €135.",
+    a: "A mobile home visit is €130 for 60 minutes, €155 for 90 or €180 for 120, with the full setup brought to you. Studio treatments are €90, €135 and €180.",
   },
   {
     q: "Can you treat couples?",
@@ -165,8 +165,11 @@ export default function Page() {
             <li className="flex justify-between border-b border-border/60 pb-2">
               <span>60 minutes</span><span className="text-foreground">€130</span>
             </li>
-            <li className="flex justify-between">
+            <li className="flex justify-between border-b border-border/60 pb-2">
               <span>90 minutes</span><span className="text-foreground">€155</span>
+            </li>
+            <li className="flex justify-between">
+              <span>120 minutes</span><span className="text-foreground">€180</span>
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
