@@ -17,7 +17,6 @@ const services = [
   { label: "Yacht Massage", href: "/yacht-massage-mallorca" },
   { label: "Massage Near Me", href: "/massage-near-me" },
   { label: "Massage in Palma", href: "/massage-palma" },
-  { label: "Couples Massage", href: "/couples-massage-mallorca" },
   { label: "Lymphatic Drainage", href: "/lymphatic-drainage-mallorca" },
   { label: "The Ritual · VIP", href: "/ritual-massage-mallorca" },
   { label: "Serene Flow Ritual", href: "/serene-flow-ritual-mallorca" },

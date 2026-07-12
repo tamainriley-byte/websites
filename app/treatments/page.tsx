@@ -189,8 +189,8 @@ export default function Page() {
         </div>
         <p className="mt-6 text-sm text-muted-foreground">
           The Ritual (120 minutes, everything included) is €200 anywhere.
-          Couples and groups are treated side by side at your villa, hotel or
-          yacht with a second therapist. Just ask.
+          Booking for more than one person? Parissa treats you back to back
+          in the same visit. Just ask.
         </p>
       </div></section>
 

@@ -63,8 +63,8 @@ const faqs = [
     a: "A mobile home visit is €130 for 60 minutes, €155 for 90 or €180 for 120, with the full setup brought to you. Studio treatments are €90, €135 and €180.",
   },
   {
-    q: "Can you treat couples?",
-    a: "Yes. For two people Parissa brings a second therapist so you are treated side by side at your villa or hotel.",
+    q: "Can two of us have a massage?",
+    a: "Yes, one after the other. Parissa treats you back to back in the same visit, so you both get her full attention without anyone travelling.",
   },
 ]
 
@@ -173,7 +173,7 @@ export default function Page() {
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
-            Full setup brought to you. Couples treated side by side with a second therapist.
+            Full setup brought to you. Two of you? Back to back sessions in the same visit.
           </p>
           <a
             href={WA}

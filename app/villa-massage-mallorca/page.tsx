@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Private Villa Massage Mallorca | Discreet In-Villa Spa | Calm & Contour",
   description:
-    "Discreet private massage at your villa in Mallorca. Qualified, insured, vetted therapists, NDA available for high-profile guests, couples and groups by arrangement. From €130.",
+    "Discreet private massage at your villa in Mallorca. Qualified, insured, vetted therapist, NDA available for high-profile guests. From €130.",
   alternates: { canonical: "https://www.calmandcontour.com/villa-massage-mallorca" },
   openGraph: {
     title: "Private Villa Massage Mallorca | Calm & Contour",
@@ -58,8 +58,8 @@ const faqs = [
     a: "Yes. Every therapist working under Parissa & Friends is fully qualified, insured and personally vetted by Parissa. You get the same standard whether it is Parissa herself or a member of her team.",
   },
   {
-    q: "Can you treat couples or a group at the villa?",
-    a: "Yes. For couples we bring a second therapist so you are treated side by side, and for larger groups, events, hen parties or birthdays we arrange multiple therapists so everyone is looked after at once.",
+    q: "Can more than one of us have a massage?",
+    a: "Yes, one after the other. Parissa treats each of you back to back in the same visit, so nobody has to travel and everyone gets her full attention.",
   },
   {
     q: "What do you bring, and where do you set up?",
@@ -67,7 +67,7 @@ const faqs = [
   },
   {
     q: "How much is a villa visit?",
-    a: "A private villa visit is €130 for 60 minutes or €155 for 90 minutes per person. Couples and groups are quoted on request. Just message us with your villa location and dates.",
+    a: "A private villa visit is €130 for 60 minutes, €155 for 90 or €180 for 120, per person. Just message us with your villa location and dates.",
   },
 ]
 
@@ -136,7 +136,7 @@ export default function Page() {
             {[
               { icon: ShieldCheck, t: "Discreet & confidential", d: "Used to private residences, families and high-profile guests. NDA signed on request, every booking kept private." },
               { icon: Sparkles, t: "Qualified & insured", d: "Every therapist under Parissa & Friends is fully qualified, insured and personally vetted, the same standard every visit." },
-              { icon: Users, t: "Couples & groups", d: "A second therapist for couples, and multiple therapists for events, hen parties and celebrations." },
+              { icon: Users, t: "More than one of you?", d: "Back to back treatments in the same visit, so everyone is looked after without leaving the villa." },
             ].map((s) => (
               <div key={s.t} className="text-center">
                 <s.icon className="mx-auto size-8 text-foreground" aria-hidden="true" />
@@ -174,7 +174,7 @@ export default function Page() {
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
-            Per person. Couples and groups quoted on request, with additional therapists arranged.
+            Per person. More than one of you? Back to back sessions in the same visit, just ask.
           </p>
           <a
             href={WA}

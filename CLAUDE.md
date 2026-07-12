@@ -15,7 +15,7 @@ _Last updated: 9 July 2026._
 - Promoted with Google Ads (Search).
 - WhatsApp for bookings: **+34 602 02 07 34**
 - Studio address: **Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca** (Calvià, by Puerto Portals; ~10 min Magaluf, ~15 min Palma).
-- Pricing (ladder set 11 Jul 2026; studio = €1.50/min): mobile €130/€155/€180 for 60/90/120 min. Studio €90/€135/€180. **The Ritual** (VIP, 120 min, warm oils + hot stones + hot towel rub down + herbal tea) €200 anywhere — 2-hour option ONLY, sits €20 above plain 120 min. Signature rituals (Serene Flow, Tension Release, 90 min) €135 studio / €155 mobile. Couples/groups side by side with a second therapist (per-person pricing).
+- Pricing (ladder set 11 Jul 2026; studio = €1.50/min): mobile €130/€155/€180 for 60/90/120 min. Studio €90/€135/€180. **The Ritual** (VIP, 120 min, warm oils + hot stones + hot towel rub down + herbal tea) €200 anywhere — 2-hour option ONLY, sits €20 above plain 120 min. Signature rituals (Serene Flow, Tension Release, 90 min) €135 studio / €155 mobile. COUPLES REMOVED 11 Jul 2026 (no second therapist available) — two people = back-to-back sessions, same per-person prices; /couples-massage-mallorca page deleted.
 
 **Business goal:** get more real leads into the team's hands and know the unit economics (cost per booking) so ad spend and team size can be scaled. Longer term, turn this into a booking + payment app (see Roadmap) and roll out city by city.
 
@@ -79,7 +79,6 @@ app/
   api/report/route.ts          Daily report endpoint (Vercel Cron, daily 18:00 UTC ≈ 8pm Mallorca) + cold-lead sweep backstop
   api/gcal/auth/route.ts       Starts Google Calendar OAuth (open while signed into /admin)
   api/gcal/callback/route.ts   OAuth callback, stores Parissa's refresh token
-  couples-massage-mallorca/    SEO service page (couples, side-by-side, two therapists)
   lymphatic-drainage-mallorca/ SEO service page (signature treatment, ad group 9)
   ritual-massage-mallorca/     SEO service page (The Ritual, 2h VIP €200, ad group 10 cross-sell)
   serene-flow-ritual-mallorca/ Signature ritual page (90m lymphatic + Balinese, €135 studio / €155 mobile)
@@ -161,7 +160,7 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 10. **AI chat fixed** — default model was retired (`claude-3-5-haiku-latest` → 404 since 19 Feb 2026, silent keyword fallback); now `claude-haiku-4-5`.
 11. **One-tap mobile capture bar** in the chat widget + **final-transcript notification** when the visitor leaves (beacon) or goes cold (sweep). `chat-widget.tsx`, `lib/notify.ts`, `db.ts`.
 12. **Google Calendar direct booking** — availability injected into the AI, `book_appointment` tool writes confirmed bookings to Parissa's calendar, auto-marks lead booked, WhatsApps her. Needs `GOOGLE_CLIENT_ID/SECRET` + one-time connect from /admin. `lib/gcal.ts`, `api/gcal/*`.
-13. **Couples massage page** (`/couples-massage-mallorca`, in the header Services menu) + `/treatments` H1 now "Massage Treatments in Mallorca".
+13. `/treatments` H1 now "Massage Treatments in Mallorca". (A couples page was added then removed same week — couples paused, no second therapist.)
 14. **GOOGLE-ADS.md** — full keyword-matched ad plan ready to paste into Google Ads.
 
 ---

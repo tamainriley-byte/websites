@@ -81,8 +81,8 @@ const faqs = [
     a: "Anywhere: your villa, yacht or hotel suite (Parissa brings everything, including the stones and tea), or at the studio in Portals Nous. The price is €200 either way.",
   },
   {
-    q: "Can two of us book it together?",
-    a: "Yes. For couples Parissa brings a second therapist so you experience The Ritual side by side, €200 per person.",
+    q: "Can two of us book it?",
+    a: "One after the other, yes. Parissa treats you back to back in the same visit, €200 each, so you can share the evening without sharing the table.",
   },
   {
     q: "When should I book it?",
@@ -171,8 +171,8 @@ export default function Page() {
             </ul>
             <p className="mt-4 text-sm text-muted-foreground">
               Includes warm aromatherapy oils, hot stones, heated towels, the
-              hot towel finish and herbal tea. Couples side by side with a
-              second therapist, €200 per person.
+              hot towel finish and herbal tea. Booking for two? Back to back
+              sessions in the same visit, €200 per person.
             </p>
             <a
               href={WA}

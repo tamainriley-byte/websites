@@ -1,7 +1,7 @@
 # Google Ads — keyword-matched ad plan
 
 Account **806-912-8725**, campaign **"Calm & Contour - Search"**. This plan replaces the
-single catch-all ad group with **ten themed ad groups**, each mapped 1:1 to a service
+single catch-all ad group with **nine themed ad groups**, each mapped 1:1 to a service
 page, so the searcher's keyword appears in the ad title and body, and the click lands on
 a page carrying the same message with a clear CTA (every green button opens the AI chat,
 which books directly into Parissa's calendar).
@@ -49,13 +49,12 @@ let Google rotate. Use sitelinks to the other service pages.
 - NDA Available On Request
 - Massage On Your Terrace
 - From €130 At Your Villa
-- Couples Side By Side
 - Full Setup Brought To You
 
 **Descriptions**
 - Discreet private massage at your villa in Mallorca. Vetted, insured therapists.
 - Full spa setup on your terrace: table, linens, oils. NDA for private guests.
-- €130 for 60 min, €155 for 90. Couples side by side with a second therapist.
+- €130 for 60 min, €155 for 90, €180 for 120. Full setup brought to your villa.
 - Tell us your villa's area and dates and we'll confirm your time in minutes.
 
 ## 3. Yacht Massage → `/yacht-massage-mallorca`
@@ -118,25 +117,7 @@ let Google rotate. Use sitelinks to the other service pages.
 - Staying in Palma? Get a tailored massage without leaving your room.
 - 15 minutes from our Portals Nous studio, easy same-day visits to Palma.
 
-## 6. Couples → `/couples-massage-mallorca` (new page, live)
-
-**Keywords (broad):** couples massage mallorca · couple massage palma · massage for two mallorca · couples spa mallorca · honeymoon massage mallorca
-
-**Headlines**
-- Couples Massage Mallorca
-- Side By Side For Two
-- Two Therapists, Two Tables
-- At Your Villa Or Hotel
-- €260 For Two · 60 Min
-- Romantic Holiday Treat
-- No Travel, You Both Relax
-- Book In Minutes On Chat
-
-**Descriptions**
-- Couples massage side by side at your villa, hotel or yacht. Two therapists, two tables.
-- €260 for two (60 min) or €310 (90 min) with the full setup brought to you.
-- Choose different styles each: Swedish for one, deep tissue for the other.
-- One relaxing hour together, anywhere in Mallorca. Book in minutes on chat.
+## 6. — removed 11 Jul 2026 (couples paused: no second therapist available; page deleted)
 
 ## 7. Treatment Styles → `/treatments`
 
@@ -247,14 +228,14 @@ that doesn't convert.
 
 ## Rollout checklist
 
-1. In the campaign, create the 10 ad groups above; move/add keywords as broad match.
+1. In the campaign, create the 9 ad groups above (skip #6); move/add keywords as broad match.
    **If you only do one, do #8 (Town Searches) — it's built from the account's real
    search-term data.**
 2. One Responsive Search Ad per group using the headlines/descriptions verbatim
    (they're within the 30/90 character limits).
 3. Set each ad's **final URL** to its mapped service page (not the homepage).
 4. Add the shared negative list at campaign level.
-5. Add sitelink assets: Treatments, Couples Massage, Massage in Palma, Book Online.
+5. Add sitelink assets: Treatments, The Ritual (VIP), Lymphatic Drainage, Massage in Palma.
 6. Leave bidding on Maximize Clicks for now; revisit once the daily report shows
    cost-per-booking per week.
 ```

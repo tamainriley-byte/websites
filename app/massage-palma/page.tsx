@@ -169,7 +169,7 @@ export default function Page() {
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
-            Studio treatments in Portals Nous from €90. Couples treated side by side with a second therapist.
+            Studio treatments in Portals Nous from €90.
           </p>
           <a
             href={WA}
