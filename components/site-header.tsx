@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { MessageCircle, ChevronDown, Menu, X } from "lucide-react"
-import { whatsappLink, trackWhatsAppConversion } from "@/lib/whatsapp"
+import { whatsappLink } from "@/lib/whatsapp"
 
 const navLinks = [
   { label: "About", href: "/#about" },
@@ -116,7 +116,6 @@ export function SiteHeader() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackWhatsAppConversion()}
             className="inline-flex min-h-11 items-center gap-2 rounded-full bg-whatsapp px-4 py-2 text-sm font-medium text-whatsapp-foreground shadow-sm transition-transform hover:scale-[1.03] md:px-5"
           >
             <MessageCircle className="size-4" aria-hidden="true" />

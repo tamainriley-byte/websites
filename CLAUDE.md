@@ -100,7 +100,7 @@ lib/
   gcal.ts                      Google Calendar: OAuth tokens, availability (free/busy), createBooking
   notify.ts                    Owner WhatsApp notifications: new-lead ping, final transcript, cold sweep
   report.ts                    Daily report (today + rolling 7 days): stats → recommendation → Resend email
-  whatsapp.ts                  whatsappLink() + trackWhatsAppConversion() (Google Ads event)
+  whatsapp.ts                  whatsappLink() + trackLeadConversion() (Google Ads event — fires on lead capture, NOT clicks)
   utils.ts                     cn() helper
 vercel.json                    Cron: /api/report daily 18:00 UTC (≈ 8pm Mallorca)
 GOOGLE-ADS.md                  Keyword-matched ad plan: 7 themed ad groups mapped 1:1 to service pages, RSA copy within limits, negatives, rollout checklist
@@ -122,8 +122,8 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 
 ## 7. How the lead flow works (end to end)
 
-1. **Every green button opens the on-site chat (OWNER DECISION, 11 Jul 2026).** History: buttons were intercepted 8–10 Jul while the AI was broken and leads collapsed; reverted to WhatsApp-direct on 10 Jul; owner reinstated full interception on 11 Jul now that the AI works, the number gate captures every chatter, and bookings write to the calendar. The Google Ads conversion event still fires on the click. **Watch the daily report: if leads drop again, raise it with the owner immediately.**
-2. The chat has **no phone-number gate**, but shows a one-tap **mobile capture bar** (`type=tel autocomplete=tel` → the phone offers the visitor's own number) until a number is saved. Numbers typed in chat are also captured inline (`extractPhone`).
+1. **Every green button opens the on-site chat (OWNER DECISION, 11 Jul 2026).** History: buttons were intercepted 8–10 Jul while the AI was broken and leads collapsed; reverted to WhatsApp-direct on 10 Jul; owner reinstated full interception on 11 Jul now that the AI works, the number gate captures every chatter, and bookings write to the calendar. **Conversion moved off the click on 12 Jul 2026 (owner decision):** `trackLeadConversion()` fires only when a mobile number is saved in the chat or the booking form is submitted — a click alone no longer counts. **Watch the daily report: if leads drop again, raise it with the owner immediately.**
+2. The chat's single composer starts as a **mobile capture bar** (`type=tel autocomplete=tel` → the phone offers the visitor's own number, 7–15 digit check) and becomes the message box once a number is saved — so every chatter is captured before they can talk. Numbers typed in chat are also captured inline (`extractPhone`).
 3. `app/api/chat/route.ts` generates replies with Claude (system prompt = warm, texts like Parissa, never says it's an AI; suggests coming to them first; gathers style + 60/90 minutes + day/time + address; asks for the mobile last if not captured). If `ANTHROPIC_API_KEY` is missing it falls back to keyword replies.
 4. **Google Calendar (once connected):** the AI is given Parissa's real free slots (next 7 days, from free/busy) and only offers those times. When the client agrees all details it calls the `book_appointment` tool → event written to her calendar, the lead auto-marked `booked` in enquiries, and Parissa WhatsApp'd "Confirmed booking ✅". Not connected → provisional bookings as before.
 5. On number capture: saved to `chat_sessions`, mirrored to `enquiries`, and `notifyOwners` WhatsApps Parissa (and owner if `OWNER_*` set) with the transcript so far.
@@ -136,7 +136,7 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 
 - Campaign "Calm & Contour - Search" is the live one. Demand Gen / "dynamic" campaigns were paused (low-intent leads, poor conversion — the callers who hung up).
 - The campaign has **76 keywords** (confirmed on-screen). Many specific "money terms" (e.g. "poolside massage mallorca", "boat massage mallorca") are **"Not eligible — Low search volume"** so they don't serve. Fix = run those as **broad match with a tight negative-keyword list**, not more ultra-specific phrases. Only broad generic terms (massage studio, massage and wellness) are getting clicks — which brings wrong-fit studio requests.
-- **"Conversions" in Google Ads = clicks on the WhatsApp/chat button, not bookings.** A click ≠ a sent message ≠ a booking. Don't read conversions as revenue.
+- **"Conversions" in Google Ads = captured leads (mobile saved in chat, or booking form sent) since 12 Jul 2026.** Before that date a conversion was just a click on a green button, so older conversion counts are inflated — don't compare across the boundary. A lead still ≠ a booking; don't read conversions as revenue. Bidding is Maximize clicks so the change disturbs nothing; only switch to Maximize conversions once there are 15+ conversions in the last 30 days.
 
 ---
 

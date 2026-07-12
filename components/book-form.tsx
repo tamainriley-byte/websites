@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react"
 import { MessageCircle } from "lucide-react"
-import { whatsappLink, trackWhatsAppConversion } from "@/lib/whatsapp"
+import { whatsappLink, trackLeadConversion } from "@/lib/whatsapp"
 
 export function BookForm() {
   const [phone, setPhone] = useState("")
@@ -40,8 +40,9 @@ export function BookForm() {
       console.error("[v0] Enquiry save failed:", err)
     }
 
-    // Fire the conversion event and open WhatsApp prefilled with their details.
-    trackWhatsAppConversion()
+    // A submitted enquiry (phone + message) is a real lead, so this one
+    // keeps its conversion. Then open WhatsApp prefilled with their details.
+    trackLeadConversion()
     const waMessage = `Hi Parissa, my mobile is ${trimmedPhone}. ${trimmedMessage}`
     window.open(whatsappLink(waMessage), "_blank", "noopener,noreferrer")
 

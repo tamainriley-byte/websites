@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { MessageCircle, X, Send } from "lucide-react"
+import { trackLeadConversion } from "@/lib/whatsapp"
 
 type Msg = { role: "user" | "assistant"; content: string }
 
@@ -60,7 +61,8 @@ export function ChatWidget() {
 
   // OWNER DECISION (11 Jul 2026): every green button opens THIS chat — the
   // number gate, working AI and direct calendar booking make it the funnel.
-  // The Google Ads conversion onClick fires before we keep them here.
+  // The Google Ads conversion fires later, when the number is saved — a
+  // button click alone is NOT a conversion (owner decision, 12 Jul 2026).
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null
@@ -206,6 +208,8 @@ export function ChatWidget() {
       const data = await res.json()
       if (res.ok) {
         setPhoneSaved(true)
+        // A saved mobile number is the real conversion.
+        trackLeadConversion()
         if (data.reply) {
           await humanPause(startedAt)
           setMessages((m) => [...m, { role: "assistant", content: data.reply }])

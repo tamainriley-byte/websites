@@ -1,7 +1,7 @@
 "use client"
 
 import { MessageCircle, MapPin } from "lucide-react"
-import { whatsappLink, trackWhatsAppConversion } from "@/lib/whatsapp"
+import { whatsappLink } from "@/lib/whatsapp"
 
 export function Hero() {
   return (
@@ -38,7 +38,6 @@ export function Hero() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackWhatsAppConversion()}
             className="inline-flex min-h-12 items-center gap-2 rounded-full bg-whatsapp px-7 py-3 text-base font-medium text-whatsapp-foreground shadow-lg transition-transform hover:scale-[1.03]"
           >
             <MessageCircle className="size-5" aria-hidden="true" />

@@ -7,8 +7,10 @@ export function whatsappLink(message: string) {
 
 const GOOGLE_ADS_CONVERSION = "AW-17683159555/iDouCLaK48kcEIO0_u9B"
 
-// Fires the Google Ads conversion event before the visitor is sent to WhatsApp.
-export function trackWhatsAppConversion() {
+// Fires the Google Ads conversion event when a REAL lead is captured — a
+// mobile number saved in the chat, or the booking form submitted. Never on
+// a plain button click: a click is not a lead and would poison the ad data.
+export function trackLeadConversion() {
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("event", "conversion", {
       send_to: GOOGLE_ADS_CONVERSION,

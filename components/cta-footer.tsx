@@ -1,11 +1,7 @@
 "use client"
 
 import { MessageCircle, MapPin } from "lucide-react"
-import {
-  whatsappLink,
-  WHATSAPP_DISPLAY,
-  trackWhatsAppConversion,
-} from "@/lib/whatsapp"
+import { whatsappLink, WHATSAPP_DISPLAY } from "@/lib/whatsapp"
 
 export function CtaFooter() {
   return (
@@ -31,7 +27,6 @@ export function CtaFooter() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackWhatsAppConversion()}
             className="mt-9 inline-flex min-h-12 items-center gap-2 rounded-full bg-whatsapp px-8 py-3 text-base font-medium text-whatsapp-foreground shadow-lg transition-transform hover:scale-[1.03]"
           >
             <MessageCircle className="size-5" aria-hidden="true" />
@@ -64,7 +59,6 @@ export function CtaFooter() {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackWhatsAppConversion()}
               className="flex items-center gap-2 transition-colors hover:text-background"
             >
               <MessageCircle className="size-4" aria-hidden="true" />

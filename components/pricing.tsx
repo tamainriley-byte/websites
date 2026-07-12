@@ -1,7 +1,7 @@
 "use client"
 
 import { MessageCircle, Check } from "lucide-react"
-import { whatsappLink, trackWhatsAppConversion } from "@/lib/whatsapp"
+import { whatsappLink } from "@/lib/whatsapp"
 
 type Plan = {
   name: string
@@ -131,7 +131,6 @@ export function Pricing() {
                     )}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => trackWhatsAppConversion()}
                     className={`flex min-h-14 items-center justify-between gap-4 rounded-2xl px-5 py-3 transition-transform hover:scale-[1.02] ${
                       plan.featured
                         ? "bg-background/10 hover:bg-background/15"
