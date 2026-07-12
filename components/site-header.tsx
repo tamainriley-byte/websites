@@ -20,6 +20,8 @@ const services = [
   { label: "Couples Massage", href: "/couples-massage-mallorca" },
   { label: "Lymphatic Drainage", href: "/lymphatic-drainage-mallorca" },
   { label: "The Ritual · VIP", href: "/ritual-massage-mallorca" },
+  { label: "Serene Flow Ritual", href: "/serene-flow-ritual-mallorca" },
+  { label: "Tension Release Ritual", href: "/tension-release-massage-mallorca" },
   { label: "All Treatments", href: "/treatments" },
 ]
 

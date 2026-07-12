@@ -133,6 +133,35 @@ export default function Page() {
         >
           Discover The Ritual
         </a>
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+          <a
+            href="/serene-flow-ritual-mallorca"
+            className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted"
+          >
+            <h3 className="font-serif text-xl text-foreground">
+              The Serene Flow Ritual · 90 min
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Lymphatic drainage meets Balinese flowing massage. De-bloat,
+              soften and reset the nervous system, with jasmine tea and ocean
+              sounds. Studio €135 · to you €155.
+            </p>
+          </a>
+          <a
+            href="/tension-release-massage-mallorca"
+            className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted"
+          >
+            <h3 className="font-serif text-xl text-foreground">
+              The Tension Release Ritual · 90 min
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Trigger point therapy and myofascial release for chronic tension,
+              headaches and stiff shoulders. Firm but mindful, never rushed.
+              Studio €135 · to you €155.
+            </p>
+          </a>
+        </div>
       </section>
 
       {/* Pricing strip */}

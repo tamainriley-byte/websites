@@ -82,6 +82,8 @@ app/
   couples-massage-mallorca/    SEO service page (couples, side-by-side, two therapists)
   lymphatic-drainage-mallorca/ SEO service page (signature treatment, ad group 9)
   ritual-massage-mallorca/     SEO service page (The Ritual, 2h VIP €200, ad group 10 cross-sell)
+  serene-flow-ritual-mallorca/ Signature ritual page (90m lymphatic + Balinese, €135 studio / €155 mobile)
+  tension-release-massage-mallorca/ Signature ritual page (90m trigger point + myofascial, €135/€155)
   mobile-massage-mallorca/     SEO service page
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
