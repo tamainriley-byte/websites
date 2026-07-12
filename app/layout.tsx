@@ -4,6 +4,7 @@ import { Geist, Cormorant_Garamond } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 import { ChatWidget } from '@/components/chat-widget'
+import { WhatsAppConversionTracker } from '@/components/whatsapp-conversion-tracker'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const cormorant = Cormorant_Garamond({
@@ -70,6 +71,7 @@ gtag('config', 'AW-17683159555');`}
       <body className="font-sans antialiased">
         {children}
         <ChatWidget />
+        <WhatsAppConversionTracker />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
