@@ -7,14 +7,14 @@ const WA =
   "https://wa.me/34602020734?text=Hello%20Calm%20%26%20Contour%2C%20I'd%20like%20to%20book%20the%20Serene%20Flow%20Ritual."
 
 export const metadata: Metadata = {
-  title: "The Serene Flow Ritual | 90-Min Lymphatic & Balinese Massage Mallorca | Calm & Contour",
+  title: "The Serene Flow Ritual | 2-Hour Lymphatic & Balinese Ritual Mallorca | Calm & Contour",
   description:
-    "The Serene Flow Ritual: 90 minutes of lymphatic drainage, Balinese-inspired flowing massage and grounding relaxation. De-bloat, sculpt gently and reset the nervous system. Studio €135 or brought to you €155.",
+    "The Serene Flow Ritual: two hours of lymphatic drainage, Balinese-inspired flowing massage and grounding relaxation. De-bloat, sculpt gently and reset the nervous system. €200 at your villa, yacht, hotel or the studio.",
   alternates: { canonical: "https://www.calmandcontour.com/serene-flow-ritual-mallorca" },
   openGraph: {
     title: "The Serene Flow Ritual | Calm & Contour Mallorca",
     description:
-      "90 minutes of lymphatic drainage, Balinese flow and deep calm. Feel lighter, calmer, fully restored.",
+      "Two hours of lymphatic drainage, Balinese flow and deep calm. Feel lighter, calmer, fully restored.",
     url: "https://www.calmandcontour.com/serene-flow-ritual-mallorca",
     images: ["/images/hero-cove.png"],
   },
@@ -39,39 +39,39 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "135",
-    description: "The Serene Flow Ritual, 90 minutes, at the Portals Nous studio",
+    price: "200",
+    description: "The Serene Flow Ritual, 2 hours, at your villa, hotel, yacht or the studio",
   },
 }
 
 const journey = [
   {
-    time: "5 min",
+    time: "10 min",
     t: "Grounding welcome & breathwork",
     d: "You are welcomed into a calm space with slow, intentional movements. Gentle guided breathing settles the body and signals safety to the nervous system, so you receive the treatment fully from the very first touch.",
   },
   {
-    time: "10 min",
+    time: "15 min",
     t: "Lymphatic activation & pathway opening",
     d: "Very light, rhythmic strokes around the neck, clavicle, abdomen and groin, slow, soothing, almost hypnotic. This opens the main drainage points and prepares the body to release fluid and puffiness.",
   },
   {
-    time: "25 min",
+    time: "30 min",
     t: "Balinese flow · back of body",
     d: "Long flowing strokes, gentle skin rolling, acupressure-inspired holds and slow forearm movements across the back, shoulders, arms, glutes and legs. A wave-like, continuous flow that releases tension without ever feeling forceful.",
   },
   {
-    time: "15 min",
+    time: "20 min",
     t: "Lower body drainage & sculpting flow",
     d: "Slow upward strokes and gentle pumping through the calves, knees and thighs. Fluid moves towards the lymph nodes, heavy legs feel light again, and the contours of the legs are subtly, naturally enhanced.",
   },
   {
-    time: "15 min",
+    time: "20 min",
     t: "Front body flow & abdominal release",
     d: "Deeply rhythmic foot work, flowing leg massage and soothing abdominal strokes that feel nurturing and grounding, supporting digestion, drainage and a release of tension through the centre of the body.",
   },
   {
-    time: "10 min",
+    time: "15 min",
     t: "Neck, face & jaw lymphatic calm",
     d: "Feather-light lymphatic strokes over the chest, neck and face, with gentle holds around the jaw and temples. Facial puffiness fades, jaw clenching releases, and the rest-and-digest response deepens.",
   },
@@ -114,10 +114,10 @@ export default function Page() {
             The Serene Flow Ritual
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-cream/85">
-            90 minutes of lymphatic drainage, Balinese-inspired flowing massage
-            and grounding relaxation. Release fluid, ease tension and reset the
-            nervous system, you leave feeling lighter, calmer and fully
-            restored.
+            Two unhurried hours of lymphatic drainage, Balinese-inspired
+            flowing massage and grounding relaxation. Release fluid, ease
+            tension and reset the nervous system, you leave feeling lighter,
+            calmer and fully restored.
           </p>
           <a
             href={WA}
@@ -127,7 +127,7 @@ export default function Page() {
             Book the Serene Flow
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            90 minutes · Studio €135 · To you €155
+            €200 · 2 hours · Villa, yacht, hotel or studio
           </p>
         </div>
       </section>
@@ -138,7 +138,7 @@ export default function Page() {
           Slow down, release, reset
         </h2>
         <p className="mt-5 leading-relaxed text-muted-foreground">
-          This 90-minute signature massage is designed to help you slow down,
+          This two-hour signature ritual is designed to help you slow down,
           release fluid retention, ease muscular tension and enter a deeply
           meditative state. Rhythmic Balinese movements, gentle lymphatic
           drainage and long flowing strokes encourage detoxification while
@@ -190,16 +190,16 @@ export default function Page() {
         <div className="mt-10 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">
             <Clock className="size-5" aria-hidden="true" />
-            <span className="font-serif text-xl">The Serene Flow Ritual · 90 minutes</span>
+            <span className="font-serif text-xl">The Serene Flow Ritual · 2 hours</span>
           </div>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
-              <span>At the studio, Portals Nous</span>
-              <span className="text-foreground">€135</span>
+              <span>At your villa, yacht or hotel</span>
+              <span className="text-foreground">€200</span>
             </li>
             <li className="flex justify-between">
-              <span>At your villa, yacht or hotel</span>
-              <span className="text-foreground">€155</span>
+              <span>At the studio, Portals Nous</span>
+              <span className="text-foreground">€200</span>
             </li>
           </ul>
           <a

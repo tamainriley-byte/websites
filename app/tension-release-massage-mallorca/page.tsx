@@ -7,9 +7,9 @@ const WA =
   "https://wa.me/34602020734?text=Hello%20Calm%20%26%20Contour%2C%20I'd%20like%20to%20book%20the%20Tension%20Release%20Ritual."
 
 export const metadata: Metadata = {
-  title: "The Tension Release Ritual | 90-Min Trigger Point & Myofascial Massage Mallorca | Calm & Contour",
+  title: "The Tension Release Ritual | 2-Hour Trigger Point & Myofascial Ritual Mallorca | Calm & Contour",
   description:
-    "The Tension Release Ritual: 90 minutes of trigger point therapy, myofascial release and assisted stretching for chronic tension, headaches and restricted movement. Studio €135 or brought to you €155.",
+    "The Tension Release Ritual: two hours of trigger point therapy, myofascial release and assisted stretching for chronic tension, headaches and restricted movement. €200 at your villa, yacht, hotel or the studio.",
   alternates: { canonical: "https://www.calmandcontour.com/tension-release-massage-mallorca" },
   openGraph: {
     title: "The Tension Release Ritual | Calm & Contour Mallorca",
@@ -39,39 +39,39 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "135",
-    description: "The Tension Release Ritual, 90 minutes, at the Portals Nous studio",
+    price: "200",
+    description: "The Tension Release Ritual, 2 hours, at your villa, hotel, yacht or the studio",
   },
 }
 
 const journey = [
   {
-    time: "5 min",
+    time: "10 min",
     t: "Full-body assessment & grounding",
     d: "Tissue density, breath and movement patterns are read through touch and posture, mapping exactly where your body holds its tension so the pressure lands where it matters.",
   },
   {
-    time: "20 min",
+    time: "25 min",
     t: "Myofascial release · global fascia lines",
     d: "Slow, sustained skin-stretching and compression, initially without oil. The tissue softens and begins to melt rather than being forced, easing the deeper work to come.",
   },
   {
-    time: "20 min",
+    time: "25 min",
     t: "Trigger point therapy · upper body",
     d: "Neck, jaw, shoulders, upper back and arms. Static pressure holds with breath cues, muscle stripping and cross-fibre work to switch off pain-referral patterns, relieve headaches and free stiff shoulders.",
   },
   {
-    time: "20 min",
+    time: "25 min",
     t: "Trigger point therapy · lower body",
     d: "Hips, glutes, hamstrings and calves. Releases the pelvic and lower-back tension that drives so much discomfort, improving how you walk, sit and move.",
   },
   {
-    time: "10 min",
+    time: "15 min",
     t: "Joint mobilisation & assisted stretching",
     d: "Gentle mobilisation and assisted stretches restore functional movement and help prevent the tightness from creeping back.",
   },
   {
-    time: "15 min",
+    time: "20 min",
     t: "Recovery & nervous system regulation",
     d: "Lymphatic flushing strokes, grounding holds and a slower pace to close, so you leave regulated and calm, not wrung out.",
   },
@@ -116,7 +116,7 @@ export default function Page() {
             The Tension Release Ritual
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-cream/85">
-            90 minutes of trigger point therapy, myofascial release and
+            Two hours of trigger point therapy, myofascial release and
             assisted stretching for chronic tension, headaches and restricted
             movement. Firm but mindful, guided by your body, never rushed,
             never aggressive.
@@ -129,7 +129,7 @@ export default function Page() {
             Book the Tension Release
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            90 minutes · Studio €135 · To you €155
+            €200 · 2 hours · Villa, yacht, hotel or studio
           </p>
         </div>
       </section>
@@ -204,16 +204,16 @@ export default function Page() {
         <div className="mt-10 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">
             <Clock className="size-5" aria-hidden="true" />
-            <span className="font-serif text-xl">The Tension Release Ritual · 90 minutes</span>
+            <span className="font-serif text-xl">The Tension Release Ritual · 2 hours</span>
           </div>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
-              <span>At the studio, Portals Nous</span>
-              <span className="text-foreground">€135</span>
+              <span>At your villa, yacht or hotel</span>
+              <span className="text-foreground">€200</span>
             </li>
             <li className="flex justify-between">
-              <span>At your villa, yacht or hotel</span>
-              <span className="text-foreground">€155</span>
+              <span>At the studio, Portals Nous</span>
+              <span className="text-foreground">€200</span>
             </li>
           </ul>
           <a

@@ -140,12 +140,12 @@ export default function Page() {
             className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted"
           >
             <h3 className="font-serif text-xl text-foreground">
-              The Serene Flow Ritual · 90 min
+              The Serene Flow Ritual · 2 hours · €200
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Lymphatic drainage meets Balinese flowing massage. De-bloat,
               soften and reset the nervous system, with jasmine tea and ocean
-              sounds. Studio €135 · to you €155.
+              sounds. Anywhere on the island or in the studio.
             </p>
           </a>
           <a
@@ -153,12 +153,12 @@ export default function Page() {
             className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted"
           >
             <h3 className="font-serif text-xl text-foreground">
-              The Tension Release Ritual · 90 min
+              The Tension Release Ritual · 2 hours · €200
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Trigger point therapy and myofascial release for chronic tension,
               headaches and stiff shoulders. Firm but mindful, never rushed.
-              Studio €135 · to you €155.
+              Anywhere on the island or in the studio.
             </p>
           </a>
         </div>
