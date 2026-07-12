@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Treatments | Massage, Facials & Body Contouring in Mallorca | Calm & Contour",
   description:
-    "Our treatments in Mallorca: Swedish, deep tissue, aromatherapy, hot stone, lymphatic drainage, prenatal and sports massage, plus facials and body contouring. Studio or mobile to your villa, yacht or hotel. From €75.",
+    "Our treatments in Mallorca: Swedish, deep tissue, aromatherapy, hot stone, lymphatic drainage, prenatal and sports massage, plus facials and body contouring. Studio or mobile to your villa, yacht or hotel. From €85.",
   alternates: { canonical: "https://www.calmandcontour.com/treatments" },
   openGraph: {
     title: "Treatments | Calm & Contour Mallorca",
@@ -113,8 +113,30 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Pricing strip */}
+      {/* VIP — The Ritual */}
       <section className="mx-auto max-w-3xl px-5 py-16 md:py-20">
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          VIP Experience
+        </p>
+        <h2 className="mt-2 font-serif text-3xl font-medium text-foreground md:text-4xl">
+          The Ritual · 2 hours · €200
+        </h2>
+        <p className="mt-4 leading-relaxed text-muted-foreground">
+          Our most indulgent treatment. Two unhurried hours of full body
+          massage with warm aromatherapy oils and hot stones, finished with a
+          hot towel rub down to remove every trace of oil and a pot of herbal
+          tea. At your villa, yacht, hotel or the studio.
+        </p>
+        <a
+          href="/ritual-massage-mallorca"
+          className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:scale-[1.03]"
+        >
+          Discover The Ritual
+        </a>
+      </section>
+
+      {/* Pricing strip */}
+      <section className="bg-secondary/40 mx-auto max-w-none px-0"><div className="mx-auto max-w-3xl px-5 py-16 md:py-20">
         <h2 className="font-serif text-3xl font-medium text-foreground md:text-4xl">
           Pricing
         </h2>
@@ -122,23 +144,24 @@ export default function Page() {
           <div className="rounded-2xl border border-border bg-card p-6">
             <span className="font-serif text-xl text-foreground">Studio, Portals Nous</span>
             <ul className="mt-4 space-y-2 text-muted-foreground">
-              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€75</span></li>
-              <li className="flex justify-between"><span>90 minutes</span><span className="text-foreground">€125</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€85</span></li>
+              <li className="flex justify-between"><span>90 minutes</span><span className="text-foreground">€135</span></li>
             </ul>
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <span className="font-serif text-xl text-foreground">Mobile, to you</span>
             <ul className="mt-4 space-y-2 text-muted-foreground">
-              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€120</span></li>
-              <li className="flex justify-between"><span>90 minutes</span><span className="text-foreground">€145</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€130</span></li>
+              <li className="flex justify-between"><span>90 minutes</span><span className="text-foreground">€155</span></li>
             </ul>
           </div>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">
+          The Ritual (120 minutes, everything included) is €200 anywhere.
           Couples and groups are treated side by side at your villa, hotel or
           yacht with a second therapist. Just ask.
         </p>
-      </section>
+      </div></section>
 
       <CtaFooter />
     </main>

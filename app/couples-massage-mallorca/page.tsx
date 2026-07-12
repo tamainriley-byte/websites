@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Couples Massage Mallorca | Side by Side at Your Villa or Hotel | Calm & Contour",
   description:
-    "Couples massage in Mallorca, side by side at your villa, hotel or yacht. Two qualified therapists, two tables, one relaxing hour together. €120 per person for 60 minutes. Book on WhatsApp.",
+    "Couples massage in Mallorca, side by side at your villa, hotel or yacht. Two qualified therapists, two tables, one relaxing hour together. €130 per person for 60 minutes. Book on WhatsApp.",
   alternates: { canonical: "https://www.calmandcontour.com/couples-massage-mallorca" },
   openGraph: {
     title: "Couples Massage Mallorca | Calm & Contour",
@@ -43,7 +43,7 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "240",
+    price: "260",
     description: "Side-by-side couples massage for two at your villa, hotel or yacht, 60 minutes",
   },
 }
@@ -55,7 +55,7 @@ const faqs = [
   },
   {
     q: "How much is a couples massage?",
-    a: "€120 per person for 60 minutes or €145 per person for 90 minutes, so €240 or €290 for two, with the full setup brought to you anywhere in Mallorca.",
+    a: "€130 per person for 60 minutes or €155 per person for 90 minutes, so €260 or €310 for two, with the full setup brought to you anywhere in Mallorca.",
   },
   {
     q: "Can we choose different massage styles?",
@@ -104,7 +104,7 @@ export default function Page() {
             Book a couples massage
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            €120 per person · Villa · Yacht · Hotel
+            €130 per person · Villa · Yacht · Hotel
           </p>
         </div>
       </section>
@@ -159,11 +159,11 @@ export default function Page() {
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
               <span>60 minutes · two people</span>
-              <span className="text-foreground">€240 (€120 pp)</span>
+              <span className="text-foreground">€260 (€130 pp)</span>
             </li>
             <li className="flex justify-between">
               <span>90 minutes · two people</span>
-              <span className="text-foreground">€290 (€145 pp)</span>
+              <span className="text-foreground">€310 (€155 pp)</span>
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">

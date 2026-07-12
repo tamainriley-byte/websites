@@ -18,6 +18,8 @@ const services = [
   { label: "Massage Near Me", href: "/massage-near-me" },
   { label: "Massage in Palma", href: "/massage-palma" },
   { label: "Couples Massage", href: "/couples-massage-mallorca" },
+  { label: "Lymphatic Drainage", href: "/lymphatic-drainage-mallorca" },
+  { label: "The Ritual · VIP", href: "/ritual-massage-mallorca" },
   { label: "All Treatments", href: "/treatments" },
 ]
 

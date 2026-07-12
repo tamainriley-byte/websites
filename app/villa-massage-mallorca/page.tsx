@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Private Villa Massage Mallorca | Discreet In-Villa Spa | Calm & Contour",
   description:
-    "Discreet private massage at your villa in Mallorca. Qualified, insured, vetted therapists, NDA available for high-profile guests, couples and groups by arrangement. From €120.",
+    "Discreet private massage at your villa in Mallorca. Qualified, insured, vetted therapists, NDA available for high-profile guests, couples and groups by arrangement. From €130.",
   alternates: { canonical: "https://www.calmandcontour.com/villa-massage-mallorca" },
   openGraph: {
     title: "Private Villa Massage Mallorca | Calm & Contour",
@@ -43,7 +43,7 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "120",
+    price: "130",
     description: "60 minute private massage at your villa in Mallorca",
   },
 }
@@ -67,7 +67,7 @@ const faqs = [
   },
   {
     q: "How much is a villa visit?",
-    a: "A private villa visit is €120 for 60 minutes or €145 for 90 minutes per person. Couples and groups are quoted on request. Just message us with your villa location and dates.",
+    a: "A private villa visit is €130 for 60 minutes or €155 for 90 minutes per person. Couples and groups are quoted on request. Just message us with your villa location and dates.",
   },
 ]
 
@@ -108,7 +108,7 @@ export default function Page() {
             <MessageCircle className="size-5" aria-hidden="true" />
             Message Parissa
           </a>
-          <p className="mt-4 text-sm text-cream/70">From €120 · NDA available on request</p>
+          <p className="mt-4 text-sm text-cream/70">From €130 · NDA available on request</p>
         </div>
       </section>
 
@@ -167,10 +167,10 @@ export default function Page() {
           </div>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
-              <span>60 minutes</span><span className="text-foreground">€120</span>
+              <span>60 minutes</span><span className="text-foreground">€130</span>
             </li>
             <li className="flex justify-between">
-              <span>90 minutes</span><span className="text-foreground">€145</span>
+              <span>90 minutes</span><span className="text-foreground">€155</span>
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">

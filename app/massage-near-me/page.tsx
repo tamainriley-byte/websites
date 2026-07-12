@@ -9,12 +9,12 @@ const WA =
 export const metadata: Metadata = {
   title: "Massage Near Me in Mallorca | Same-Day Mobile Massage | Calm & Contour",
   description:
-    "Looking for a massage near you in Mallorca? Calm & Contour comes to your villa, hotel or yacht, often same day. Portals, Palma, Magaluf, Santa Ponsa and across the island. From €120. Book on WhatsApp.",
+    "Looking for a massage near you in Mallorca? Calm & Contour comes to your villa, hotel or yacht, often same day. Portals, Palma, Magaluf, Santa Ponsa and across the island. From €130. Book on WhatsApp.",
   alternates: { canonical: "https://www.calmandcontour.com/massage-near-me" },
   openGraph: {
     title: "Massage Near Me in Mallorca | Calm & Contour",
     description:
-      "Mobile massage that comes to you across Mallorca, often same day. From €120.",
+      "Mobile massage that comes to you across Mallorca, often same day. From €130.",
     url: "https://www.calmandcontour.com/massage-near-me",
     images: ["/images/hero-cove.png"],
   },
@@ -44,7 +44,7 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "120",
+    price: "130",
     description: "Mobile massage brought to your location in Mallorca",
   },
 }
@@ -72,7 +72,7 @@ const faqs = [
   },
   {
     q: "How much does it cost?",
-    a: "A mobile visit is €120 for 60 minutes or €145 for 90 minutes, with the full setup brought to you. Studio treatments are €75 and €125.",
+    a: "A mobile visit is €130 for 60 minutes or €155 for 90 minutes, with the full setup brought to you. Studio treatments are €85 and €135.",
   },
 ]
 
@@ -112,7 +112,7 @@ export default function Page() {
             <MessageCircle className="size-5" aria-hidden="true" />
             Message Parissa
           </a>
-          <p className="mt-4 text-sm text-cream/70">From €120 · Often same day</p>
+          <p className="mt-4 text-sm text-cream/70">From €130 · Often same day</p>
         </div>
       </section>
 
@@ -162,10 +162,10 @@ export default function Page() {
             </div>
             <ul className="mt-4 space-y-2 text-muted-foreground">
               <li className="flex justify-between border-b border-border/60 pb-2">
-                <span>60 minutes</span><span className="text-foreground">€120</span>
+                <span>60 minutes</span><span className="text-foreground">€130</span>
               </li>
               <li className="flex justify-between">
-                <span>90 minutes</span><span className="text-foreground">€145</span>
+                <span>90 minutes</span><span className="text-foreground">€155</span>
               </li>
             </ul>
             <a

@@ -9,12 +9,12 @@ const WA =
 export const metadata: Metadata = {
   title: "Yacht Massage Mallorca | Discreet Onboard Spa | Calm & Contour",
   description:
-    "Discreet luxury massage on your yacht in Mallorca, at anchor or in port. Vetted, insured therapists, NDA available on request. Puerto Portals, Palma, Port Adriano. From €145. Book on WhatsApp.",
+    "Discreet luxury massage on your yacht in Mallorca, at anchor or in port. Vetted, insured therapists, NDA available on request. Puerto Portals, Palma, Port Adriano. From €155. Book on WhatsApp.",
   alternates: { canonical: "https://www.calmandcontour.com/yacht-massage-mallorca" },
   openGraph: {
     title: "Yacht Massage Mallorca | Calm & Contour",
     description:
-      "Discreet onboard massage for yachts across Mallorca. Vetted therapists, NDA available. From €145.",
+      "Discreet onboard massage for yachts across Mallorca. Vetted therapists, NDA available. From €155.",
     url: "https://www.calmandcontour.com/yacht-massage-mallorca",
     images: ["/images/yacht-cabin.png"],
   },
@@ -35,7 +35,7 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "145",
+    price: "155",
     description: "Onboard massage for yachts at anchor or in port",
   },
 }
@@ -95,7 +95,7 @@ export default function Page() {
             <MessageCircle className="size-5" aria-hidden="true" />
             Message Parissa
           </a>
-          <p className="mt-4 text-sm text-cream/70">From €145 · Discreet · NDA available</p>
+          <p className="mt-4 text-sm text-cream/70">From €155 · Discreet · NDA available</p>
         </div>
       </section>
 
@@ -153,7 +153,7 @@ export default function Page() {
           </div>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
-              <span>60 minutes</span><span className="text-foreground">from €145</span>
+              <span>60 minutes</span><span className="text-foreground">from €155</span>
             </li>
             <li className="flex justify-between">
               <span>90 minutes</span><span className="text-foreground">from €175</span>

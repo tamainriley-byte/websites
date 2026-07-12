@@ -9,12 +9,12 @@ const WA =
 export const metadata: Metadata = {
   title: "Massage in Palma, Mallorca | Mobile Massage to Your Hotel | Calm & Contour",
   description:
-    "Luxury mobile massage in Palma, Mallorca, brought to your hotel, apartment or yacht in the marina. Qualified therapist, same-day where possible. From €120. Book on WhatsApp.",
+    "Luxury mobile massage in Palma, Mallorca, brought to your hotel, apartment or yacht in the marina. Qualified therapist, same-day where possible. From €130. Book on WhatsApp.",
   alternates: { canonical: "https://www.calmandcontour.com/massage-palma" },
   openGraph: {
     title: "Massage in Palma, Mallorca | Calm & Contour",
     description:
-      "Mobile massage to your hotel or apartment in Palma. From €120.",
+      "Mobile massage to your hotel or apartment in Palma. From €130.",
     url: "https://www.calmandcontour.com/massage-palma",
     images: ["/images/hotel-suite.png"],
   },
@@ -43,7 +43,7 @@ const jsonLd = {
   makesOffer: {
     "@type": "Offer",
     priceCurrency: "EUR",
-    price: "120",
+    price: "130",
     description: "Mobile massage to your hotel or apartment in Palma",
   },
 }
@@ -103,7 +103,7 @@ export default function Page() {
             <MessageCircle className="size-5" aria-hidden="true" />
             Message Parissa
           </a>
-          <p className="mt-4 text-sm text-cream/70">From €120 · Hotel · Apartment · Yacht</p>
+          <p className="mt-4 text-sm text-cream/70">From €130 · Hotel · Apartment · Yacht</p>
         </div>
       </section>
 
@@ -159,14 +159,14 @@ export default function Page() {
           </div>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
-              <span>60 minutes</span><span className="text-foreground">€120</span>
+              <span>60 minutes</span><span className="text-foreground">€130</span>
             </li>
             <li className="flex justify-between">
-              <span>90 minutes</span><span className="text-foreground">€145</span>
+              <span>90 minutes</span><span className="text-foreground">€155</span>
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted-foreground">
-            Studio treatments in Portals Nous from €75. Couples treated side by side with a second therapist.
+            Studio treatments in Portals Nous from €85. Couples treated side by side with a second therapist.
           </p>
           <a
             href={WA}

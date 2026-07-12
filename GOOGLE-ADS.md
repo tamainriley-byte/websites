@@ -1,7 +1,7 @@
 # Google Ads — keyword-matched ad plan
 
 Account **806-912-8725**, campaign **"Calm & Contour - Search"**. This plan replaces the
-single catch-all ad group with **seven themed ad groups**, each mapped 1:1 to a service
+single catch-all ad group with **ten themed ad groups**, each mapped 1:1 to a service
 page, so the searcher's keyword appears in the ad title and body, and the click lands on
 a page carrying the same message with a clear CTA (every green button opens the AI chat,
 which books directly into Parissa's calendar).
@@ -25,7 +25,7 @@ let Google rotate. Use sitelinks to the other service pages.
 - Massage At Your Villa
 - We Come To You Island-Wide
 - Table, Oils & Setup Included
-- From €120 · 60 Minutes
+- From €130 · 60 Minutes
 - Qualified Local Therapist
 - Villa · Yacht · Hotel Visits
 - Same-Day Slots Often Free
@@ -35,7 +35,7 @@ let Google rotate. Use sitelinks to the other service pages.
 **Descriptions**
 - Luxury mobile massage brought to your villa, yacht or hotel anywhere in Mallorca.
 - Parissa brings the table, oils and everything. You simply lie back and unwind.
-- From €120 for 60 minutes. Message us and get booked in within minutes.
+- From €130 for 60 minutes. Message us and get booked in within minutes.
 - Swedish, deep tissue, sports & more, tailored to you, wherever you're staying.
 
 ## 2. Villa Massage → `/villa-massage-mallorca`
@@ -48,14 +48,14 @@ let Google rotate. Use sitelinks to the other service pages.
 - Discreet & Fully Insured
 - NDA Available On Request
 - Massage On Your Terrace
-- From €120 At Your Villa
+- From €130 At Your Villa
 - Couples Side By Side
 - Full Setup Brought To You
 
 **Descriptions**
 - Discreet private massage at your villa in Mallorca. Vetted, insured therapists.
 - Full spa setup on your terrace: table, linens, oils. NDA for private guests.
-- €120 for 60 min, €145 for 90. Couples side by side with a second therapist.
+- €130 for 60 min, €155 for 90. Couples side by side with a second therapist.
 - Tell us your villa's area and dates and we'll confirm your time in minutes.
 
 ## 3. Yacht Massage → `/yacht-massage-mallorca`
@@ -88,13 +88,13 @@ let Google rotate. Use sitelinks to the other service pages.
 - We Come To Your Hotel
 - Often Bookable Today
 - Across The Whole Island
-- From €120 · At Your Place
+- From €130 · At Your Place
 - No Travel, No Waiting Room
 - Book In Minutes On Chat
 
 **Descriptions**
 - Looking for a massage near you? We come to your villa, hotel or yacht, often same day.
-- Portals, Palma, Magaluf, Santa Ponsa and across Mallorca. From €120.
+- Portals, Palma, Magaluf, Santa Ponsa and across Mallorca. From €130.
 - Skip the spa trip. The table, oils and therapist come to you.
 - Message now and we'll confirm today's availability in minutes.
 
@@ -108,13 +108,13 @@ let Google rotate. Use sitelinks to the other service pages.
 - To Your Hotel Or Apartment
 - Palma Marina & Old Town
 - Same-Day Where Possible
-- From €120 In Palma
+- From €130 In Palma
 - Full Setup Brought To You
 - Qualified Local Therapist
 
 **Descriptions**
 - Luxury mobile massage in Palma, to your hotel, apartment or yacht in the marina.
-- Qualified therapist, full setup brought to you. From €120 for 60 minutes.
+- Qualified therapist, full setup brought to you. From €130 for 60 minutes.
 - Staying in Palma? Get a tailored massage without leaving your room.
 - 15 minutes from our Portals Nous studio, easy same-day visits to Palma.
 
@@ -127,14 +127,14 @@ let Google rotate. Use sitelinks to the other service pages.
 - Side By Side For Two
 - Two Therapists, Two Tables
 - At Your Villa Or Hotel
-- €240 For Two · 60 Min
+- €260 For Two · 60 Min
 - Romantic Holiday Treat
 - No Travel, You Both Relax
 - Book In Minutes On Chat
 
 **Descriptions**
 - Couples massage side by side at your villa, hotel or yacht. Two therapists, two tables.
-- €240 for two (60 min) or €290 (90 min) with the full setup brought to you.
+- €260 for two (60 min) or €310 (90 min) with the full setup brought to you.
 - Choose different styles each: Swedish for one, deep tissue for the other.
 - One relaxing hour together, anywhere in Mallorca. Book in minutes on chat.
 
@@ -149,12 +149,12 @@ let Google rotate. Use sitelinks to the other service pages.
 - Lymphatic Drainage Mallorca
 - Prenatal Massage Available
 - Studio Or Mobile To You
-- Studio From €75 · 60 Min
+- Studio From €85 · 60 Min
 - Tailored To How You Feel
 
 **Descriptions**
 - Swedish, deep tissue, sports, hot stone, lymphatic drainage and prenatal massage.
-- At the Portals Nous studio from €75, or brought to you across Mallorca from €120.
+- At the Portals Nous studio from €85, or brought to you across Mallorca from €130.
 - Tell us how you want to feel afterwards and the session is built around you.
 - Facials and body contouring too: wood therapy, lymphatic sculpting and more.
 
@@ -172,20 +172,63 @@ first headline echoes the exact town they typed.
 - Anywhere On The Island
 - North & East Coast Covered
 - Same-Day Where Possible
-- From €120 · At Your Place
+- From €130 · At Your Place
 - Table & Oils Brought To You
 - Qualified Local Therapist
 
 **Descriptions**
 - Alcúdia, Can Picafort, Playa de Muro, Pollensa, Cala d'Or, Paguera and across Mallorca.
-- Mobile massage to your hotel, villa or yacht. The full setup comes to you, from €120.
+- Mobile massage to your hotel, villa or yacht. The full setup comes to you, from €130.
 - No spa trip needed. Message us your town and we'll confirm your time in minutes.
 - Swedish, deep tissue, sports and lymphatic drainage, tailored to you.
 
-> Also seen in real searches: "lymphatic drainage massage" and "maderoterapia palma" —
-> add both as keywords to **ad group 7 (Treatment Styles)**: `lymphatic drainage massage
-> mallorca` · `maderoterapia palma` · `maderoterapia mallorca` · `wood therapy massage
-> mallorca`. They're her signature treatments with zero competition bidding on them.
+## 9. Lymphatic Drainage → `/lymphatic-drainage-mallorca` (new page, live)
+
+Her signature treatment; "lymphatic drainage massage" and "maderoterapia palma" appear
+in the account's real search terms with basically nobody bidding on them.
+
+**Keywords (broad):** lymphatic drainage massage mallorca · lymphatic drainage palma · manual lymphatic drainage mallorca · maderoterapia palma · maderoterapia mallorca · wood therapy massage mallorca · post surgery massage mallorca · debloating massage mallorca
+
+**Headlines**
+- Lymphatic Drainage Mallorca
+- De-Bloat, Define, Recover
+- Specialist Therapist
+- Post-Flight Leg Rescue
+- Studio From €85 · 60 Min
+- Or We Come To You · €130
+- Maderoterapia Available
+- Popular Before Events
+
+**Descriptions**
+- Signature lymphatic drainage by specialist Parissa. De-bloat, define and recover.
+- Studio in Portals Nous from €85, or brought to your villa, hotel or yacht from €130.
+- Feel lighter after one session. Popular before events, beach days and after flights.
+- Pairs beautifully with wood therapy (maderoterapia) and lymphatic sculpting.
+
+## 10. Studio (Portals Nous) → `/treatments` 💶 BUDGET +€5/DAY
+
+Owner call (11 Jul): push the studio. **Raise the campaign daily budget from €25 to
+€30** — the extra €5/day rides with this group and #9 (both land on studio pricing).
+Studio-intent searches were previously treated as wrong-fit; with studio at €85 they're
+now profitable traffic. Keep the shared negatives (jobs/courses/chairs etc.).
+
+**Keywords (broad):** massage studio portals nous · massage studio calvia · massage portals nous · massage puerto portals · massage studio near palma · massage bendinat · massage costa den blanes
+
+**Headlines**
+- Massage Studio Portals Nous
+- By Puerto Portals Marina
+- Studio From €85 · 60 Min
+- 10 Min From Magaluf
+- 15 Min From Palma
+- Shower Available
+- Deep Tissue To Relaxation
+- The Ritual · 2h VIP · €200
+
+**Descriptions**
+- Boutique massage studio in Portals Nous, right by Puerto Portals marina.
+- €85 for 60 minutes, €135 for 90. Deep tissue, Swedish, lymphatic drainage and more.
+- Easy parking, shower available, 10 minutes from Magaluf and 15 from Palma.
+- Prefer to stay put? We also come to your villa, hotel or yacht from €130.
 
 ---
 
@@ -204,7 +247,7 @@ that doesn't convert.
 
 ## Rollout checklist
 
-1. In the campaign, create the 8 ad groups above; move/add keywords as broad match.
+1. In the campaign, create the 10 ad groups above; move/add keywords as broad match.
    **If you only do one, do #8 (Town Searches) — it's built from the account's real
    search-term data.**
 2. One Responsive Search Ad per group using the headlines/descriptions verbatim

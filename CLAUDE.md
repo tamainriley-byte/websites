@@ -15,7 +15,7 @@ _Last updated: 9 July 2026._
 - Promoted with Google Ads (Search).
 - WhatsApp for bookings: **+34 602 02 07 34**
 - Studio address: **Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca** (Calvià, by Puerto Portals; ~10 min Magaluf, ~15 min Palma).
-- Pricing: mobile visit €120 / 60 min, €145 / 90 min. Studio €75 / 60 min, €125 / 90 min. Couples/groups treated side by side with a second therapist.
+- Pricing (raised €10 on 11 Jul 2026): mobile visit €130 / 60 min, €155 / 90 min. Studio €85 / 60 min, €135 / 90 min. **The Ritual** (VIP, 120 min, warm oils + hot stones + hot towel rub down + herbal tea) €200 anywhere. Couples/groups side by side with a second therapist (per-person pricing).
 
 **Business goal:** get more real leads into the team's hands and know the unit economics (cost per booking) so ad spend and team size can be scaled. Longer term, turn this into a booking + payment app (see Roadmap) and roll out city by city.
 
@@ -80,6 +80,8 @@ app/
   api/gcal/auth/route.ts       Starts Google Calendar OAuth (open while signed into /admin)
   api/gcal/callback/route.ts   OAuth callback, stores Parissa's refresh token
   couples-massage-mallorca/    SEO service page (couples, side-by-side, two therapists)
+  lymphatic-drainage-mallorca/ SEO service page (signature treatment, ad group 9)
+  ritual-massage-mallorca/     SEO service page (The Ritual, 2h VIP €200, ad group 10 cross-sell)
   mobile-massage-mallorca/     SEO service page
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
