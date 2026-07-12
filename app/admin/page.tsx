@@ -19,6 +19,7 @@ import {
   waClientLink,
   confirmationMessage,
   rescheduleMessage,
+  paymentRequestMessage,
 } from "@/lib/whatsapp"
 
 export const metadata: Metadata = {
@@ -82,6 +83,10 @@ export default async function AdminPage() {
   const bookedCount = enquiries.filter(
     (e) => e.status === "booked" || e.status === "shown",
   ).length
+  // Any provider's hosted payment page (Stripe, SumUp, Wise…). When set,
+  // booked chats get a "Request payment" button and the confirmation
+  // message includes the link.
+  const paymentLink = process.env.PAYMENT_LINK_URL || null
   const events: UpcomingEvent[] | null = calendarConnected
     ? await upcomingEvents(14).catch(() => null)
     : null
@@ -194,12 +199,20 @@ export default async function AdminPage() {
                   ? waClientLink(
                       c.phone,
                       c.country,
-                      confirmationMessage(c.booking_info),
+                      confirmationMessage(c.booking_info, paymentLink),
                     )
                   : null
                 const rescheduleLink = c.phone
                   ? waClientLink(c.phone, c.country, rescheduleMessage())
                   : null
+                const payLink =
+                  c.phone && paymentLink
+                    ? waClientLink(
+                        c.phone,
+                        c.country,
+                        paymentRequestMessage(paymentLink),
+                      )
+                    : null
                 return (
                   <li
                     key={c.session_id}
@@ -284,6 +297,16 @@ export default async function AdminPage() {
                                 className="rounded-full bg-whatsapp px-3.5 py-1.5 text-xs font-medium text-whatsapp-foreground hover:opacity-90"
                               >
                                 WhatsApp confirmation
+                              </a>
+                            )}
+                            {payLink && (
+                              <a
+                                href={payLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                              >
+                                Request payment
                               </a>
                             )}
                             {rescheduleLink && (

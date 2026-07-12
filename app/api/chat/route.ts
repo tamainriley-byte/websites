@@ -348,7 +348,7 @@ async function generateReply(
           const confirmLink = waClientLink(
             phone as string,
             null,
-            confirmationMessage(summary),
+            confirmationMessage(summary, process.env.PAYMENT_LINK_URL || null),
           )
           sendOwnerWhatsApp(
             `Confirmed booking ✅ ${result.replace("BOOKED: ", "")}\nClient: ${phone}\nIt's in your Google Calendar.` +

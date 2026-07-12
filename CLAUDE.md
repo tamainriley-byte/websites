@@ -60,6 +60,7 @@ You need the env vars below (a `.env.local`) for the DB and AI chat to work loca
 - `REPORT_EMAIL_TO` = optional, defaults to tamainriley@gmail.com. `REPORT_EMAIL_FROM` = optional, defaults to `onboarding@resend.dev` (works without domain verification, but only delivers to the Resend account owner's inbox — verify calmandcontour.com in Resend to send from the domain).
 - `ADS_DAILY_BUDGET_EUR` = optional, defaults to 25. Used to estimate ad spend in the report (no Google Ads API access).
 - `CRON_SECRET` = optional but recommended. When set, Vercel Cron authenticates to `/api/report` with it; a signed-in owner can always open `/api/report` in the browser regardless.
+- `PAYMENT_LINK_URL` = NOT set. Any provider's hosted payment page (Stripe Payment Link, SumUp, Wise payment request…). When set: booked chats in /admin get a "Request payment" one-tap WhatsApp button, and the client confirmation message includes the link. Set + redeploy to activate.
 - `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` = NOT set. Required for Google Calendar booking. Setup: Google Cloud Console → new project → enable "Google Calendar API" → OAuth consent screen (External, add Parissa's email as test user) → Credentials → OAuth client ID (Web application) with redirect URI `https://calmandcontour.com/api/gcal/callback` → copy ID+secret into Vercel and redeploy. Then sign into `/admin` and click "Connect calendar" while signed into Parissa's Google account (one time). After that the chat AI sees her real free/busy and books confirmed appointments straight into her calendar.
 
 ---
@@ -209,7 +210,7 @@ Conversion insight: Search leads are high-intent and convert well (est. 50–60%
 ## 13. Conventions & gotchas
 
 - **Deploy = push to `main`.** Redeploy required after any Vercel env-var change.
-- **Payments:** Stripe only; never store PANs; Stripe Connect for splitting money with therapists.
+- **Payments:** Stripe for anything integrated (card on file, deposits, Connect payouts to therapists); never store PANs. Wise Business is fine as the BANK (cheap FX, EUR/GBP accounts — point Stripe payouts at it) but it is not the card processor and has no Connect equivalent, so don't build payment features on Wise. Interim: `PAYMENT_LINK_URL` (any provider's payment link) powers a one-tap "Request payment" WhatsApp from /admin. In person: SumUp or Stripe Tap to Pay turns Parissa's phone into the card machine.
 - **Google Calendar API is free** at this scale (Google app-verification needed only once you have many external OAuth users).
 - **GDPR:** we store personal data + massage preferences (health-adjacent). Add a privacy policy, explicit signup consent, and data-deletion on request.
 - **CallMeBot is unreliable** (free, rate-limited, drops messages) — fine for a nudge, not for anything critical.
