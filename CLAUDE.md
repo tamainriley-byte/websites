@@ -112,7 +112,7 @@ types/gtag.d.ts                gtag typing
 
 ## 6. Data model (Neon Postgres)
 
-- `enquiries` (id, phone, message, created_at, status) — booking-form + chat lead mirror. `status = 'booked'` marks a confirmed booking (set via the /admin toggle); anything else is just a lead.
+- `enquiries` (id, phone, message, created_at, status, booking_info) — booking-form + chat lead mirror. `status`: 'new' (lead) → 'booked' (confirmed) → 'shown' (client attended); 'booked' and 'shown' both count as bookings in stats. `booking_info` = human-readable "day at time, duration treatment, location" saved when the AI books, used to prefill the client's WhatsApp confirmation.
 - `chat_sessions` (session_id PK, phone, name, ip, country, city, device, referer, created_at, last_at) — one row per chat visitor.
 - `chat_messages` (id, session_id, role['user'|'assistant'], content, created_at) — every message.
 
@@ -128,7 +128,7 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 4. **Google Calendar (once connected):** the AI is given Parissa's real free slots (next 7 days, from free/busy) and only offers those times. When the client agrees all details it calls the `book_appointment` tool → event written to her calendar, the lead auto-marked `booked` in enquiries, and Parissa WhatsApp'd "Confirmed booking ✅". Not connected → provisional bookings as before.
 5. On number capture: saved to `chat_sessions`, mirrored to `enquiries`, and `notifyOwners` WhatsApps Parissa (and owner if `OWNER_*` set) with the transcript so far.
 6. **Conversation end:** when the visitor closes the page (widget `pagehide` beacon → `type:"left"`) or goes quiet 15+ min (sweep piggybacked on chat traffic + daily cron), Parissa gets the FINAL transcript once: "They've left the chat 📞 Call this lead now." (`closed_notified_at` guards double-sends.)
-7. Everything is visible in `/admin`, which also shows Google Calendar connection status + connect button.
+7. Everything is visible in `/admin`. Bookings are managed ON each chat card (12 Jul 2026): status chip (New / Booked ✓ / Shown ✓) + buttons — Mark booked, Mark shown, Undo, **WhatsApp confirmation** (opens WhatsApp to the CLIENT with the confirmation prefilled from `booking_info` — date, time, treatment, address — one tap to send) and **Reschedule** (prefilled "could we look at another time?"). The same one-tap confirmation link is included in Parissa's "Confirmed booking ✅" CallMeBot ping. The separate "Booking form enquiries" list now shows only non-chat (form) leads. NOTE: client-facing WhatsApp cannot be sent automatically without the paid WhatsApp Business API — CallMeBot only delivers to numbers that activated it. Prefilled one-tap from Parissa's phone is the free workaround; the AI also always repeats date/time/duration/address in its in-chat confirmation.
 
 ---
 

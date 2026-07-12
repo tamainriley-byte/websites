@@ -3,7 +3,12 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { updateEnquiryStatus, saveChatMessage, setAiMuted } from "@/lib/db"
+import {
+  updateEnquiryStatus,
+  setLeadStatusByPhone,
+  saveChatMessage,
+  setAiMuted,
+} from "@/lib/db"
 
 const COOKIE_NAME = "admin_auth"
 
@@ -45,6 +50,16 @@ export async function setBooked(formData: FormData) {
   if (!Number.isInteger(id) || id <= 0) return
   const booked = formData.get("booked") === "1"
   await updateEnquiryStatus(id, booked ? "booked" : "new")
+  revalidatePath("/admin")
+}
+
+// Booking status straight from a chat card: new → booked → shown.
+export async function setLeadStatus(formData: FormData) {
+  if (!(await isAuthed())) return
+  const phone = String(formData.get("phone") ?? "").slice(0, 40)
+  const status = String(formData.get("status") ?? "")
+  if (!phone || !["new", "booked", "shown"].includes(status)) return
+  await setLeadStatusByPhone(phone, status)
   revalidatePath("/admin")
 }
 

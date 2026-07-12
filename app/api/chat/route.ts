@@ -19,6 +19,7 @@ import {
   notifyConversationEnded,
   sweepColdLeads,
 } from "@/lib/notify"
+import { waClientLink, confirmationMessage } from "@/lib/whatsapp"
 
 export const dynamic = "force-dynamic"
 
@@ -84,6 +85,34 @@ function extractMeta(request: Request) {
 const STUDIO_ADDRESS =
   "Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca"
 
+// Human-readable booking summary saved with the lead and used to prefill
+// the client's WhatsApp confirmation from /admin.
+function bookingSummary(input: {
+  date: string
+  start_time: string
+  duration_minutes: number
+  treatment: string
+  location: string
+}): string {
+  let day = input.date
+  try {
+    const d = new Date(`${input.date}T00:00:00`)
+    if (!Number.isNaN(d.getTime())) {
+      day = d.toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      })
+    }
+  } catch {
+    // keep the raw date
+  }
+  const where = /studio/i.test(input.location)
+    ? `at the studio, ${STUDIO_ADDRESS}`
+    : `at ${input.location}`
+  return `${day} at ${input.start_time}, ${input.duration_minutes} min ${input.treatment}, ${where}`
+}
+
 const SYSTEM_PROMPT = `You are Parissa, the therapist and owner of Calm & Contour, a luxury mobile massage and body-contouring service in Mallorca, Spain. You are replying in a chat window on your own website, exactly as you would on WhatsApp. Write as Parissa herself, warm, calm and human. Never say you are an AI, bot or assistant.
 
 HOW YOU WRITE, match this closely. These are REAL messages you have sent, copy this exact texture:
@@ -136,7 +165,7 @@ HOW A BOOKING HAPPENS
 - When they seem ready to book, or give you a day or time, gather across the chat: the treatment or style, the duration (60, 90 or 120 minutes, mention prices naturally), how many guests, the day and rough time, and where they are staying (villa, hotel or yacht, and the area or address). The booking form above collects all of this in one go when several are missing.
 - If you do not have their mobile number yet, ask for it so you can confirm and pass it to Parissa. Ask naturally, once, as the last step. If it was captured earlier, never ask again.
 - If you know Parissa's real availability (it will be listed below when connected), only ever offer times inside her free slots, and if their preferred time is taken suggest the nearest free ones.
-- When the booking details are all agreed and you have the book_appointment tool available, call it once to put the booking straight into Parissa's calendar, then confirm warmly, for example: "Perfect, you're booked in for Saturday at 5pm at your villa in Portals, 90 minutes of deep tissue. Parissa will message you shortly to say hello." Vary the wording every time and never use a dash.
+- When the booking details are all agreed and you have the book_appointment tool available, call it once to put the booking straight into Parissa's calendar, then confirm warmly, for example: "Perfect, you're booked in for Saturday at 5pm at your villa in Portals, 90 minutes of deep tissue. Parissa will message you shortly to say hello." Always repeat back the day, the time, the duration, the treatment and the exact place (their address, or the studio address) in that confirmation so they have everything in writing. Vary the wording every time and never use a dash.
 - If you cannot book directly (no tool available), confirm provisionally instead: "I'll pencil you in and Parissa will confirm very shortly." Never invent exact availability in that case.`
 
 // Warmer keyword fallback used only until an AI key is configured.
@@ -299,21 +328,34 @@ async function generateReply(
         const toolUse = blocks.find((b) => b.type === "tool_use")
         if (!toolUse?.id) return null
         const input = (toolUse.input ?? {}) as Record<string, unknown>
-        const result = await createBooking({
+        const details = {
           date: String(input.date ?? ""),
           start_time: String(input.start_time ?? ""),
           duration_minutes: Number(input.duration_minutes ?? 60),
           treatment: String(input.treatment ?? "Massage"),
           location: String(input.location ?? ""),
-          phone: phone as string,
-        })
+        }
+        const result = await createBooking({ ...details, phone: phone as string })
         if (result.startsWith("BOOKED")) {
-          // Confirmed booking: flip the lead to booked and tell Parissa.
-          markBookedByPhone(phone as string).catch((e) =>
+          // Confirmed booking: flip the lead to booked (with the details so
+          // /admin can prefill the client confirmation) and tell Parissa.
+          const summary = bookingSummary(details)
+          markBookedByPhone(phone as string, summary).catch((e) =>
             console.error("[chat] markBooked failed", e),
           )
+          // One-tap forward: opens WhatsApp to the client with the written
+          // confirmation ready to send. Only when the number is dialable.
+          const confirmLink = waClientLink(
+            phone as string,
+            null,
+            confirmationMessage(summary),
+          )
           sendOwnerWhatsApp(
-            `Confirmed booking ✅ ${result.replace("BOOKED: ", "")}\nClient: ${phone}\nIt's in your Google Calendar. Full chat: https://calmandcontour.com/admin`,
+            `Confirmed booking ✅ ${result.replace("BOOKED: ", "")}\nClient: ${phone}\nIt's in your Google Calendar.` +
+              (confirmLink
+                ? `\nTap to send them the confirmation: ${confirmLink}`
+                : "") +
+              `\nFull chat: https://calmandcontour.com/admin`,
           ).catch((e) => console.error("[chat] booking notify failed", e))
           availCache = null // calendar changed
         }

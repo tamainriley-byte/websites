@@ -6,8 +6,20 @@ import {
   upcomingEvents,
   type UpcomingEvent,
 } from "@/lib/gcal"
-import { isAuthed, logout, setBooked, sendReply, setTakeover } from "./actions"
+import {
+  isAuthed,
+  logout,
+  setBooked,
+  setLeadStatus,
+  sendReply,
+  setTakeover,
+} from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
+import {
+  waClientLink,
+  confirmationMessage,
+  rescheduleMessage,
+} from "@/lib/whatsapp"
 
 export const metadata: Metadata = {
   title: "Enquiries | Calm & Contour Admin",
@@ -62,6 +74,14 @@ export default async function AdminPage() {
     getConversations().catch(() => []),
     gcalConnected().catch(() => false),
   ])
+  // Chat leads are managed on their chat card; this list keeps only the
+  // enquiries that arrived through the booking form (no chat to live on).
+  const formEnquiries = enquiries.filter(
+    (e) => !e.message.startsWith("[Chat]"),
+  )
+  const bookedCount = enquiries.filter(
+    (e) => e.status === "booked" || e.status === "shown",
+  ).length
   const events: UpcomingEvent[] | null = calendarConnected
     ? await upcomingEvents(14).catch(() => null)
     : null
@@ -78,8 +98,8 @@ export default async function AdminPage() {
               {conversations.length}{" "}
               {conversations.length === 1 ? "chat" : "chats"} ·{" "}
               {enquiries.length}{" "}
-              {enquiries.length === 1 ? "enquiry" : "enquiries"} ·{" "}
-              {enquiries.filter((e) => e.status === "booked").length} booked
+              {enquiries.length === 1 ? "lead" : "leads"} · {bookedCount}{" "}
+              booked
             </p>
           </div>
           <form action={logout}>
@@ -164,25 +184,60 @@ export default async function AdminPage() {
             <ul className="mt-5 flex flex-col gap-4">
               {conversations.map((c) => {
                 const place = [c.city, c.country].filter(Boolean).join(", ")
+                const status =
+                  c.lead_status === "shown"
+                    ? "shown"
+                    : c.lead_status === "booked"
+                      ? "booked"
+                      : "new"
+                const confirmLink = c.phone
+                  ? waClientLink(
+                      c.phone,
+                      c.country,
+                      confirmationMessage(c.booking_info),
+                    )
+                  : null
+                const rescheduleLink = c.phone
+                  ? waClientLink(c.phone, c.country, rescheduleMessage())
+                  : null
                 return (
                   <li
                     key={c.session_id}
                     className="rounded-2xl border border-border bg-card p-5 shadow-sm"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      {c.phone ? (
-                        <a
-                          href={`tel:${c.phone}`}
-                          className="font-medium text-foreground hover:underline"
-                        >
-                          {c.name ? `${c.name} · ` : ""}
-                          {c.phone}
-                        </a>
-                      ) : (
-                        <span className="font-medium text-muted-foreground">
-                          Anonymous visitor
-                        </span>
-                      )}
+                      <span className="flex items-center gap-2">
+                        {c.phone ? (
+                          <a
+                            href={`tel:${c.phone}`}
+                            className="font-medium text-foreground hover:underline"
+                          >
+                            {c.name ? `${c.name} · ` : ""}
+                            {c.phone}
+                          </a>
+                        ) : (
+                          <span className="font-medium text-muted-foreground">
+                            Anonymous visitor
+                          </span>
+                        )}
+                        {c.phone && (
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide ${
+                              status === "shown"
+                                ? "bg-whatsapp text-whatsapp-foreground"
+                                : status === "booked"
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-secondary text-secondary-foreground"
+                            }`}
+                          >
+                            {status === "shown"
+                              ? "Shown ✓"
+                              : status === "booked"
+                                ? "Booked ✓"
+                                : "New"}
+                          </span>
+                        )}
+                      </span>
                       <span className="text-xs uppercase tracking-wide text-muted-foreground">
                         {formatDate(c.last_at)}
                       </span>
@@ -199,6 +254,105 @@ export default async function AdminPage() {
                         via {c.referer}
                       </p>
                     ) : null}
+                    {status !== "new" && c.booking_info ? (
+                      <p className="mt-1 text-xs text-foreground">
+                        📅 {c.booking_info}
+                      </p>
+                    ) : null}
+
+                    {/* Booking controls: manage the lead right on the chat */}
+                    {c.phone && (
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        {status === "new" ? (
+                          <form action={setLeadStatus}>
+                            <input type="hidden" name="phone" value={c.phone} />
+                            <input type="hidden" name="status" value="booked" />
+                            <button
+                              type="submit"
+                              className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
+                            >
+                              Mark booked
+                            </button>
+                          </form>
+                        ) : (
+                          <>
+                            {confirmLink && (
+                              <a
+                                href={confirmLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded-full bg-whatsapp px-3.5 py-1.5 text-xs font-medium text-whatsapp-foreground hover:opacity-90"
+                              >
+                                WhatsApp confirmation
+                              </a>
+                            )}
+                            {rescheduleLink && (
+                              <a
+                                href={rescheduleLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                              >
+                                Reschedule
+                              </a>
+                            )}
+                            {status === "booked" ? (
+                              <form action={setLeadStatus}>
+                                <input
+                                  type="hidden"
+                                  name="phone"
+                                  value={c.phone}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="status"
+                                  value="shown"
+                                />
+                                <button
+                                  type="submit"
+                                  className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                                >
+                                  Mark shown
+                                </button>
+                              </form>
+                            ) : (
+                              <form action={setLeadStatus}>
+                                <input
+                                  type="hidden"
+                                  name="phone"
+                                  value={c.phone}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="status"
+                                  value="booked"
+                                />
+                                <button
+                                  type="submit"
+                                  className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted"
+                                >
+                                  Undo shown
+                                </button>
+                              </form>
+                            )}
+                            <form action={setLeadStatus}>
+                              <input
+                                type="hidden"
+                                name="phone"
+                                value={c.phone}
+                              />
+                              <input type="hidden" name="status" value="new" />
+                              <button
+                                type="submit"
+                                className="rounded-full px-2 py-1.5 text-xs text-muted-foreground hover:underline"
+                              >
+                                Undo booked
+                              </button>
+                            </form>
+                          </>
+                        )}
+                      </div>
+                    )}
 
                     <div className="mt-4 flex flex-col gap-2">
                       {c.messages.map((m) => (
@@ -270,18 +424,19 @@ export default async function AdminPage() {
           )}
         </section>
 
-        {/* --- Booking form enquiries --- */}
+        {/* --- Booking form enquiries (chat leads live on their chat card) --- */}
         <section className="mt-14">
           <h2 className="font-serif text-2xl font-medium text-foreground">
-            Booking enquiries
+            Booking form enquiries
           </h2>
-          {enquiries.length === 0 ? (
+          {formEnquiries.length === 0 ? (
             <p className="mt-4 rounded-2xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-              No enquiries yet.
+              No form enquiries yet. Chat leads are managed on their chat
+              above.
             </p>
           ) : (
             <ul className="mt-5 flex flex-col gap-4">
-              {enquiries.map((enquiry) => {
+              {formEnquiries.map((enquiry) => {
                 const isBooked = enquiry.status === "booked"
                 return (
                   <li

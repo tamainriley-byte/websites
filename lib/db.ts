@@ -15,19 +15,23 @@ if (process.env.NODE_ENV !== "production") {
 /*  Enquiries (booking form)                                          */
 /* ------------------------------------------------------------------ */
 
+// status: 'new' → lead, 'booked' → confirmed booking, 'shown' → client
+// attended. booking_info holds the human-readable date/time/treatment/
+// location captured when the AI books, used for the client confirmation.
 export type Enquiry = {
   id: number
   phone: string
   message: string
   created_at: string
   status: string
+  booking_info: string | null
 }
 
 export async function createEnquiry(phone: string, message: string) {
   const result = await pool.query<Enquiry>(
     `INSERT INTO enquiries (phone, message)
      VALUES ($1, $2)
-     RETURNING id, phone, message, created_at, status`,
+     RETURNING id, phone, message, created_at, status, booking_info`,
     [phone, message],
   )
   return result.rows[0]
@@ -35,7 +39,7 @@ export async function createEnquiry(phone: string, message: string) {
 
 export async function getEnquiries() {
   const result = await pool.query<Enquiry>(
-    `SELECT id, phone, message, created_at, status
+    `SELECT id, phone, message, created_at, status, booking_info
      FROM enquiries
      ORDER BY created_at DESC`,
   )
@@ -67,13 +71,13 @@ export async function getWeeklyStats(days = 7): Promise<WeeklyStats> {
   }>(
     `SELECT COUNT(*) AS leads,
             COUNT(DISTINCT phone) AS unique_leads,
-            COUNT(*) FILTER (WHERE status = 'booked') AS booked
+            COUNT(*) FILTER (WHERE status IN ('booked', 'shown')) AS booked
      FROM enquiries
      WHERE created_at >= now() - ($1 || ' days')::interval`,
     [days],
   )
   const allTime = await pool.query<{ booked: string }>(
-    `SELECT COUNT(*) AS booked FROM enquiries WHERE status = 'booked'`,
+    `SELECT COUNT(*) AS booked FROM enquiries WHERE status IN ('booked', 'shown')`,
   )
   const w = week.rows[0]
   return {
@@ -171,6 +175,20 @@ export function ensureChatSchema() {
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
       `)
+      // Booking details (date/time/treatment/location) saved when the AI
+      // books, so /admin can prefill the client's WhatsApp confirmation.
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS enquiries (
+          id SERIAL PRIMARY KEY,
+          phone TEXT NOT NULL,
+          message TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          status TEXT NOT NULL DEFAULT 'new'
+        );
+      `)
+      await pool.query(
+        `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS booking_info TEXT;`,
+      )
       // One-time cleanup: the first bot version replied with canned lines
       // pointing people at WhatsApp; they linger in saved histories and
       // replay when a visitor re-opens the chat. Remove them everywhere.
@@ -352,31 +370,65 @@ export async function claimClosedNotification(
 }
 
 // Marks the latest enquiry for this phone as booked (used when the AI writes
-// a confirmed booking into the calendar).
-export async function markBookedByPhone(phone: string) {
+// a confirmed booking into the calendar). bookingInfo is the human-readable
+// summary used to prefill the client's WhatsApp confirmation.
+export async function markBookedByPhone(phone: string, bookingInfo?: string) {
   await pool.query(
-    `UPDATE enquiries SET status = 'booked'
+    `UPDATE enquiries
+     SET status = 'booked',
+         booking_info = COALESCE($2, booking_info)
      WHERE id = (
        SELECT id FROM enquiries WHERE phone = $1 ORDER BY created_at DESC LIMIT 1
      )`,
-    [phone],
+    [phone, bookingInfo ?? null],
   )
+}
+
+// Booking-status change from /admin's chat cards ('new' | 'booked' |
+// 'shown'). Chat leads always have a mirrored enquiry row; if one is
+// somehow missing, create it so the status has somewhere to live.
+export async function setLeadStatusByPhone(phone: string, status: string) {
+  const r = await pool.query(
+    `UPDATE enquiries SET status = $2
+     WHERE id = (
+       SELECT id FROM enquiries WHERE phone = $1 ORDER BY created_at DESC LIMIT 1
+     )`,
+    [phone, status],
+  )
+  if ((r.rowCount ?? 0) === 0) {
+    await pool.query(
+      `INSERT INTO enquiries (phone, message, status)
+       VALUES ($1, '[Chat] New chat started', $2)`,
+      [phone, status],
+    )
+  }
 }
 
 export type Conversation = ChatSession & {
   message_count: number
   last_message: string | null
   messages: ChatMessage[]
+  lead_status: string | null
+  booking_info: string | null
 }
 
-// All conversations for the admin view, newest activity first, with messages.
+// All conversations for the admin view, newest activity first, with messages
+// and the lead's booking status (latest enquiry row for the same phone).
 export async function getConversations(): Promise<Conversation[]> {
-  const sessions = await pool.query<ChatSession>(
-    `SELECT session_id, phone, name, ip, country, city, device, referer,
-            created_at, last_at, ai_muted
-     FROM chat_sessions
-     WHERE session_id IN (SELECT DISTINCT session_id FROM chat_messages)
-     ORDER BY last_at DESC`,
+  const sessions = await pool.query<
+    ChatSession & { lead_status: string | null; booking_info: string | null }
+  >(
+    `SELECT s.session_id, s.phone, s.name, s.ip, s.country, s.city, s.device,
+            s.referer, s.created_at, s.last_at, s.ai_muted,
+            e.status AS lead_status, e.booking_info
+     FROM chat_sessions s
+     LEFT JOIN LATERAL (
+       SELECT status, booking_info FROM enquiries
+       WHERE phone = s.phone
+       ORDER BY created_at DESC LIMIT 1
+     ) e ON true
+     WHERE s.session_id IN (SELECT DISTINCT session_id FROM chat_messages)
+     ORDER BY s.last_at DESC`,
   )
 
   const conversations: Conversation[] = []
