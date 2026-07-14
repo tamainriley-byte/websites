@@ -18,6 +18,7 @@ const services = [
   { label: "Massage Near Me", href: "/massage-near-me" },
   { label: "Massage in Palma", href: "/massage-palma" },
   { label: "Lymphatic Drainage", href: "/lymphatic-drainage-mallorca" },
+  { label: "Body Contouring", href: "/body-contouring-mallorca" },
   { label: "The Ritual · VIP", href: "/ritual-massage-mallorca" },
   { label: "Serene Flow Ritual", href: "/serene-flow-ritual-mallorca" },
   { label: "Tension Release Ritual", href: "/tension-release-massage-mallorca" },

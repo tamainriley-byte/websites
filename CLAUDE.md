@@ -11,7 +11,7 @@ _Last updated: 9 July 2026._
 **Calm & Contour** is a VIP mobile massage and body-contouring business in Mallorca, Spain. Lead therapist is **Parissa** (branding is moving to "Parissa & Friends" — a small team, not a solo). Clients book a massage at the studio or, more often, have a therapist come to their villa, yacht or hotel.
 
 - Live site: **https://calmandcontour.com**
-- Bookings/enquiries come in via an on-site AI chat (primary) and a booking form.
+- Bookings/enquiries come in via the on-site AI chat — the only funnel since 14 Jul 2026, when the owner's other session deleted the /book page and booking form. Old form enquiries remain visible in /admin.
 - Promoted with Google Ads (Search).
 - WhatsApp for bookings: **+34 602 02 07 34**
 - Studio address: **Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca** (Calvià, by Puerto Portals; ~10 min Magaluf, ~15 min Palma).
@@ -27,7 +27,7 @@ _Last updated: 9 July 2026._
 - **Hosting:** Vercel project named **`websites`** (personal / Hobby scope).
   - WARNING: there is a separate, OLD project/folder called **`massage-website-with-booking`** on a different Vercel account ("Terry Pro"). That is NOT the live site. Ignore it. Live = the repo above → Vercel project `websites`.
 - **Owner admin panel:** https://calmandcontour.com/admin — password **`Mallorcamassage`**. Shows every chat conversation (full transcript + device + city) and every booking-form enquiry.
-- **Booking page:** https://calmandcontour.com/book
+- **Booking page:** REMOVED 14 Jul 2026 (/book + book-form deleted; chat is the funnel). `api/enquiries` route kept for the chat's enquiry mirror.
 - **Google Ads:** account **806-912-8725**, campaign **"Calm & Contour - Search"** (campaignId `23988820494`, Ad group 1). Bidding = Maximize clicks, ~€25/day.
 - **Database:** Neon Postgres (connection via `DATABASE_URL`). Tables: `enquiries`, `chat_sessions`, `chat_messages`. Schema auto-creates on first request (`ensureChatSchema` in `lib/db.ts`).
 
@@ -94,7 +94,8 @@ components/
   site-header.tsx              Nav: navLinks[] + services[] drive desktop dropdown & mobile menu
   chat-widget.tsx              Floating on-site AI chat ("Chat with Parissa")
   cta-footer.tsx               Shared CTA + footer
-  hero, about, treatments, pricing, gallery, book-form, admin-login-form
+  hero, about, treatments, pricing, gallery, admin-login-form
+  whatsapp-conversion-tracker.tsx  UNUSED (click-conversion experiment, added+removed 14 Jul — do not re-add without owner decision)
   ui/                          shadcn-style primitives
 lib/
   db.ts                        All Postgres queries + types (incl. app_settings, cold-lead queries)
@@ -123,7 +124,7 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 
 ## 7. How the lead flow works (end to end)
 
-1. **Every green button opens the on-site chat (OWNER DECISION, 11 Jul 2026).** History: buttons were intercepted 8–10 Jul while the AI was broken and leads collapsed; reverted to WhatsApp-direct on 10 Jul; owner reinstated full interception on 11 Jul now that the AI works, the number gate captures every chatter, and bookings write to the calendar. **Conversion moved off the click on 12 Jul 2026 (owner decision):** `trackLeadConversion()` fires only when a mobile number is saved in the chat or the booking form is submitted — a click alone no longer counts. **Watch the daily report: if leads drop again, raise it with the owner immediately.**
+1. **Every green button opens the on-site chat (OWNER DECISION, 11 Jul 2026).** History: buttons were intercepted 8–10 Jul while the AI was broken and leads collapsed; reverted to WhatsApp-direct on 10 Jul; owner reinstated full interception on 11 Jul now that the AI works, the number gate captures every chatter, and bookings write to the calendar. **Conversion moved off the click on 12 Jul 2026 (owner decision):** `trackLeadConversion()` fires only when a mobile number is saved in the chat — a click alone no longer counts (the booking form that also fired it was deleted 14 Jul). **Watch the daily report: if leads drop again, raise it with the owner immediately.**
 2. The chat's single composer starts as a **mobile capture bar** (`type=tel autocomplete=tel` → the phone offers the visitor's own number, 7–15 digit check) and becomes the message box once a number is saved — so every chatter is captured before they can talk. Numbers typed in chat are also captured inline (`extractPhone`).
 3. `app/api/chat/route.ts` generates replies with Claude (system prompt = warm, texts like Parissa, never says it's an AI; suggests coming to them first; gathers style + 60/90 minutes + day/time + address; asks for the mobile last if not captured). If `ANTHROPIC_API_KEY` is missing it falls back to keyword replies.
 4. **Google Calendar (once connected):** the AI is given Parissa's real free slots (next 7 days, from free/busy) and only offers those times. When the client agrees all details it calls the `book_appointment` tool → event written to her calendar, the lead auto-marked `booked` in enquiries, and Parissa WhatsApp'd "Confirmed booking ✅". Not connected → provisional bookings as before. **Tripwire (14 Jul 2026):** the model once told a client "estás reservado" without calling the tool (no event written). The prompt now forbids booking claims without a BOOKED tool result, and the route scans replies for booked-claim language (EN+ES regex `BOOKED_CLAIM`) when the tool was available but unused → WhatsApps Parissa "⚠️ Check the diary" so no client is silently lost.
@@ -137,7 +138,7 @@ Key `lib/db.ts` functions: `createEnquiry`, `getEnquiries`, `saveChatMessage`, `
 
 - Campaign "Calm & Contour - Search" is the live one. Demand Gen / "dynamic" campaigns were paused (low-intent leads, poor conversion — the callers who hung up).
 - The campaign has **76 keywords** (confirmed on-screen). Many specific "money terms" (e.g. "poolside massage mallorca", "boat massage mallorca") are **"Not eligible — Low search volume"** so they don't serve. Fix = run those as **broad match with a tight negative-keyword list**, not more ultra-specific phrases. Only broad generic terms (massage studio, massage and wellness) are getting clicks — which brings wrong-fit studio requests.
-- **"Conversions" in Google Ads = captured leads (mobile saved in chat, or booking form sent) since 12 Jul 2026.** Before that date a conversion was just a click on a green button, so older conversion counts are inflated — don't compare across the boundary. A lead still ≠ a booking; don't read conversions as revenue. Bidding is Maximize clicks so the change disturbs nothing; only switch to Maximize conversions once there are 15+ conversions in the last 30 days.
+- **"Conversions" in Google Ads = captured leads (mobile saved in chat) since 12 Jul 2026.** Before that date a conversion was just a click on a green button, so older conversion counts are inflated — don't compare across the boundary. A lead still ≠ a booking; don't read conversions as revenue. Bidding is Maximize clicks so the change disturbs nothing; only switch to Maximize conversions once there are 15+ conversions in the last 30 days.
 
 ---
 
