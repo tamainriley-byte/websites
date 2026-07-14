@@ -362,16 +362,80 @@ export default async function AdminPage({
                     {c.phone && (
                       <div className="mt-3 flex flex-wrap items-center gap-2">
                         {status === "new" ? (
-                          <form action={setLeadStatus}>
-                            <input type="hidden" name="phone" value={c.phone} />
-                            <input type="hidden" name="status" value="booked" />
-                            <button
-                              type="submit"
-                              className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
-                            >
-                              Mark booked
-                            </button>
-                          </form>
+                          <>
+                            <form action={setLeadStatus}>
+                              <input
+                                type="hidden"
+                                name="phone"
+                                value={c.phone}
+                              />
+                              <input
+                                type="hidden"
+                                name="status"
+                                value="booked"
+                              />
+                              <button
+                                type="submit"
+                                className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
+                              >
+                                Mark booked
+                              </button>
+                            </form>
+                            {calendarConnected && (
+                              <details className="w-full">
+                                <summary className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground">
+                                  Book + add to calendar…
+                                </summary>
+                                <form
+                                  action={addManualBooking}
+                                  className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="phone"
+                                    value={c.phone}
+                                  />
+                                  <input
+                                    type="date"
+                                    name="date"
+                                    required
+                                    className="rounded-lg border border-border bg-background px-3 py-2 text-xs"
+                                  />
+                                  <input
+                                    type="time"
+                                    name="time"
+                                    required
+                                    className="rounded-lg border border-border bg-background px-3 py-2 text-xs"
+                                  />
+                                  <select
+                                    name="duration"
+                                    defaultValue="60"
+                                    className="rounded-lg border border-border bg-background px-3 py-2 text-xs"
+                                  >
+                                    <option value="60">60 min</option>
+                                    <option value="90">90 min</option>
+                                    <option value="120">120 min</option>
+                                  </select>
+                                  <input
+                                    name="treatment"
+                                    placeholder="Treatment"
+                                    className="rounded-lg border border-border bg-background px-3 py-2 text-xs"
+                                  />
+                                  <input
+                                    name="location"
+                                    placeholder="studio, or address"
+                                    className="rounded-lg border border-border bg-background px-3 py-2 text-xs"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-90"
+                                  >
+                                    Add to calendar
+                                  </button>
+                                </form>
+                              </details>
+                            )}
+                          </>
                         ) : (
                           <>
                             {confirmLink && (

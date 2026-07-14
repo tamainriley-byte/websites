@@ -57,6 +57,16 @@ const areas = [
   "Andratx", "Port d'Andratx", "Camp de Mar", "Llucmajor",
 ]
 
+// Towns with their own landing page get a link (SEO: crawlable from here).
+const townPages: Record<string, string> = {
+  Palma: "/massage-palma",
+  "El Arenal": "/massage-el-arenal",
+  Magaluf: "/massage-magaluf",
+  Palmanova: "/massage-palmanova",
+  "Santa Ponsa": "/massage-santa-ponsa",
+  Paguera: "/massage-paguera",
+}
+
 const faqs = [
   {
     q: "How quickly can someone come to me?",
@@ -143,17 +153,28 @@ export default function Page() {
             Areas near you
           </h2>
           <p className="mt-5 leading-relaxed text-muted-foreground">
-            We cover the whole island. A few of the areas we visit most:
+            Home visits across the south and southwest. The areas we visit most:
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            {areas.map((a) => (
-              <span
-                key={a}
-                className="rounded-full border border-border bg-card px-4 py-1.5 text-sm text-foreground"
-              >
-                {a}
-              </span>
-            ))}
+            {areas.map((a) => {
+              const href = townPages[a]
+              return href ? (
+                <a
+                  key={a}
+                  href={href}
+                  className="rounded-full border border-border bg-card px-4 py-1.5 text-sm text-foreground transition-colors hover:bg-secondary"
+                >
+                  {a}
+                </a>
+              ) : (
+                <span
+                  key={a}
+                  className="rounded-full border border-border bg-card px-4 py-1.5 text-sm text-foreground"
+                >
+                  {a}
+                </span>
+              )
+            })}
           </div>
           <div className="mt-8 rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-2 text-foreground">
