@@ -101,12 +101,6 @@ export function SiteHeader() {
             )}
           </div>
 
-          <a
-            href="/book"
-            className={`text-sm tracking-wide transition-colors hover:opacity-70 ${linkColor}`}
-          >
-            Book
-          </a>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -162,13 +156,6 @@ export function SiteHeader() {
               {s.label}
             </a>
           ))}
-          <a
-            href="/book"
-            onClick={() => setMobileOpen(false)}
-            className="block py-3 text-base text-foreground"
-          >
-            Book
-          </a>
         </nav>
       )}
     </header>
