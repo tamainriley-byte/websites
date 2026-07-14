@@ -13,6 +13,7 @@ import {
   setLeadStatus,
   sendReply,
   setTakeover,
+  addManualBooking,
 } from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
 import {
@@ -48,8 +49,13 @@ function flag(country: string | null) {
   )
 }
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ manual?: string }>
+}) {
   const authed = await isAuthed()
+  const manual = (await searchParams)?.manual
 
   if (!authed) {
     return (
@@ -140,6 +146,73 @@ export default async function AdminPage() {
             </a>
           ) : null}
         </div>
+
+        {/* --- Add a booking by hand (walk-ins, WhatsApp bookings) --- */}
+        {calendarConnected && (
+          <details className="mt-6 rounded-2xl border border-border bg-card p-4">
+            <summary className="cursor-pointer text-sm font-medium text-foreground">
+              Add booking to calendar
+            </summary>
+            {manual === "ok" && (
+              <p className="mt-2 rounded-lg bg-whatsapp/15 px-3 py-2 text-sm text-foreground">
+                Booking added to the calendar ✓
+              </p>
+            )}
+            {manual === "error" && (
+              <p className="mt-2 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700">
+                That didn&apos;t save, check the date and time and try again.
+              </p>
+            )}
+            <form
+              action={addManualBooking}
+              className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3"
+            >
+              <input
+                type="date"
+                name="date"
+                required
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              />
+              <input
+                type="time"
+                name="time"
+                required
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              />
+              <select
+                name="duration"
+                defaultValue="60"
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="60">60 min</option>
+                <option value="90">90 min</option>
+                <option value="120">120 min</option>
+              </select>
+              <input
+                name="treatment"
+                placeholder="Treatment (e.g. deep tissue)"
+                className="col-span-2 rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1"
+              />
+              <input
+                name="location"
+                placeholder="studio, or their address"
+                className="col-span-2 rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1"
+              />
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Client mobile (optional)"
+                className="col-span-2 rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1"
+              />
+              <button
+                type="submit"
+                className="col-span-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:col-span-3"
+              >
+                Add to calendar
+              </button>
+            </form>
+          </details>
+        )}
 
         {/* --- Upcoming bookings (Parissa's calendar, next 14 days) --- */}
         {events !== null && (

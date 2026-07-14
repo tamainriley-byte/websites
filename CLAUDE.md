@@ -15,6 +15,7 @@ _Last updated: 9 July 2026._
 - Promoted with Google Ads (Search).
 - WhatsApp for bookings: **+34 602 02 07 34**
 - Studio address: **Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca** (Calvià, by Puerto Portals; ~10 min Magaluf, ~15 min Palma).
+- **Service area (owner decision 14 Jul 2026): home visits cover the SOUTH/SOUTHWEST of Mallorca only** — Palma, El Arenal/Llucmajor coast, Illetas, Bendinat, Portals, Palmanova, Magaluf, Santa Ponsa, Paguera, Camp de Mar, Andratx. North/east of the island and other islands (a Menorca lead once slipped through) → studio only. Enforced in the chat prompt, all service pages, and GOOGLE-ADS.md (location targeting Mallorca + presence-only, northern towns as negatives).
 - Pricing (ladder set 11 Jul 2026; studio = €1.50/min): mobile €130/€155/€180 for 60/90/120 min. Studio €90/€135/€180. **The Ritual** (VIP, 120 min, warm oils + hot stones + hot towel rub down + herbal tea) €200 anywhere — 2-hour option ONLY, sits €20 above plain 120 min. ALL rituals (The Ritual, Serene Flow, Tension Release) are 2h-only, €200 anywhere. COUPLES REMOVED 11 Jul 2026 (no second therapist available) — two people = back-to-back sessions, same per-person prices; /couples-massage-mallorca page deleted.
 
 **Business goal:** get more real leads into the team's hands and know the unit economics (cost per booking) so ad spend and team size can be scaled. Longer term, turn this into a booking + payment app (see Roadmap) and roll out city by city.

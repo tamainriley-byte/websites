@@ -30,7 +30,7 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Andratx", "Alcúdia", "Pollensa", "Calvià", "Mallorca",
+    "Andratx", "Palmanova", "Paguera", "Calvià", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",
@@ -65,7 +65,7 @@ const faqs = [
   },
   {
     q: "Where can I have it?",
-    a: "At the studio in Portals Nous (€90 for 60 minutes, €135 for 90), or Parissa brings everything to your villa, hotel or yacht anywhere in Mallorca (€130 for 60 minutes, €155 for 90).",
+    a: "At the studio in Portals Nous (€90 for 60 minutes, €135 for 90), or Parissa brings everything to your villa, hotel or yacht across the south and southwest of Mallorca (€130 for 60 minutes, €155 for 90).",
   },
   {
     q: "Is it the same as maderoterapia?",
@@ -100,7 +100,7 @@ export default function Page() {
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-cream/85">
             De-bloat, define and recover. Parissa's signature lymphatic
             drainage, at the Portals Nous studio or brought to your villa,
-            hotel or yacht anywhere on the island.
+            hotel or yacht across the south of the island.
           </p>
           <a
             href={WA}

@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Massage Near Me in Mallorca | Same-Day Mobile Massage | Calm & Contour",
   description:
-    "Looking for a massage near you in Mallorca? Calm & Contour comes to your villa, hotel or yacht, often same day. Portals, Palma, Magaluf, Santa Ponsa and across the island. From €130. Book on WhatsApp.",
+    "Looking for a massage near you in Mallorca? Calm & Contour comes to your villa, hotel or yacht, often same day. Portals, Palma, Magaluf, Santa Ponsa and across the south of the island. From €130. Book on WhatsApp.",
   alternates: { canonical: "https://www.calmandcontour.com/massage-near-me" },
   openGraph: {
     title: "Massage Near Me in Mallorca | Calm & Contour",
@@ -30,8 +30,8 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Bendinat", "Andratx", "Alcúdia", "Pollensa", "Calvià", "El Arenal",
-    "Paguera", "Can Picafort", "Playa de Muro", "Cala d'Or", "Mallorca",
+    "Bendinat", "Illetas", "Andratx", "Port d'Andratx", "Calvià",
+    "El Arenal", "Paguera", "Camp de Mar", "Palmanova", "Llucmajor",
   ],
   address: {
     "@type": "PostalAddress",
@@ -50,11 +50,11 @@ const jsonLd = {
 }
 
 // Ordered to match what people actually search (Google Ads search terms).
+// South & southwest only — the north is too far for home visits.
 const areas = [
   "Palma", "El Arenal", "Magaluf", "Palmanova", "Santa Ponsa", "Paguera",
-  "Portals Nous", "Puerto Portals", "Bendinat", "Calvià", "Andratx",
-  "Port d'Andratx", "Camp de Mar", "Alcúdia", "Can Picafort",
-  "Playa de Muro", "Pollensa", "Cala d'Or",
+  "Portals Nous", "Puerto Portals", "Bendinat", "Illetas", "Calvià",
+  "Andratx", "Port d'Andratx", "Camp de Mar", "Llucmajor",
 ]
 
 const faqs = [
@@ -68,7 +68,7 @@ const faqs = [
   },
   {
     q: "Which areas do you cover?",
-    a: "The whole island. In the southwest: Palma, El Arenal, Magaluf, Santa Ponsa, Paguera, Portals and Andratx. In the north and east: Alcúdia, Can Picafort, Playa de Muro, Pollensa and Cala d'Or. If you are elsewhere, just ask.",
+    a: "Home visits cover the south and southwest of the island: Palma, El Arenal, Illetas, Bendinat, Portals, Palmanova, Magaluf, Santa Ponsa, Paguera, Camp de Mar and Andratx. Staying further north or east? The studio in Portals Nous welcomes you, and it's cheaper than a home visit.",
   },
   {
     q: "How much does it cost?",
@@ -103,7 +103,7 @@ export default function Page() {
           <p className="mx-auto mt-5 max-w-xl text-pretty leading-relaxed text-cream/85">
             Searching for a massage near you? Instead of finding a spa, let the
             spa come to you. Parissa brings a boutique treatment to your villa,
-            hotel or yacht anywhere on the island, often the same day.
+            hotel or yacht across the south of the island, often the same day.
           </p>
           <a
             href={WA}

@@ -6,9 +6,11 @@ import { revalidatePath } from "next/cache"
 import {
   updateEnquiryStatus,
   setLeadStatusByPhone,
+  markBookedByPhone,
   saveChatMessage,
   setAiMuted,
 } from "@/lib/db"
+import { createBooking } from "@/lib/gcal"
 
 const COOKIE_NAME = "admin_auth"
 
@@ -51,6 +53,61 @@ export async function setBooked(formData: FormData) {
   const booked = formData.get("booked") === "1"
   await updateEnquiryStatus(id, booked ? "booked" : "new")
   revalidatePath("/admin")
+}
+
+const STUDIO_ADDRESS =
+  "Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca"
+
+// Manual booking from /admin: writes straight into Parissa's Google
+// Calendar (walk-ins, WhatsApp bookings, or rescuing a chat booking the
+// AI confirmed but failed to write).
+export async function addManualBooking(formData: FormData) {
+  if (!(await isAuthed())) return
+  const phone = String(formData.get("phone") ?? "").trim().slice(0, 40)
+  const date = String(formData.get("date") ?? "")
+  const time = String(formData.get("time") ?? "")
+  const durationRaw = Number(formData.get("duration") ?? 60)
+  const duration = [60, 90, 120].includes(durationRaw) ? durationRaw : 60
+  const treatment =
+    String(formData.get("treatment") ?? "").trim().slice(0, 100) || "Massage"
+  const location =
+    String(formData.get("location") ?? "").trim().slice(0, 200) || "studio"
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
+    redirect("/admin?manual=error")
+  }
+
+  const result = await createBooking({
+    date,
+    start_time: time,
+    duration_minutes: duration,
+    treatment,
+    location,
+    phone: phone || "manual booking",
+  })
+
+  if (result.startsWith("BOOKED")) {
+    if (phone) {
+      let day = date
+      const d = new Date(`${date}T00:00:00`)
+      if (!Number.isNaN(d.getTime())) {
+        day = d.toLocaleDateString("en-GB", {
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+        })
+      }
+      const where = /studio/i.test(location)
+        ? `at the studio, ${STUDIO_ADDRESS}`
+        : `at ${location}`
+      await markBookedByPhone(
+        phone,
+        `${day} at ${time}, ${duration} min ${treatment}, ${where}`,
+      ).catch(() => {})
+    }
+    revalidatePath("/admin")
+    redirect("/admin?manual=ok")
+  }
+  redirect("/admin?manual=error")
 }
 
 // Booking status straight from a chat card: new → booked → shown.

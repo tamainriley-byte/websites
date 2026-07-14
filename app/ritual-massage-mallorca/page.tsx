@@ -30,7 +30,7 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Andratx", "Alcúdia", "Pollensa", "Calvià", "Mallorca",
+    "Andratx", "Palmanova", "Paguera", "Calvià", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",

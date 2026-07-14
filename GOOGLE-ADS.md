@@ -14,6 +14,14 @@ the shared **negative keyword list** at the bottom. Pause the old generic keywor
 All headlines ≤30 characters, descriptions ≤90 characters (validated). Pin nothing;
 let Google rotate. Use sitelinks to the other service pages.
 
+**Location targeting (owner decision, 14 Jul 2026):** in campaign Settings → Locations,
+target **Mallorca, Spain** (the island) and under Location options set
+**"Presence: people in or regularly in your targeted locations"** — NOT the default
+"presence or interest". This stops ads showing to people on Menorca/Ibiza or abroad
+(a Menorca lead already slipped through). Home visits are **south/southwest only**
+(Palma–Calvià–Andratx corridor + El Arenal/Llucmajor); the north/east is served by
+the studio, and the ad copy below reflects that.
+
 ---
 
 ## 1. Mobile Massage → `/mobile-massage-mallorca`
@@ -23,7 +31,7 @@ let Google rotate. Use sitelinks to the other service pages.
 **Headlines**
 - Mobile Massage Mallorca
 - Massage At Your Villa
-- We Come To You Island-Wide
+- Across The South Coast
 - Table, Oils & Setup Included
 - From €130 · 60 Minutes
 - Qualified Local Therapist
@@ -33,7 +41,7 @@ let Google rotate. Use sitelinks to the other service pages.
 - Boutique Mobile Spa
 
 **Descriptions**
-- Luxury mobile massage brought to your villa, yacht or hotel anywhere in Mallorca.
+- Luxury mobile massage to your villa, yacht or hotel across the south of Mallorca.
 - Parissa brings the table, oils and everything. You simply lie back and unwind.
 - From €130 for 60 minutes. Message us and get booked in within minutes.
 - Swedish, deep tissue, sports & more, tailored to you, wherever you're staying.
@@ -142,26 +150,27 @@ let Google rotate. Use sitelinks to the other service pages.
 ## 8. Town Searches → `/massage-near-me` ⭐ DATA-DRIVEN
 
 Built from the account's real search terms (10 Jul 2026): people search **"massage +
-their town"**, heavily north/east coast resorts. This group catches them all, and the
-first headline echoes the exact town they typed.
+their town"**. The first headline echoes the exact town they typed. SOUTH/SOUTHWEST
+TOWNS ONLY (owner decision 14 Jul: the north is too far for home visits) — the
+northern resort towns are in the negative list below so broad match can't leak there.
 
-**Keywords (broad):** massage magaluf · massage el arenal · massage alcudia · massage can picafort · massage playa de muro · massage pollensa · massage paguera · massage peguera · massage cala d'or · massage port andratx · massage santa ponsa · massage palmanova · massage cala millor · massage porto cristo · massage soller
+**Keywords (broad):** massage magaluf · massage el arenal · massage paguera · massage peguera · massage port andratx · massage santa ponsa · massage palmanova · massage portals nous · massage illetas · massage bendinat · massage camp de mar · massage llucmajor
 
 **Headlines**
-- {KeyWord:Massage In Mallorca}  ← dynamic: shows the searched town, e.g. "Massage Alcudia"
+- {KeyWord:Massage In Mallorca}  ← dynamic: shows the searched town, e.g. "Massage Magaluf"
 - We Come To Your Hotel
-- Anywhere On The Island
-- North & East Coast Covered
+- Across The South Coast
+- Palma To Andratx Covered
 - Same-Day Where Possible
 - From €130 · At Your Place
 - Table & Oils Brought To You
 - Qualified Local Therapist
 
 **Descriptions**
-- Alcúdia, Can Picafort, Playa de Muro, Pollensa, Cala d'Or, Paguera and across Mallorca.
+- Palma, El Arenal, Magaluf, Santa Ponsa, Paguera, Portals, Palmanova and Andratx.
 - Mobile massage to your hotel, villa or yacht. The full setup comes to you, from €130.
 - No spa trip needed. Message us your town and we'll confirm your time in minutes.
-- Swedish, deep tissue, sports and lymphatic drainage, tailored to you.
+- Staying further north? Visit the Portals Nous studio instead, from €90 for 60 minutes.
 
 ## 9. Lymphatic Drainage → `/lymphatic-drainage-mallorca` (new page, live)
 
@@ -219,8 +228,13 @@ now profitable traffic. Keep the shared negatives (jobs/courses/chairs etc.).
 cheap, free, jobs, job, vacancy, hiring, salary, course, courses, training,
 school, certification, machine, gun, massage gun, chair, massage chair, cushion,
 device, amazon, wholesale, tantric, tantra, erotic, sensual, happy ending,
-adult, escort, sexo, erotik, physio insurance, seguridad social
+adult, escort, sexo, erotik, physio insurance, seguridad social,
+alcudia, can picafort, playa de muro, pollensa, cala d'or, cala millor,
+porto cristo, soller, arta, cala ratjada, menorca, ciutadella, mahon, ibiza
 ```
+
+The last two lines are the out-of-area towns (north/east Mallorca + other islands):
+home visits don't go there, so don't pay for those clicks.
 
 Also **pause** these existing generic keywords: `massage studio`, `massage and wellness`,
 and any other broad single-word `massage` variants — they pull studio-bargain traffic
@@ -235,7 +249,11 @@ that doesn't convert.
    (they're within the 30/90 character limits).
 3. Set each ad's **final URL** to its mapped service page (not the homepage).
 4. Add the shared negative list at campaign level.
-5. Add sitelink assets: Treatments, The Ritual (VIP), Lymphatic Drainage, Massage in Palma.
-6. Leave bidding on Maximize Clicks for now; revisit once the daily report shows
+5. Campaign Settings → Locations: target Mallorca, Spain; Location options →
+   Presence ("people in or regularly in"). Removes Menorca/Ibiza/off-island serving.
+6. Goals → Conversions → the lead conversion action → Edit settings → Counting →
+   **One** (not Every), so one person can't count twice. Rename it "Lead captured".
+7. Add sitelink assets: Treatments, The Ritual (VIP), Lymphatic Drainage, Massage in Palma.
+8. Leave bidding on Maximize Clicks for now; revisit once the daily report shows
    cost-per-booking per week.
 ```

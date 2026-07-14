@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Mobile Massage Mallorca | Calm & Contour",
     description:
-      "Luxury mobile massage to your villa, yacht or hotel anywhere in Mallorca. From €130.",
+      "Luxury mobile massage to your villa, yacht or hotel across the south of Mallorca. From €130.",
     url: "https://www.calmandcontour.com/mobile-massage-mallorca",
     images: ["/images/hero-cove.png"],
   },
@@ -30,8 +30,8 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Palma", "Portals Nous", "Puerto Portals", "Santa Ponsa", "Magaluf",
-    "Andratx", "Alcúdia", "Pollensa", "Calvià", "El Arenal", "Paguera",
-    "Can Picafort", "Playa de Muro", "Cala d'Or", "Mallorca",
+    "Andratx", "Port d'Andratx", "Palmanova", "Calvià", "El Arenal",
+    "Paguera", "Camp de Mar", "Illetas", "Llucmajor", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",
@@ -52,11 +52,11 @@ const jsonLd = {
 const faqs = [
   {
     q: "Do you come to my villa, hotel or yacht?",
-    a: "Yes. Parissa brings the table, oils and everything to you, anywhere in Mallorca, whether that is a private villa, a hotel suite or a yacht at anchor or in port.",
+    a: "Yes. Parissa brings the table, oils and everything to you across the south and southwest of Mallorca, whether that is a private villa, a hotel suite or a yacht at anchor or in port.",
   },
   {
     q: "How far do you travel?",
-    a: "Across the whole island. Popular areas include Portals Nous, Puerto Portals, Palma, Santa Ponsa, Magaluf, Andratx, Alcúdia and Pollensa. The studio is in Portals Nous, about 10 minutes from Magaluf and 15 from Palma.",
+    a: "The south and southwest of the island: Portals Nous, Puerto Portals, Palma, El Arenal, Palmanova, Magaluf, Santa Ponsa, Paguera and Andratx. Staying further north? Come to the studio in Portals Nous, about 10 minutes from Magaluf and 15 from Palma.",
   },
   {
     q: "How much is a home visit?",
@@ -151,10 +151,11 @@ export default function Page() {
           Areas we cover
         </h2>
         <p className="mt-5 leading-relaxed text-muted-foreground">
-          We travel across Mallorca: Palma, El Arenal, Magaluf, Santa Ponsa,
-          Paguera, Portals, Bendinat and Andratx in the southwest, and Alcúdia,
-          Can Picafort, Playa de Muro, Pollensa and Cala d&apos;Or in the north
-          and east. If you are staying somewhere else on the island, just ask.
+          We travel across the south and southwest of Mallorca: Palma, El
+          Arenal, Illetas, Bendinat, Portals, Palmanova, Magaluf, Santa Ponsa,
+          Paguera, Camp de Mar and Andratx. Staying in the north or east of
+          the island? The studio in Portals Nous welcomes you, and studio
+          prices are lower than home visits.
         </p>
         <div className="mt-8 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">

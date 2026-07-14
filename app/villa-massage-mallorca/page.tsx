@@ -30,7 +30,7 @@ const jsonLd = {
   priceRange: "€€€",
   areaServed: [
     "Son Vida", "Portals Nous", "Puerto Portals", "Bendinat", "Santa Ponsa",
-    "Andratx", "Pollensa", "Deia", "Calvià", "Mallorca",
+    "Andratx", "Son Vida", "Illetas", "Calvià", "Mallorca",
   ],
   address: {
     "@type": "PostalAddress",
@@ -157,8 +157,9 @@ export default function Page() {
           Deep tissue, Swedish and relaxation, sports, hot stone, aromatherapy,
           lymphatic drainage, prenatal and reflexology, plus facials and body
           contouring. Tell us what you would like and we tailor each treatment to
-          you. We cover Son Vida, Portals Nous, Bendinat, Santa Ponsa, Andratx,
-          Deià, Pollensa and villas across the island.
+          you. We cover Son Vida, Portals Nous, Bendinat, Illetas, Palmanova,
+          Santa Ponsa, Camp de Mar, Andratx and villas across the south and
+          southwest of the island.
         </p>
         <div className="mt-8 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-foreground">
