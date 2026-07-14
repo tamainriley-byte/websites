@@ -14,6 +14,7 @@ import {
   sendReply,
   setTakeover,
   addManualBooking,
+  parseBookingText,
 } from "./actions"
 import { AdminLoginForm } from "@/components/admin-login-form"
 import {
@@ -53,10 +54,20 @@ function flag(country: string | null) {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ manual?: string }>
+  searchParams?: Promise<{
+    manual?: string
+    bdate?: string
+    btime?: string
+    bdur?: string
+    btreat?: string
+    bloc?: string
+    bphone?: string
+  }>
 }) {
   const authed = await isAuthed()
-  const manual = (await searchParams)?.manual
+  const params = (await searchParams) ?? {}
+  const manual = params.manual
+  const parsed = manual === "parsed"
 
   if (!authed) {
     return (
@@ -153,7 +164,10 @@ export default async function AdminPage({
 
         {/* --- Add a booking by hand (walk-ins, WhatsApp bookings) --- */}
         {calendarConnected && (
-          <details className="mt-6 rounded-2xl border border-border bg-card p-4">
+          <details
+            className="mt-6 rounded-2xl border border-border bg-card p-4"
+            open={parsed || manual === "error" || manual === "parsefail"}
+          >
             <summary className="cursor-pointer text-sm font-medium text-foreground">
               Add booking to calendar
             </summary>
@@ -167,25 +181,55 @@ export default async function AdminPage({
                 That didn&apos;t save, check the date and time and try again.
               </p>
             )}
+            {manual === "parsefail" && (
+              <p className="mt-2 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700">
+                Couldn&apos;t read that text, fill the form below by hand.
+              </p>
+            )}
+            {parsed && (
+              <p className="mt-2 rounded-lg bg-whatsapp/15 px-3 py-2 text-sm text-foreground">
+                Details read from your paste — check them, add anything
+                missing, then Add to calendar.
+              </p>
+            )}
+
+            {/* Paste a WhatsApp message; the AI fills the form below. */}
+            <form action={parseBookingText} className="mt-3">
+              <textarea
+                name="text"
+                rows={3}
+                placeholder="Paste the WhatsApp message or conversation here and the details are read for you… e.g. 'Hi can I book 90 min deep tissue tomorrow at 6pm at Villa Sol, Santa Ponsa? My number is +44…'"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              />
+              <button
+                type="submit"
+                className="mt-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+              >
+                Read details from paste
+              </button>
+            </form>
+
             <form
               action={addManualBooking}
-              className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3"
+              className="mt-4 grid grid-cols-2 gap-2 border-t border-border/60 pt-4 sm:grid-cols-3"
             >
               <input
                 type="date"
                 name="date"
                 required
+                defaultValue={params.bdate ?? ""}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               />
               <input
                 type="time"
                 name="time"
                 required
+                defaultValue={params.btime ?? ""}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               />
               <select
                 name="duration"
-                defaultValue="60"
+                defaultValue={params.bdur ?? "60"}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="60">60 min</option>
@@ -195,17 +239,20 @@ export default async function AdminPage({
               <input
                 name="treatment"
                 placeholder="Treatment (e.g. deep tissue)"
+                defaultValue={params.btreat ?? ""}
                 className="col-span-2 rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1"
               />
               <input
                 name="location"
                 placeholder="studio, or their address"
+                defaultValue={params.bloc ?? ""}
                 className="col-span-2 rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1"
               />
               <input
                 name="phone"
                 type="tel"
                 placeholder="Client mobile (optional)"
+                defaultValue={params.bphone ?? ""}
                 className="col-span-2 rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1"
               />
               <button

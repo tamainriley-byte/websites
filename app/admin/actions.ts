@@ -58,6 +58,86 @@ export async function setBooked(formData: FormData) {
 const STUDIO_ADDRESS =
   "Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca"
 
+// Paste-to-book: Parissa pastes a WhatsApp message/conversation and the AI
+// pulls out the booking details, which prefill the add-booking form for a
+// human check before anything touches the calendar.
+export async function parseBookingText(formData: FormData) {
+  if (!(await isAuthed())) return
+  const text = String(formData.get("text") ?? "")
+    .trim()
+    .slice(0, 4000)
+  if (!text) redirect("/admin?manual=parsefail")
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) redirect("/admin?manual=parsefail")
+
+  const now = new Date()
+  const today = now.toLocaleDateString("en-CA", { timeZone: "Europe/Madrid" })
+  const weekday = now.toLocaleDateString("en-GB", {
+    weekday: "long",
+    timeZone: "Europe/Madrid",
+  })
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: process.env.PARISSA_MODEL || "claude-haiku-4-5",
+        max_tokens: 300,
+        system: `Extract massage booking details from pasted text (often a WhatsApp conversation, any language). Today is ${weekday} ${today}, timezone Europe/Madrid — resolve relative dates like "tomorrow" or "Friday" to real dates. "The studio" means the therapist's studio; output location "studio" for it. Leave any field you cannot find as an empty string. Never invent details.`,
+        messages: [{ role: "user", content: text }],
+        tools: [
+          {
+            name: "extracted_booking",
+            description: "The booking details found in the text",
+            input_schema: {
+              type: "object",
+              properties: {
+                date: { type: "string", description: "YYYY-MM-DD, or empty" },
+                start_time: { type: "string", description: "HH:MM 24h, or empty" },
+                duration_minutes: { type: "string", description: "60, 90 or 120, or empty" },
+                treatment: { type: "string", description: "e.g. deep tissue massage, or empty" },
+                location: { type: "string", description: "'studio' or the address/area, or empty" },
+                phone: { type: "string", description: "client mobile if present, or empty" },
+              },
+              required: [],
+            },
+          },
+        ],
+        tool_choice: { type: "tool", name: "extracted_booking" },
+      }),
+    })
+    if (!res.ok) redirect("/admin?manual=parsefail")
+    const data = (await res.json()) as {
+      content?: Array<{ type: string; input?: Record<string, unknown> }>
+    }
+    const tool = data.content?.find((b) => b.type === "tool_use")
+    const got = (tool?.input ?? {}) as Record<string, unknown>
+    const q = new URLSearchParams()
+    const set = (key: string, val: unknown) => {
+      const s = String(val ?? "").trim()
+      if (s) q.set(key, s.slice(0, 200))
+    }
+    set("bdate", got.date)
+    set("btime", got.start_time)
+    set("bdur", got.duration_minutes)
+    set("btreat", got.treatment)
+    set("bloc", got.location)
+    set("bphone", got.phone)
+    q.set("manual", "parsed")
+    redirect(`/admin?${q.toString()}`)
+  } catch (err) {
+    // redirect() throws internally — let those through.
+    if (err && typeof err === "object" && "digest" in err) throw err
+    console.error("[admin] parseBookingText failed", err)
+    redirect("/admin?manual=parsefail")
+  }
+}
+
 // Manual booking from /admin: writes straight into Parissa's Google
 // Calendar (walk-ins, WhatsApp bookings, or rescuing a chat booking the
 // AI confirmed but failed to write).
