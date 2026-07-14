@@ -166,6 +166,8 @@ HOW A BOOKING HAPPENS
 - If you do not have their mobile number yet, ask for it so you can confirm and pass it to Parissa. Ask naturally, once, as the last step. If it was captured earlier, never ask again.
 - If you know Parissa's real availability (it will be listed below when connected), only ever offer times inside her free slots, and if their preferred time is taken suggest the nearest free ones.
 - When the booking details are all agreed and you have the book_appointment tool available, call it once to put the booking straight into Parissa's calendar, then confirm warmly, for example: "Perfect, you're booked in for Saturday at 5pm at your villa in Portals, 90 minutes of deep tissue. Parissa will message you shortly to say hello." Always repeat back the day, the time, the duration, the treatment and the exact place (their address, or the studio address) in that confirmation so they have everything in writing. Vary the wording every time and never use a dash.
+- CRITICAL: saying "you're booked" does NOT create a booking. A booking only exists once the book_appointment tool has returned BOOKED in this conversation. When the client agrees the final details (says yes, correct, perfect), you MUST call book_appointment BEFORE you write your confirmation. Never tell a client they are booked or reserved if the tool has not returned BOOKED. If the tool returns an ERROR, apologise, say Parissa will confirm the time personally, and never claim it is in the diary.
+- You only work on MALLORCA. Ciutadella and Mahón are on Menorca and Ibiza town is on Ibiza, different islands: you cannot travel there. If someone is on another island, they can only book by coming to the studio in Portals Nous when they visit Mallorca.
 - If you cannot book directly (no tool available), confirm provisionally instead: "I'll pencil you in and Parissa will confirm very shortly." Never invent exact availability in that case.`
 
 // Warmer keyword fallback used only until an AI key is configured.
@@ -268,15 +270,24 @@ async function cachedAvailability(): Promise<string | null> {
   return text
 }
 
-// Calls Anthropic if ANTHROPIC_API_KEY is set; returns null on any failure.
-// Runs a small tool loop so the AI can write confirmed bookings into
-// Parissa's calendar when everything is agreed.
+type ReplyResult = {
+  text: string | null
+  // A book_appointment call returned BOOKED while producing this reply.
+  booked: boolean
+  // The booking tool was on offer (calendar connected + number captured),
+  // so a booking claim without `booked` means the AI skipped the tool.
+  couldBook: boolean
+}
+
+// Calls Anthropic if ANTHROPIC_API_KEY is set; returns text:null on any
+// failure. Runs a small tool loop so the AI can write confirmed bookings
+// into Parissa's calendar when everything is agreed.
 async function generateReply(
   history: Array<{ role: ChatRole; content: string }>,
   phone: string | null,
-): Promise<string | null> {
+): Promise<ReplyResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) return null
+  if (!apiKey) return { text: null, booked: false, couldBook: false }
   // claude-3-5-haiku was retired by Anthropic on 19 Feb 2026 — calls to it
   // 404 and the chat silently degrades to keyword fallbacks. Keep this on a
   // current model ID (claude-haiku-4-5 is the cheapest/fastest tier).
@@ -291,6 +302,7 @@ async function generateReply(
     system += `\n\nPARISSA'S REAL AVAILABILITY, next 7 days, Mallorca time (only offer times inside these free slots):\n${availability}`
   }
   const canBook = Boolean(phone && availability !== null)
+  let bookedInReply = false
 
   let messages: Array<{ role: string; content: unknown }> = history.map(
     (m) => ({ role: m.role, content: m.content }),
@@ -316,7 +328,7 @@ async function generateReply(
       })
       if (!res.ok) {
         console.error("[chat] Anthropic error", res.status, await res.text())
-        return null
+        return { text: null, booked: bookedInReply, couldBook: canBook }
       }
       const data = (await res.json()) as {
         stop_reason?: string
@@ -326,7 +338,8 @@ async function generateReply(
 
       if (data.stop_reason === "tool_use" && canBook && i < 2) {
         const toolUse = blocks.find((b) => b.type === "tool_use")
-        if (!toolUse?.id) return null
+        if (!toolUse?.id)
+          return { text: null, booked: bookedInReply, couldBook: canBook }
         const input = (toolUse.input ?? {}) as Record<string, unknown>
         const details = {
           date: String(input.date ?? ""),
@@ -337,6 +350,7 @@ async function generateReply(
         }
         const result = await createBooking({ ...details, phone: phone as string })
         if (result.startsWith("BOOKED")) {
+          bookedInReply = true
           // Confirmed booking: flip the lead to booked (with the details so
           // /admin can prefill the client confirmation) and tell Parissa.
           const summary = bookingSummary(details)
@@ -377,14 +391,20 @@ async function generateReply(
         .map((b) => b.text as string)
         .join("")
         .trim()
-      return text || null
+      return { text: text || null, booked: bookedInReply, couldBook: canBook }
     }
-    return null
+    return { text: null, booked: bookedInReply, couldBook: canBook }
   } catch (err) {
     console.error("[chat] Anthropic request failed", err)
-    return null
+    return { text: null, booked: bookedInReply, couldBook: canBook }
   }
 }
+
+// Booking-confirmation language, EN + ES. Used as a tripwire: if the AI
+// tells the client they're booked without the tool having run, Parissa
+// gets warned so the appointment doesn't silently miss the calendar.
+const BOOKED_CLAIM =
+  /est[aá]s? reservad|queda(?:s)? reservad|te he reservad|has quedado reservad|tu reserva est[aá]|you'?re (?:all )?booked|you are (?:all )?booked|booked you in|i'?ve booked/i
 
 // Owner notifications (new-lead ping, final transcript, cold sweep) live in
 // lib/notify.ts so the report cron can reuse them.
@@ -523,8 +543,17 @@ export async function POST(request: Request) {
     const history = await getChatHistory(sessionId)
     const llmHistory = history.map((m) => ({ role: m.role, content: m.content }))
 
-    let reply = await generateReply(llmHistory, phone)
-    if (!reply) reply = fallbackReply(text)
+    const result = await generateReply(llmHistory, phone)
+    const reply = result.text || fallbackReply(text)
+
+    // Tripwire: the AI told the client they're booked but never wrote the
+    // calendar event. Warn Parissa immediately so the client isn't lost.
+    if (result.couldBook && !result.booked && phone && BOOKED_CLAIM.test(reply)) {
+      sendOwnerWhatsApp(
+        `⚠️ Check the diary. The chat just told a client they're booked but NO calendar event was written. Client: ${phone}. Please add it by hand and message them to confirm. Full chat: https://calmandcontour.com/admin`,
+      ).catch((e) => console.error("[chat] booked-claim warning failed", e))
+      console.error("[chat] booked claim without tool call", { phone })
+    }
 
     await saveChatMessage(sessionId, "assistant", reply)
     return NextResponse.json({ reply })
