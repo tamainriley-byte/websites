@@ -21,6 +21,7 @@ import {
   confirmationMessage,
   rescheduleMessage,
   paymentRequestMessage,
+  reviewRequestMessage,
 } from "@/lib/whatsapp"
 
 export const metadata: Metadata = {
@@ -93,6 +94,9 @@ export default async function AdminPage({
   // booked chats get a "Request payment" button and the confirmation
   // message includes the link.
   const paymentLink = process.env.PAYMENT_LINK_URL || null
+  // Google Business "write a review" link. When set, clients marked Shown
+  // get an "Ask for review" one-tap WhatsApp (€5/€15/€20 offer).
+  const reviewUrl = process.env.GOOGLE_REVIEW_URL || null
   const events: UpcomingEvent[] | null = calendarConnected
     ? await upcomingEvents(14).catch(() => null)
     : null
@@ -286,6 +290,14 @@ export default async function AdminPage({
                         paymentRequestMessage(paymentLink),
                       )
                     : null
+                const reviewLink =
+                  c.phone && reviewUrl && status === "shown"
+                    ? waClientLink(
+                        c.phone,
+                        c.country,
+                        reviewRequestMessage(reviewUrl),
+                      )
+                    : null
                 return (
                   <li
                     key={c.session_id}
@@ -380,6 +392,16 @@ export default async function AdminPage({
                                 className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                               >
                                 Request payment
+                              </a>
+                            )}
+                            {reviewLink && (
+                              <a
+                                href={reviewLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
+                              >
+                                Ask for review · €5–€20
                               </a>
                             )}
                             {rescheduleLink && (

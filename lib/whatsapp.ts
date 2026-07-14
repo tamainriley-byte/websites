@@ -67,6 +67,18 @@ export function paymentRequestMessage(paymentLink: string): string {
   return `Hi, it's Parissa from Calm & Contour 🌿 You can pay securely here: ${paymentLink} Thank you so much, see you soon!`
 }
 
+// Post-massage review + referral ask, sent to clients marked "shown".
+// The tiered offer is the owner's (14 Jul 2026): review €5, referral €15,
+// both €20 off the next massage.
+export function reviewRequestMessage(reviewUrl: string): string {
+  return (
+    `Hi, it's Parissa from Calm & Contour 🌿 I hope you're still floating after your massage! ` +
+    `A little thank you from me: leave a Google review (${reviewUrl}) and get €5 off your next massage. ` +
+    `Refer a friend who books and it's €15 off. Do both and enjoy €20 off your next visit 💆 ` +
+    `Just message me here to claim. See you soon!`
+  )
+}
+
 const GOOGLE_ADS_CONVERSION = "AW-17683159555/iDouCLaK48kcEIO0_u9B"
 
 // Fires the Google Ads conversion event when a REAL lead is captured — a

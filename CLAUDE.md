@@ -62,6 +62,7 @@ You need the env vars below (a `.env.local`) for the DB and AI chat to work loca
 - `ADS_DAILY_BUDGET_EUR` = optional, defaults to 25. Used to estimate ad spend in the report (no Google Ads API access).
 - `CRON_SECRET` = optional but recommended. When set, Vercel Cron authenticates to `/api/report` with it; a signed-in owner can always open `/api/report` in the browser regardless.
 - `PAYMENT_LINK_URL` = NOT set. Any provider's hosted payment page (Stripe Payment Link, SumUp, Wise payment request…). When set: booked chats in /admin get a "Request payment" one-tap WhatsApp button, and the client confirmation message includes the link. Set + redeploy to activate.
+- `GOOGLE_REVIEW_URL` = NOT set. The Google Business Profile "write a review" share link (Business Profile → Ask for reviews / Share review form). When set: chats marked **Shown** get an "Ask for review · €5–€20" one-tap WhatsApp button (review €5 / referral €15 / both €20 off next massage — owner's offer, 14 Jul 2026). NOTE: Google's review policy prohibits incentivised reviews; risk = reviews filtered or profile penalised. Owner was told; wording lives in `reviewRequestMessage()` in `lib/whatsapp.ts` if it needs softening.
 - `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` = NOT set. Required for Google Calendar booking. Setup: Google Cloud Console → new project → enable "Google Calendar API" → OAuth consent screen (External, add Parissa's email as test user) → Credentials → OAuth client ID (Web application) with redirect URI `https://calmandcontour.com/api/gcal/callback` → copy ID+secret into Vercel and redeploy. Then sign into `/admin` and click "Connect calendar" while signed into Parissa's Google account (one time). After that the chat AI sees her real free/busy and books confirmed appointments straight into her calendar.
 
 ---
@@ -188,6 +189,12 @@ Only **Vercel Analytics** (aggregate pageviews) and the **Google Ads gtag** (con
 - "Join our VIP list" email capture.
 - Admin: reply box + "takeover" toggle (mute AI so a human replies) + contacts page + optional SMS marketing.
 - Install Microsoft Clarity.
+
+**SEO (started 14 Jul 2026)**
+- ~~sitemap.xml + robots.txt + metadataBase~~ DONE (`app/sitemap.ts`, `app/robots.ts`).
+- Review engine BUILT: mark client Shown → "Ask for review" WhatsApp button. **To activate: set `GOOGLE_REVIEW_URL` in Vercel + redeploy.**
+- Owner: submit the sitemap in Google Search Console (verify domain if not yet) — nobody has confirmed GSC access exists.
+- Next: Google Business Profile hygiene (photos, services with new prices, posts), blog migration from old Wix URLs, hreflang/Spanish pages someday.
 
 **Growth**
 - Reddit / AI-search presence.
