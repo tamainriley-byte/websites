@@ -365,7 +365,7 @@ export function ChatWidget() {
                       savePhone()
                     }
                   }}
-                  placeholder="Enter your mobile to start chatting to Parissa"
+                  placeholder="Enter mobile number to talk with Parissa"
                   className={`min-w-0 flex-1 rounded-full border bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp ${
                     phoneError ? "border-red-400" : "border-[#d1d7db]"
                   }`}
