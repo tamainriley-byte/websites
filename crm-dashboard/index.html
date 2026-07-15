@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8">
+<title>T&B — The Season</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+<style>
+  /* ───────────────────────── tokens ───────────────────────── */
+  :root{
+    --bg:#f4efe3; --surface:#fdfbf5; --surface-2:#efe9d8; --line:#e0d8c2; --line-2:#cfc5a9;
+    --ink:#1c2a21; --ink-2:#57685c; --ink-3:#8a978c;
+    --pine:#16382a; --pine-2:#1e4936; --pine-3:#2a5c45;
+    --gold:#c9a227; --gold-deep:#8a6d14; --gold-bright:#e3b93e;
+    --s1:#2a78d6; --s2:#008300; --s3:#e87ba4; --s4:#eda100;   /* validated categorical, light */
+    --good:#1a7f37; --warn:#9a5b06; --bad:#b42318;
+    --good-bg:#e2f0e4; --warn-bg:#f7ecd8; --bad-bg:#f9e4e1;
+    --shadow:0 1px 2px rgba(28,42,33,.06), 0 8px 24px -12px rgba(28,42,33,.18);
+    --radius:14px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:where(:not([data-theme="light"])){
+      --bg:#0c1a13; --surface:#122419; --surface-2:#0f1f15; --line:#24402f; --line-2:#31543e;
+      --ink:#eee9d7; --ink-2:#a9b8a9; --ink-3:#77897b;
+      --pine:#0e2118; --pine-2:#16382a; --pine-3:#1e4936;
+      --gold:#d9b23a; --gold-deep:#e3b93e; --gold-bright:#e3b93e;
+      --s1:#3987e5; --s2:#008300; --s3:#d55181; --s4:#c98500; /* validated categorical, dark */
+      --good:#5dc06f; --warn:#e0a94e; --bad:#ef7566;
+      --good-bg:#173425; --warn-bg:#3a2d12; --bad-bg:#3d1c17;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -12px rgba(0,0,0,.55);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c1a13; --surface:#122419; --surface-2:#0f1f15; --line:#24402f; --line-2:#31543e;
+    --ink:#eee9d7; --ink-2:#a9b8a9; --ink-3:#77897b;
+    --pine:#0e2118; --pine-2:#16382a; --pine-3:#1e4936;
+    --gold:#d9b23a; --gold-deep:#e3b93e; --gold-bright:#e3b93e;
+    --s1:#3987e5; --s2:#008300; --s3:#d55181; --s4:#c98500;
+    --good:#5dc06f; --warn:#e0a94e; --bad:#ef7566;
+    --good-bg:#173425; --warn-bg:#3a2d12; --bad-bg:#3d1c17;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -12px rgba(0,0,0,.55);
+    color-scheme:dark;
+  }
+  :root[data-theme="light"]{
+    --bg:#f4efe3; --surface:#fdfbf5; --surface-2:#efe9d8; --line:#e0d8c2; --line-2:#cfc5a9;
+    --ink:#1c2a21; --ink-2:#57685c; --ink-3:#8a978c;
+    --pine:#16382a; --pine-2:#1e4936; --pine-3:#2a5c45;
+    --gold:#c9a227; --gold-deep:#8a6d14; --gold-bright:#e3b93e;
+    --s1:#2a78d6; --s2:#008300; --s3:#e87ba4; --s4:#eda100;
+    --good:#1a7f37; --warn:#9a5b06; --bad:#b42318;
+    --good-bg:#e2f0e4; --warn-bg:#f7ecd8; --bad-bg:#f9e4e1;
+    --shadow:0 1px 2px rgba(28,42,33,.06), 0 8px 24px -12px rgba(28,42,33,.18);
+    color-scheme:light;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size:15px; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1240px; margin:0 auto; padding:0 20px 72px}
+  .num{font-variant-numeric:tabular-nums}
+  .lbl{font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+
+  /* ───────────────────────── header ───────────────────────── */
+  header.masthead{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:30px 0 18px;
+  }
+  .crest{display:flex; align-items:center; gap:14px}
+  .crest-badge{
+    width:52px; height:52px; border-radius:12px; flex:none;
+    background:linear-gradient(160deg, var(--pine-2), var(--pine));
+    display:grid; place-items:center; box-shadow:var(--shadow);
+    border:1px solid var(--pine-3);
+  }
+  .crest h1{
+    margin:0; font-size:30px; font-weight:800; letter-spacing:-.02em; line-height:1.05; text-wrap:balance;
+  }
+  .crest h1 .season{
+    background:linear-gradient(100deg, var(--gold-deep), var(--gold) 45%, var(--gold-bright));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .crest .sub{margin:3px 0 0; color:var(--ink-2); font-size:13.5px}
+  .period{
+    display:flex; gap:4px; background:var(--surface); border:1px solid var(--line);
+    padding:4px; border-radius:999px; box-shadow:var(--shadow);
+  }
+  .period button{
+    border:0; background:transparent; color:var(--ink-2); font:inherit; font-weight:700; font-size:12.5px;
+    padding:7px 16px; border-radius:999px; cursor:pointer; letter-spacing:.04em;
+  }
+  .period button[aria-pressed="true"]{background:var(--pine); color:#f2ecd9}
+  .period button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+
+  /* ───────────────────────── ticker ───────────────────────── */
+  .ticker{
+    display:flex; align-items:center; gap:0; overflow:hidden;
+    background:var(--pine); color:#e9e2c8; border-radius:12px; box-shadow:var(--shadow);
+    border:1px solid var(--pine-3);
+  }
+  .ticker .live{
+    flex:none; display:flex; align-items:center; gap:7px; padding:9px 14px;
+    background:color-mix(in srgb, #000 30%, var(--pine)); font-size:11px; font-weight:800; letter-spacing:.14em;
+    position:relative; z-index:1; box-shadow:8px 0 12px -4px rgba(0,0,0,.45);
+  }
+  .live-dot{width:7px; height:7px; border-radius:50%; background:#ff5d4d; animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  .ticker-track{display:flex; gap:0; white-space:nowrap; animation:ticker 46s linear infinite; padding:9px 0}
+  .ticker:hover .ticker-track{animation-play-state:paused}
+  .ticker-track span{padding:0 26px; font-size:13px}
+  .ticker-track b{color:var(--gold-bright); font-weight:700}
+  @keyframes ticker{to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none}
+    .live-dot{animation:none}
+  }
+
+  /* ───────────────────────── the track (deliberately floodlit-dark in both themes) ───────────────────────── */
+  .stadium{
+    margin-top:16px; border-radius:var(--radius); overflow:hidden; position:relative;
+    background:
+      radial-gradient(1200px 420px at 50% -160px, #24523b 0%, transparent 62%),
+      linear-gradient(178deg, #10281c 0%, #0b1d13 100%);
+    border:1px solid #2c5a41; box-shadow:var(--shadow);
+    color:#e9e2c8;
+  }
+  .stadium-head{
+    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:18px 22px 0;
+  }
+  .stadium-head .lbl{color:#9db8a3}
+  .stadium-title{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .stadium-title h2{margin:0; font-size:19px; font-weight:800; letter-spacing:-.01em}
+  .stadium-title .lbl{letter-spacing:.16em}
+  .gate-key{display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:#b7c9ba}
+  .gate-key i{font-style:normal; display:inline-flex; align-items:center; gap:6px}
+  .gate-chip{width:9px; height:9px; border-radius:2px; display:inline-block}
+  .track-scroller{overflow-x:auto}
+  .track-svg{display:block; min-width:760px; width:100%; height:auto}
+  .piece{cursor:pointer}
+  .piece text{pointer-events:none}
+  .piece:focus{outline:none}
+  .piece:focus-visible .chip-ring{stroke:#fff; stroke-width:3}
+
+  .tooltip{
+    position:fixed; z-index:50; pointer-events:none; opacity:0; transition:opacity .12s;
+    background:var(--surface); color:var(--ink); border:1px solid var(--line-2);
+    border-radius:10px; box-shadow:var(--shadow); padding:10px 12px; font-size:12.5px; max-width:250px;
+  }
+  .tooltip.on{opacity:1}
+  .tooltip .t-name{font-weight:800; font-size:13.5px}
+  .tooltip .t-team{color:var(--ink-2); font-size:11.5px; margin-bottom:6px}
+  .tooltip .t-row{display:flex; justify-content:space-between; gap:16px}
+  .tooltip .t-row b{font-weight:700}
+
+  /* ───────────────────────── podium ───────────────────────── */
+  .podium-strip{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px;
+  }
+  @media (max-width:720px){.podium-strip{grid-template-columns:1fr}}
+  .podium-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:16px 18px; display:flex; align-items:center; gap:14px; position:relative; overflow:hidden;
+  }
+  .podium-card.first{border-color:var(--gold)}
+  .podium-card.first::before{
+    content:""; position:absolute; inset:0 auto 0 0; width:4px; background:linear-gradient(var(--gold-bright), var(--gold-deep));
+  }
+  .medal{
+    width:44px; height:44px; border-radius:50%; display:grid; place-items:center; flex:none;
+    font-weight:800; font-size:16px; color:#fff;
+  }
+  .medal.m1{background:linear-gradient(150deg,#e8c04a,#a87e12)}
+  .medal.m2{background:linear-gradient(150deg,#c8cdd4,#8b939e)}
+  .medal.m3{background:linear-gradient(150deg,#d29a6b,#9a622f)}
+  .podium-card .who{min-width:0}
+  .podium-card .who .nm{font-weight:800; font-size:16px}
+  .podium-card .who .tm{font-size:12px; color:var(--ink-2)}
+  .podium-card .xp{margin-left:auto; text-align:right}
+  .podium-card .xp b{font-size:20px; font-weight:800}
+  .podium-card .xp span{display:block; font-size:10.5px; color:var(--ink-3); letter-spacing:.1em; font-weight:700}
+
+  /* ───────────────────────── tabs ───────────────────────── */
+  .tabs{display:flex; gap:8px; margin:34px 0 16px; flex-wrap:wrap}
+  .tabs button{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
+    font:inherit; font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:999px; cursor:pointer;
+    display:flex; align-items:center; gap:9px; box-shadow:var(--shadow);
+  }
+  .tabs button .dot{width:9px; height:9px; border-radius:50%}
+  .tabs button[aria-selected="true"]{background:var(--pine); border-color:var(--pine); color:#f2ecd9}
+  .tabs button:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+  .tab-note{color:var(--ink-2); font-size:13.5px; margin:0 0 14px; max-width:68ch}
+
+  /* ───────────────────────── cards & stats ───────────────────────── */
+  .grid{display:grid; gap:14px}
+  .grid.cols-ep{grid-template-columns:repeat(auto-fill,minmax(285px,1fr))}
+  .grid.cols-adv{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+  .grid.cols-mc{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:18px; display:flex; flex-direction:column; gap:14px; min-width:0;
+  }
+  .card-head{display:flex; align-items:center; gap:12px}
+  .avatar{
+    width:42px; height:42px; border-radius:50%; flex:none; display:grid; place-items:center;
+    font-weight:800; font-size:15px; color:#fff; position:relative;
+  }
+  .avatar .crown{position:absolute; top:-13px; left:50%; transform:translateX(-50%) rotate(-8deg)}
+  .card-head .nm{font-weight:800; font-size:16.5px; letter-spacing:-.01em}
+  .card-head .xp-chip{
+    margin-left:auto; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:999px; padding:4px 11px; font-size:12px; font-weight:700; white-space:nowrap;
+  }
+  .rankline{font-size:12px; color:var(--ink-2)}
+  .badges{display:flex; gap:6px; flex-wrap:wrap}
+  .badge{
+    font-size:10.5px; font-weight:700; letter-spacing:.05em; padding:3px 9px; border-radius:999px;
+    background:var(--surface-2); border:1px solid var(--line-2); color:var(--ink-2); white-space:nowrap;
+  }
+  .badge.gold{background:color-mix(in srgb, var(--gold) 16%, var(--surface)); border-color:var(--gold); color:var(--gold-deep)}
+
+  .stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+  .stat{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:9px 11px; min-width:0;
+  }
+  .stat .v{font-size:19px; font-weight:800; letter-spacing:-.01em; line-height:1.15}
+  .stat .k{font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-top:1px}
+
+  .hero-val{display:flex; align-items:baseline; gap:8px}
+  .hero-val b{font-size:27px; font-weight:800; letter-spacing:-.02em}
+  .hero-val span{font-size:12px; color:var(--ink-2)}
+
+  /* bars */
+  .bar-group{display:flex; flex-direction:column; gap:8px}
+  .bar-row{display:grid; grid-template-columns:64px 1fr auto; gap:10px; align-items:center; font-size:12.5px}
+  .bar-row .bk{color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .bar-track{height:10px; border-radius:5px; background:var(--surface-2); position:relative; overflow:hidden}
+  .bar-fill{
+    position:absolute; inset:0 auto 0 0; width:0; border-radius:5px 4px 4px 5px;
+    transition:width .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .bar-row .bv{font-weight:700; white-space:nowrap}
+  .bar-row .bv small{color:var(--ink-3); font-weight:600}
+
+  /* stacked source bar */
+  .stack{display:flex; height:20px; border-radius:6px; overflow:hidden; gap:2px; background:transparent}
+  .seg{position:relative; min-width:2px; border-radius:3px; transition:flex-grow .9s cubic-bezier(.2,.8,.2,1)}
+  .seg span{
+    position:absolute; inset:0; display:grid; place-items:center;
+    font-size:10.5px; font-weight:800; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45);
+  }
+  .stack-key{display:flex; flex-wrap:wrap; gap:5px 14px; font-size:11.5px; color:var(--ink-2); margin-top:7px}
+  .stack-key i{font-style:normal; display:inline-flex; align-items:center; gap:6px; white-space:nowrap}
+  .stack-key .sw{width:9px; height:9px; border-radius:2px; display:inline-block; flex:none}
+  .stack-key b{color:var(--ink)}
+
+  /* progress (books / exams) */
+  .prog{display:flex; flex-direction:column; gap:7px}
+  .prog-row{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; font-size:12px}
+  .prog-row .pt{color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .prog-row .pv{font-weight:700}
+  .prog-bar{grid-column:1 / -1; height:6px; border-radius:3px; background:var(--surface-2); overflow:hidden}
+  .prog-bar i{display:block; height:100%; width:0; border-radius:3px; background:linear-gradient(90deg, var(--gold-deep), var(--gold-bright)); transition:width .9s cubic-bezier(.2,.8,.2,1)}
+  .prog-bar.done i{background:linear-gradient(90deg, var(--good), var(--good))}
+  .exam-chips{display:flex; gap:6px; flex-wrap:wrap}
+  .exam{
+    font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px;
+    border:1px dashed var(--line-2); color:var(--ink-3);
+  }
+  .exam.passed{border-style:solid; border-color:var(--good); color:var(--good); background:var(--good-bg)}
+
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:.05em;
+    padding:4px 10px; border-radius:999px; text-transform:uppercase;
+  }
+  .pill.good{background:var(--good-bg); color:var(--good)}
+  .pill.warn{background:var(--warn-bg); color:var(--warn)}
+  .pill.bad{background:var(--bad-bg); color:var(--bad)}
+
+  .divider{border:0; border-top:1px solid var(--line); margin:2px 0}
+  .mini-note{font-size:11.5px; color:var(--ink-3)}
+
+  /* speed dial (membership care + advisers) */
+  .speed{display:flex; align-items:center; gap:14px}
+  .speed svg{flex:none}
+  .speed .sv{font-size:23px; font-weight:800; line-height:1.1}
+  .speed .sk{font-size:11px; color:var(--ink-3); font-weight:700; letter-spacing:.08em; text-transform:uppercase}
+
+  /* ───────────────────────── rules ───────────────────────── */
+  .rules{
+    margin-top:40px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:22px;
+  }
+  .rules h3{margin:0 0 4px; font-size:17px; font-weight:800}
+  .rules p{margin:0 0 16px; color:var(--ink-2); font-size:13.5px; max-width:72ch}
+  .rules-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px}
+  .rule-col h4{margin:0 0 8px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+  .rule-col table{width:100%; border-collapse:collapse; font-size:13px}
+  .rule-col td{padding:5px 0; border-bottom:1px solid var(--line)}
+  .rule-col td:last-child{text-align:right; font-weight:700; white-space:nowrap}
+  .rule-col tr:last-child td{border-bottom:0}
+
+  footer{margin-top:34px; color:var(--ink-3); font-size:12px; text-align:center}
+
+  section[hidden]{display:none}
+  @media (prefers-reduced-motion: reduce){
+    .bar-fill,.prog-bar i,.seg{transition:none}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="crest">
+      <div class="crest-badge" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+          <path d="M4 5h16v3a5 5 0 0 1-4 4.9V14a4 4 0 0 1-3 3.87V20h3.5v1.5h-9V20H11v-2.13A4 4 0 0 1 8 14v-1.1A5 5 0 0 1 4 8V5Z" fill="#e3b93e"/>
+          <path d="M2.5 6.5H5v3.2A3.5 3.5 0 0 1 2.5 6.5Zm19 0H19v3.2a3.5 3.5 0 0 0 2.5-3.2Z" fill="#c9a227"/>
+        </svg>
+      </div>
+      <div>
+        <h1>T&amp;B <span class="season">The Season</span></h1>
+        <p class="sub">One track. Three squads. Every dial, review and ticket moves your piece.</p>
+      </div>
+    </div>
+    <div class="period" role="group" aria-label="Reporting period">
+      <button type="button" data-period="week" aria-pressed="false">Week</button>
+      <button type="button" data-period="mtd" aria-pressed="true">MTD</button>
+      <button type="button" data-period="ytd" aria-pressed="false">YTD</button>
+    </div>
+  </header>
+
+  <div class="ticker" aria-label="Live team activity">
+    <div class="live"><span class="live-dot"></span>LIVE</div>
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+  <!-- ───────── THE TRACK ───────── -->
+  <div class="stadium">
+    <div class="stadium-head">
+      <div class="stadium-title">
+        <span class="lbl" id="track-period-lbl">Month to date</span>
+        <h2>Championship Track</h2>
+      </div>
+      <div class="gate-key" id="gate-key"></div>
+    </div>
+    <div class="track-scroller">
+      <svg class="track-svg" id="track" viewBox="0 0 1180 470" role="img" aria-label="Race track showing each team member's progress toward the Platinum gate"></svg>
+    </div>
+  </div>
+
+  <div class="podium-strip" id="podium"></div>
+
+  <!-- ───────── SQUADS ───────── -->
+  <div class="tabs" role="tablist" aria-label="Squads">
+    <button role="tab" id="tab-ep"  aria-selected="true"  aria-controls="panel-ep"><span class="dot" data-team-dot="ep"></span>Estate Planners</button>
+    <button role="tab" id="tab-adv" aria-selected="false" aria-controls="panel-adv"><span class="dot" data-team-dot="adv"></span>Advisers</button>
+    <button role="tab" id="tab-mc"  aria-selected="false" aria-controls="panel-mc"><span class="dot" data-team-dot="mc"></span>Membership Care</button>
+  </div>
+
+  <section id="panel-ep" role="tabpanel" aria-labelledby="tab-ep">
+    <p class="tab-note">Dials become bookings, bookings become seen appointments, appointments become opportunities — and the library and exam hall pay XP too. Funnel bars are scaled against the squad's best at each stage.</p>
+    <div class="grid cols-ep" id="grid-ep"></div>
+  </section>
+
+  <section id="panel-adv" role="tabpanel" aria-labelledby="tab-adv" hidden>
+    <p class="tab-note">Where the pipeline comes from matters: every opportunity is tagged to its source — client reviews, new leads, estate-planner handovers or revived lost opportunities. Fast task resolution earns a standing speed bonus.</p>
+    <div class="stack-key" id="adv-key" style="margin:0 2px 14px"></div>
+    <div class="grid cols-adv" id="grid-adv"></div>
+  </section>
+
+  <section id="panel-mc" role="tabpanel" aria-labelledby="tab-mc" hidden>
+    <p class="tab-note">Membership Care wins on speed and on keeping the review book full: the faster tickets close, the bigger the standing bonus — and every review scheduled feeds the advisers' pipeline.</p>
+    <div class="grid cols-mc" id="grid-mc"></div>
+  </section>
+
+  <!-- ───────── RULES ───────── -->
+  <div class="rules">
+    <h3>How you score</h3>
+    <p>XP is computed from the numbers on this page — nothing hidden. Gates sit at 25 / 50 / 75 / 100% of the period target. Pass Platinum and you've lapped the season.</p>
+    <div class="rules-grid">
+      <div class="rule-col">
+        <h4>Estate Planners</h4>
+        <table>
+          <tr><td>Dial made</td><td>+2 XP</td></tr>
+          <tr><td>Appointment booked</td><td>+60 XP</td></tr>
+          <tr><td>Appointment seen</td><td>+150 XP</td></tr>
+          <tr><td>Opportunity opened</td><td>+200 XP</td></tr>
+          <tr><td>Opportunity won</td><td>+400 XP</td></tr>
+          <tr><td>Value won</td><td>+1 XP / £100</td></tr>
+          <tr><td>Exam passed</td><td>+500 XP</td></tr>
+          <tr><td>Page read</td><td>+2 XP</td></tr>
+        </table>
+      </div>
+      <div class="rule-col">
+        <h4>Advisers</h4>
+        <table>
+          <tr><td>Review held</td><td>+120 XP</td></tr>
+          <tr><td>Opportunity opened</td><td>+180 XP</td></tr>
+          <tr><td>Opportunity value</td><td>+1 XP / £100</td></tr>
+          <tr><td>Appointment</td><td>+40 XP</td></tr>
+          <tr><td>Tasks avg &lt; 8h</td><td>+750 XP</td></tr>
+          <tr><td>Tasks avg &lt; 24h</td><td>+350 XP</td></tr>
+        </table>
+      </div>
+      <div class="rule-col">
+        <h4>Membership Care</h4>
+        <table>
+          <tr><td>Ticket closed</td><td>+25 XP</td></tr>
+          <tr><td>Avg close &lt; 4h</td><td>+1,000 XP</td></tr>
+          <tr><td>Avg close &lt; 6h</td><td>+500 XP</td></tr>
+          <tr><td>Review scheduled</td><td>+80 XP</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>T&amp;B CRM · The Season — prototype with sample data · gates and XP rules are configurable</footer>
+</div>
+
+<div class="tooltip" id="tooltip" role="tooltip"></div>
+
+<script>
+"use strict";
+/* ════════════════════════ DATA ════════════════════════
+   Month-to-date sample data (1–15 Jul). Week/YTD are derived
+   with per-period factors so the whole board stays consistent. */
+
+const TEAMS = {
+  ep:  { name:"Estate Planners", light:"#eda100", dark:"#c98500", track:"#e3b93e" },
+  adv: { name:"Advisers",        light:"#2a78d6", dark:"#3987e5", track:"#5aa0f0" },
+  mc:  { name:"Membership Care", light:"#e87ba4", dark:"#d55181", track:"#e87ba4" },
+};
+
+const BOOKS = [
+  { t:"Way of the Wolf",            pages:256 },
+  { t:"How to Win Friends…",        pages:288 },
+  { t:"The Chimp Paradox",          pages:368 },
+];
+const EXAMS = ["Wills & Trusts L3", "IHT Fundamentals", "LPA Practice"];
+
+/* opportunity sources — fixed categorical order (slots 1–4) */
+const SOURCES = [
+  { key:"reviews",  label:"Reviews",         cssVar:"--s1" },
+  { key:"newLeads", label:"New leads",       cssVar:"--s2" },
+  { key:"ep",       label:"Estate planners", cssVar:"--s3" },
+  { key:"lostOpps", label:"Lost opps",       cssVar:"--s4" },
+];
+
+const ROSTER = [
+  /* ── Estate Planners ── */
+  { id:"hasan",  name:"Hasan",  team:"ep",
+    dials:486, booked:41, seen:15, oppsOpened:9, oppsWon:3, wonValue:12000, openedValue:38000,
+    examsPassed:2, pages:[210,160,120] },
+  { id:"george", name:"George", team:"ep",
+    dials:355, booked:28, seen:10, oppsOpened:6, oppsWon:2, wonValue:7000, openedValue:22000,
+    examsPassed:3, pages:[256,180,40] },
+  { id:"oskar",  name:"Oskar",  team:"ep",
+    dials:402, booked:33, seen:12, oppsOpened:7, oppsWon:2, wonValue:8000, openedValue:29000,
+    examsPassed:1, pages:[150,90,60] },
+  { id:"lewis",  name:"Lewis",  team:"ep",
+    dials:298, booked:24, seen:9,  oppsOpened:5, oppsWon:1, wonValue:4000, openedValue:18000,
+    examsPassed:1, pages:[120,40,0] },
+
+  /* ── Advisers ── */
+  { id:"nicholas", name:"Nicholas", team:"adv",
+    reviews:14, appts:23, oppValue:166000, taskAvgH:6,
+    srcOpps:{ reviews:4, newLeads:2, ep:4, lostOpps:2 },
+    srcValue:{ reviews:52000, newLeads:18000, ep:71000, lostOpps:25000 } },
+  { id:"jason",    name:"Jason",    team:"adv",
+    reviews:11, appts:18, oppValue:96000, taskAvgH:11,
+    srcOpps:{ reviews:3, newLeads:2, ep:3, lostOpps:1 },
+    srcValue:{ reviews:31000, newLeads:14000, ep:38000, lostOpps:13000 } },
+  { id:"tommy",    name:"Tommy",    team:"adv",
+    reviews:8,  appts:14, oppValue:54000, taskAvgH:19,
+    srcOpps:{ reviews:2, newLeads:2, ep:2, lostOpps:1 },
+    srcValue:{ reviews:16000, newLeads:11000, ep:19000, lostOpps:8000 } },
+
+  /* ── Membership Care ── */
+  { id:"millie", name:"Millie", team:"mc", ticketsClosed:84, closeAvgH:3.2, reviewsSched:31 },
+  { id:"priya",  name:"Priya",  team:"mc", ticketsClosed:71, closeAvgH:4.8, reviewsSched:26 },
+];
+
+const PERIODS = {
+  week: { label:"This week",     factor:0.42, gateMax:5000  },
+  mtd:  { label:"Month to date", factor:1,    gateMax:12000 },
+  ytd:  { label:"Year to date",  factor:6.4,  gateMax:72000 },
+};
+const GATE_NAMES = ["Bronze","Silver","Gold","Platinum"];
+const GATE_COLORS = ["#b07f4f","#b9c0c9","#e3b93e","#9fe8ff"];
+
+/* ════════════════════════ derive per-period data ════════════════════════ */
+const scaleN = (v,f) => Math.round(v*f);
+
+function playerForPeriod(p, key){
+  const f = PERIODS[key].factor;
+  const q = { ...p };
+  if (p.team === "ep"){
+    ["dials","booked","seen","oppsOpened","oppsWon","wonValue","openedValue"].forEach(k => q[k] = scaleN(p[k],f));
+    q.examsPassed = key==="week" ? Math.min(1, p.examsPassed) : key==="ytd" ? Math.min(EXAMS.length, p.examsPassed+1) : p.examsPassed;
+    q.pages = p.pages.map((pg,i) => Math.min(BOOKS[i].pages, scaleN(pg, key==="ytd" ? 1.9 : f)));
+  } else if (p.team === "adv"){
+    ["reviews","appts","oppValue"].forEach(k => q[k] = scaleN(p[k],f));
+    q.srcOpps  = Object.fromEntries(Object.entries(p.srcOpps ).map(([k,v]) => [k, scaleN(v,f)]));
+    q.srcValue = Object.fromEntries(Object.entries(p.srcValue).map(([k,v]) => [k, scaleN(v,f)]));
+    q.taskAvgH = p.taskAvgH; /* a speed, not a volume */
+  } else {
+    ["ticketsClosed","reviewsSched"].forEach(k => q[k] = scaleN(p[k],f));
+    q.closeAvgH = p.closeAvgH;
+  }
+  return q;
+}
+
+function xpBreakdown(p){
+  const parts = [];
+  const add = (label, v) => { if (v>0) parts.push([label, Math.round(v)]); };
+  if (p.team === "ep"){
+    add("Dials", p.dials*2);
+    add("Booked", p.booked*60);
+    add("Seen", p.seen*150);
+    add("Opps opened", p.oppsOpened*200);
+    add("Opps won", p.oppsWon*400);
+    add("Value won", p.wonValue/100);
+    add("Exams", p.examsPassed*500);
+    add("Pages read", p.pages.reduce((a,b)=>a+b,0)*2);
+  } else if (p.team === "adv"){
+    add("Reviews held", p.reviews*120);
+    const opps = Object.values(p.srcOpps).reduce((a,b)=>a+b,0);
+    add("Opps opened", opps*180);
+    add("Opp value", p.oppValue/100);
+    add("Appointments", p.appts*40);
+    add("Speed bonus", p.taskAvgH<8 ? 750 : p.taskAvgH<24 ? 350 : 0);
+  } else {
+    add("Tickets closed", p.ticketsClosed*25);
+    add("Speed bonus", p.closeAvgH<4 ? 1000 : p.closeAvgH<6 ? 500 : 0);
+    add("Reviews scheduled", p.reviewsSched*80);
+  }
+  parts.sort((a,b)=>b[1]-a[1]);
+  return { total: parts.reduce((s,[,v])=>s+v,0), parts };
+}
+
+/* ════════════════════════ helpers ════════════════════════ */
+const $  = s => document.querySelector(s);
+const fmt = n => n.toLocaleString("en-GB");
+const gbp = n => "£" + (n>=1000 ? (Math.round(n/100)/10).toLocaleString("en-GB")+"k" : n.toLocaleString("en-GB"));
+const initials = n => n.slice(0,1).toUpperCase() + (n.split(" ")[1]?.[0]?.toUpperCase() ?? n.slice(1,2));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isDark = () => {
+  const t = document.documentElement.dataset.theme;
+  if (t==="dark") return true;
+  if (t==="light") return false;
+  return matchMedia("(prefers-color-scheme: dark)").matches;
+};
+const teamColor = t => isDark() ? TEAMS[t].dark : TEAMS[t].light;
+
+let period = "mtd";
+const state = () => {
+  const players = ROSTER.map(p => {
+    const q = playerForPeriod(p, period);
+    q.xp = xpBreakdown(q);
+    return q;
+  });
+  players.sort((a,b)=>b.xp.total-a.xp.total);
+  players.forEach((p,i)=>p.rank=i+1);
+  return players;
+};
+
+/* count-up animation */
+function countUp(el, target, format){
+  if (reduceMotion){ el.textContent = format(target); return; }
+  const t0 = performance.now(), dur = 900;
+  const step = now => {
+    const k = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-k,3);
+    el.textContent = format(Math.round(target*e));
+    if (k<1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* shared tooltip */
+const tip = $("#tooltip");
+function showTip(html, x, y){
+  tip.innerHTML = html;
+  tip.classList.add("on");
+  const r = tip.getBoundingClientRect();
+  tip.style.left = Math.min(innerWidth - r.width - 12, Math.max(8, x+14)) + "px";
+  tip.style.top  = Math.max(8, y - r.height - 12) + "px";
+}
+const hideTip = () => tip.classList.remove("on");
+
+function tipHTML(p){
+  const rows = p.xp.parts.slice(0,4).map(([k,v]) =>
+    `<div class="t-row"><span>${k}</span><b class="num">+${fmt(v)}</b></div>`).join("");
+  return `<div class="t-name">${p.name}</div>
+    <div class="t-team">#${p.rank} overall · ${TEAMS[p.team].name}</div>
+    <div class="t-row" style="margin-bottom:5px"><span>Total XP</span><b class="num">${fmt(p.xp.total)}</b></div>${rows}`;
+}
+
+/* ════════════════════════ TICKER ════════════════════════ */
+function renderTicker(){
+  const items = [
+    `<b>Hasan</b> booked 3 appointments before 10am`,
+    `<b>Nicholas</b> opened a £24k opportunity from an estate-planner handover`,
+    `<b>Millie</b> closed a ticket in 41 minutes — squad record`,
+    `<b>George</b> passed LPA Practice — +500 XP`,
+    `<b>Jason</b> held 2 client reviews back-to-back`,
+    `<b>Oskar</b> hit 400 dials for the month`,
+    `<b>Priya</b> scheduled 4 reviews for the advisers' book`,
+    `<b>Tommy</b> revived a lost opportunity worth £8k`,
+    `<b>Lewis</b> finished 40 pages of Way of the Wolf`,
+    `<b>Nicholas</b> is 830 XP from the Gold gate`,
+  ];
+  const half = items.map(i=>`<span>${i}</span>`).join("");
+  $("#ticker-track").innerHTML = half + half; /* seamless loop */
+}
+
+/* ════════════════════════ TRACK ════════════════════════ */
+const SVGNS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs={}) => {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const [k,v] of Object.entries(attrs)) n.setAttribute(k, v);
+  return n;
+};
+
+function renderTrack(players){
+  const svg = $("#track");
+  svg.innerHTML = "";
+  const gateMax = PERIODS[period].gateMax;
+
+  /* serpentine: three straights joined by turns */
+  const d = "M 90 100 H 1010 A 62 62 0 0 1 1010 224 H 170 A 62 62 0 0 0 170 348 H 1090";
+  const under = el("path", { d, fill:"none", stroke:"#0a150e", "stroke-width":46, "stroke-linecap":"round", opacity:.85 });
+  const lane  = el("path", { d, fill:"none", stroke:"#1c3b2a", "stroke-width":40, "stroke-linecap":"round" });
+  const dash  = el("path", { d, fill:"none", stroke:"#87a58e", "stroke-width":2, "stroke-dasharray":"14 18", opacity:.5 });
+  svg.append(under, lane, dash);
+
+  const ref = el("path", { d, fill:"none" });
+  svg.appendChild(ref);
+  const L = ref.getTotalLength();
+  const pt = frac => ref.getPointAtLength(Math.max(0, Math.min(1, frac)) * L);
+
+  /* start line */
+  const s = pt(0.004);
+  svg.appendChild(el("line", { x1:s.x, y1:s.y-26, x2:s.x, y2:s.y+26, stroke:"#87a58e", "stroke-width":3, opacity:.8 }));
+  const startLbl = el("text", { x:s.x, y:s.y-34, fill:"#9db8a3", "font-size":11, "font-weight":700, "text-anchor":"middle", "letter-spacing":"2" });
+  startLbl.textContent = "START";
+  svg.appendChild(startLbl);
+
+  /* gates at 25/50/75/100% */
+  GATE_NAMES.forEach((g,i)=>{
+    const frac = (i+1)/4 * 0.996;
+    const p2 = pt(frac), pA = pt(frac-0.004);
+    const ang = Math.atan2(p2.y-pA.y, p2.x-pA.x) + Math.PI/2;
+    const dx = Math.cos(ang), dy = Math.sin(ang);
+    svg.appendChild(el("line", { x1:p2.x-dx*25, y1:p2.y-dy*25, x2:p2.x+dx*25, y2:p2.y+dy*25, stroke:GATE_COLORS[i], "stroke-width":4, "stroke-linecap":"round", opacity:.95 }));
+    const lx = p2.x + dx*40, ly = p2.y + dy*40;
+    const t1 = el("text", { x:lx, y:ly, fill:GATE_COLORS[i], "font-size":11.5, "font-weight":800, "text-anchor":"middle", "letter-spacing":"1.5" });
+    t1.textContent = g.toUpperCase();
+    const t2 = el("text", { x:lx, y:ly+14, fill:"#87a58e", "font-size":10.5, "font-weight":600, "text-anchor":"middle" });
+    t2.textContent = fmt(Math.round(gateMax*(i+1)/4)) + " XP";
+    svg.append(t1, t2);
+  });
+
+  /* chequered finish */
+  const f = pt(0.999);
+  for (let r=0;r<2;r++) for (let c=0;c<5;c++)
+    svg.appendChild(el("rect", { x:f.x-6+r*6, y:f.y-25+c*10, width:6, height:10, fill:(r+c)%2 ? "#0a150e" : "#e9e2c8" }));
+
+  /* gate key (header) */
+  $("#gate-key").innerHTML = GATE_NAMES.map((g,i)=>
+    `<i><span class="gate-chip" style="background:${GATE_COLORS[i]}"></span>${g} ${fmt(Math.round(gateMax*(i+1)/4))}</i>`).join("");
+
+  /* pieces — draw back-of-field first so the leader sits on top */
+  const leaderId = players[0].id;
+  [...players].reverse().forEach((p,idx)=>{
+    const frac = Math.min(1, p.xp.total/gateMax);
+    /* stagger pieces perpendicular to the lane so near-ties don't fully overlap */
+    const wob = ((p.rank % 3) - 1) * 9;
+
+    const g = el("g", { class:"piece", tabindex:0, role:"img" });
+    g.setAttribute("aria-label", `${p.name}, ${TEAMS[p.team].name}, ${fmt(p.xp.total)} XP, rank ${p.rank}`);
+    const chip = el("circle", { r:16, fill:"#0e2118", class:"chip-ring", stroke:TEAMS[p.team].track, "stroke-width":3 });
+    const txt = el("text", { y:4.5, fill:"#f2ecd9", "font-size":11.5, "font-weight":800, "text-anchor":"middle" });
+    txt.textContent = initials(p.name);
+    const below = p.rank % 2 === 0;
+    const nm = el("text", { y: below ? 33 : -26, fill:"#cfdcc9", "font-size":10.5, "font-weight":700, "text-anchor":"middle" });
+    nm.textContent = p.name;
+    g.append(chip, txt, nm);
+
+    if (p.id === leaderId){
+      const crown = el("path", { d:"M -8 -21 L -4.5 -26.5 L 0 -21.5 L 4.5 -26.5 L 8 -21 L 7 -17.5 L -7 -17.5 Z", fill:"#e3b93e", stroke:"#8a6d14", "stroke-width":.8 });
+      g.appendChild(crown);
+      nm.setAttribute("y", 33); /* keep the crown clear */
+    }
+
+    const place = f2 => {
+      const q = pt(f2);
+      const qa = pt(Math.max(0,f2-0.003));
+      const ang = Math.atan2(q.y-qa.y, q.x-qa.x) + Math.PI/2;
+      g.setAttribute("transform", `translate(${q.x + Math.cos(ang)*wob}, ${q.y + Math.sin(ang)*wob})`);
+    };
+
+    if (reduceMotion){ place(frac); }
+    else {
+      place(0.004);
+      const t0 = performance.now(), dur = 1500 + idx*130;
+      const run = now => {
+        const k = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-k,3);
+        place(0.004 + (frac-0.004)*e);
+        if (k<1) requestAnimationFrame(run);
+      };
+      requestAnimationFrame(run);
+    }
+
+    const over = ev => showTip(tipHTML(p), ev.clientX ?? 0, ev.clientY ?? 0);
+    g.addEventListener("pointerenter", over);
+    g.addEventListener("pointermove", over);
+    g.addEventListener("pointerleave", hideTip);
+    g.addEventListener("focus", () => {
+      const r = g.getBoundingClientRect();
+      showTip(tipHTML(p), r.left + r.width/2, r.top);
+    });
+    g.addEventListener("blur", hideTip);
+    svg.appendChild(g);
+  });
+}
+
+/* ════════════════════════ PODIUM ════════════════════════ */
+function renderPodium(players){
+  $("#podium").innerHTML = players.slice(0,3).map((p,i)=>`
+    <div class="podium-card ${i===0?"first":""}">
+      <div class="medal m${i+1}">${i+1}</div>
+      <div class="who">
+        <div class="nm">${p.name}${i===0 ? " 👑" : ""}</div>
+        <div class="tm">${TEAMS[p.team].name}</div>
+      </div>
+      <div class="xp"><b class="num" data-count="${p.xp.total}">0</b><span>XP</span></div>
+    </div>`).join("");
+  $("#podium").querySelectorAll("[data-count]").forEach(elm =>
+    countUp(elm, +elm.dataset.count, fmt));
+}
+
+/* ════════════════════════ CARD BUILDERS ════════════════════════ */
+function cardHead(p){
+  return `<div class="card-head">
+      <div class="avatar" style="background:${teamColor(p.team)}">${initials(p.name)}
+        ${p.rank===1 ? '<span class="crown" aria-label="league leader">👑</span>' : ""}
+      </div>
+      <div>
+        <div class="nm">${p.name}</div>
+        <div class="rankline">#${p.rank} overall</div>
+      </div>
+      <span class="xp-chip num">${fmt(p.xp.total)} XP</span>
+    </div>`;
+}
+function badgeHTML(list){
+  return list.length ? `<div class="badges">${list.map(b=>`<span class="badge ${b.gold?"gold":""}">${b.t}</span>`).join("")}</div>` : "";
+}
+function attachBarTips(root){
+  root.querySelectorAll("[data-tip]").forEach(n=>{
+    const over = ev => showTip(n.dataset.tip, ev.clientX, ev.clientY);
+    n.addEventListener("pointerenter", over);
+    n.addEventListener("pointermove", over);
+    n.addEventListener("pointerleave", hideTip);
+  });
+}
+
+/* ── Estate Planners ── */
+function renderEP(players){
+  const eps = players.filter(p=>p.team==="ep");
+  const max = k => Math.max(...eps.map(p=>p[k]), 1);
+  const grid = $("#grid-ep");
+  grid.innerHTML = eps.map(p=>{
+    const conv1 = p.dials ? Math.round(p.booked/p.dials*100) : 0;
+    const conv2 = p.booked ? Math.round(p.seen/p.booked*100) : 0;
+    const badges = [];
+    if (p.dials >= 400*PERIODS[period].factor) badges.push({t:"Phone Warrior"});
+    if (p.examsPassed >= EXAMS.length) badges.push({t:"Scholar", gold:true});
+    const pagesTot = p.pages.reduce((a,b)=>a+b,0);
+    if (pagesTot === Math.max(...eps.map(q=>q.pages.reduce((a,b)=>a+b,0)))) badges.push({t:"Bookworm"});
+    if (p.oppsWon === Math.max(...eps.map(q=>q.oppsWon)) && p.oppsWon>0) badges.push({t:"Closer", gold:true});
+
+    const funnel = [
+      ["Dialled", p.dials,  max("dials"),  ""],
+      ["Booked",  p.booked, max("booked"), `${conv1}%`],
+      ["Seen",    p.seen,   max("seen"),   `${conv2}%`],
+    ].map(([k,v,m,cv])=>`
+      <div class="bar-row" data-tip="<b>${p.name}</b> — ${k}: ${fmt(v)}${cv?` (${cv} conversion)`:""}">
+        <span class="bk">${k}</span>
+        <span class="bar-track"><span class="bar-fill" style="background:${teamColor("ep")}" data-w="${Math.round(v/m*100)}"></span></span>
+        <span class="bv num">${fmt(v)} ${cv?`<small>· ${cv}</small>`:""}</span>
+      </div>`).join("");
+
+    const books = BOOKS.map((b,i)=>{
+      const read = p.pages[i], done = read>=b.pages;
+      return `<div class="prog-row" data-tip="<b>${b.t}</b><br>${fmt(read)} of ${fmt(b.pages)} pages">
+          <span class="pt">${b.t}</span><span class="pv num">${done?"Finished ✓":`${fmt(read)}/${fmt(b.pages)} pp`}</span>
+          <span class="prog-bar ${done?"done":""}"><i data-w="${Math.round(read/b.pages*100)}"></i></span>
+        </div>`;
+    }).join("");
+
+    const exams = EXAMS.map((e,i)=>`<span class="exam ${i<p.examsPassed?"passed":""}">${i<p.examsPassed?"✓ ":""}${e}</span>`).join("");
+
+    return `<article class="card">
+      ${cardHead(p)}
+      ${badgeHTML(badges)}
+      <div class="bar-group">${funnel}</div>
+      <hr class="divider">
+      <div class="stat-row">
+        <div class="stat"><div class="v num">${p.oppsOpened}</div><div class="k">Opps opened</div></div>
+        <div class="stat"><div class="v num">${p.oppsWon}</div><div class="k">Opps won</div></div>
+        <div class="stat"><div class="v num">${gbp(p.wonValue)}</div><div class="k">Value won</div></div>
+      </div>
+      <div class="mini-note num">Pipeline opened: <b>${gbp(p.openedValue)}</b></div>
+      <hr class="divider">
+      <div class="lbl">Exam hall</div>
+      <div class="exam-chips">${exams}</div>
+      <div class="lbl">Library</div>
+      <div class="prog">${books}</div>
+    </article>`;
+  }).join("");
+  attachBarTips(grid);
+}
+
+/* ── Advisers ── */
+function renderADV(players){
+  const advs = players.filter(p=>p.team==="adv");
+  $("#adv-key").innerHTML = SOURCES.map(s=>
+    `<i><span class="sw" style="background:var(${s.cssVar})"></span>${s.label}</i>`).join("");
+
+  const grid = $("#grid-adv");
+  grid.innerHTML = advs.map(p=>{
+    const totalOpps = SOURCES.reduce((s,k)=>s+p.srcOpps[k.key],0);
+    const speed = p.taskAvgH<8 ? ["good","Fast"] : p.taskAvgH<24 ? ["warn","On pace"] : ["bad","Slow"];
+    const badges = [];
+    if (p.oppValue === Math.max(...advs.map(q=>q.oppValue))) badges.push({t:"Rainmaker", gold:true});
+    if (p.taskAvgH === Math.min(...advs.map(q=>q.taskAvgH))) badges.push({t:"Flash"});
+    if (p.reviews === Math.max(...advs.map(q=>q.reviews))) badges.push({t:"Review Machine"});
+
+    const segs = SOURCES.map(s=>{
+      const n = p.srcOpps[s.key], v = p.srcValue[s.key];
+      return `<div class="seg" style="flex-grow:${Math.max(n,0.001)}; background:var(${s.cssVar})"
+        data-tip="<b>${s.label}</b><br>${n} opp${n===1?"":"s"} · ${gbp(v)}"><span>${n||""}</span></div>`;
+    }).join("");
+
+    const srcList = SOURCES.map(s=>
+      `<i><span class="sw" style="background:var(${s.cssVar})"></span>${s.label} <b class="num">${p.srcOpps[s.key]}</b> · <b class="num">${gbp(p.srcValue[s.key])}</b></i>`).join("");
+
+    return `<article class="card">
+      ${cardHead(p)}
+      ${badgeHTML(badges)}
+      <div class="hero-val"><b class="num" data-count-gbp="${p.oppValue}">£0</b><span>opportunity value opened</span></div>
+      <div>
+        <div class="lbl" style="margin-bottom:6px">${totalOpps} opportunities by source</div>
+        <div class="stack">${segs}</div>
+        <div class="stack-key">${srcList}</div>
+      </div>
+      <hr class="divider">
+      <div class="stat-row">
+        <div class="stat"><div class="v num">${p.reviews}</div><div class="k">Reviews held</div></div>
+        <div class="stat"><div class="v num">${p.appts}</div><div class="k">Appointments</div></div>
+        <div class="stat"><div class="v num">${totalOpps}</div><div class="k">Opps opened</div></div>
+      </div>
+      <div class="speed">
+        <span class="pill ${speed[0]}">${speed[1]}</span>
+        <div><div class="sv num">${p.taskAvgH}h</div><div class="sk">avg task resolution</div></div>
+        <div class="mini-note" style="margin-left:auto; text-align:right">bonus: <b class="num">+${p.taskAvgH<8?750:p.taskAvgH<24?350:0} XP</b></div>
+      </div>
+    </article>`;
+  }).join("");
+
+  grid.querySelectorAll("[data-count-gbp]").forEach(elm =>
+    countUp(elm, +elm.dataset.countGbp, gbp));
+  attachBarTips(grid);
+}
+
+/* ── Membership Care ── */
+function renderMC(players){
+  const mcs = players.filter(p=>p.team==="mc");
+  const maxT = Math.max(...mcs.map(p=>p.ticketsClosed),1);
+  const maxR = Math.max(...mcs.map(p=>p.reviewsSched),1);
+  const grid = $("#grid-mc");
+  grid.innerHTML = mcs.map(p=>{
+    const speed = p.closeAvgH<4 ? ["good","Lightning"] : p.closeAvgH<6 ? ["warn","On pace"] : ["bad","Slow"];
+    const badges = [];
+    if (p.closeAvgH === Math.min(...mcs.map(q=>q.closeAvgH))) badges.push({t:"Fastest Gun", gold:true});
+    if (p.reviewsSched === Math.max(...mcs.map(q=>q.reviewsSched))) badges.push({t:"Book Filler"});
+
+    /* speed arc: 0h..8h scale, less is more */
+    const fracFast = Math.max(0, Math.min(1, 1 - p.closeAvgH/8));
+    const angle = fracFast * 240 - 210;
+    const arc = describeArc(30,30,24,-210,angle);
+
+    return `<article class="card">
+      ${cardHead(p)}
+      ${badgeHTML(badges)}
+      <div class="speed" data-tip="<b>${p.name}</b><br>Average ticket close: ${p.closeAvgH}h<br>Speed bonus: +${p.closeAvgH<4?1000:p.closeAvgH<6?500:0} XP">
+        <svg width="60" height="52" viewBox="0 0 60 60" aria-hidden="true">
+          <path d="${describeArc(30,30,24,-210,30)}" fill="none" stroke="var(--surface-2)" stroke-width="7" stroke-linecap="round"/>
+          <path d="${arc}" fill="none" stroke="${p.closeAvgH<4?"var(--good)":p.closeAvgH<6?"var(--warn)":"var(--bad)"}" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+        <div><div class="sv num">${p.closeAvgH}h</div><div class="sk">avg ticket close</div></div>
+        <span class="pill ${speed[0]}" style="margin-left:auto">${speed[1]}</span>
+      </div>
+      <hr class="divider">
+      <div class="bar-group">
+        <div class="bar-row" data-tip="<b>${p.name}</b> — tickets closed: ${fmt(p.ticketsClosed)}">
+          <span class="bk">Tickets</span>
+          <span class="bar-track"><span class="bar-fill" style="background:${teamColor("mc")}" data-w="${Math.round(p.ticketsClosed/maxT*100)}"></span></span>
+          <span class="bv num">${fmt(p.ticketsClosed)}</span>
+        </div>
+        <div class="bar-row" data-tip="<b>${p.name}</b> — reviews scheduled: ${fmt(p.reviewsSched)}">
+          <span class="bk">Reviews</span>
+          <span class="bar-track"><span class="bar-fill" style="background:${teamColor("mc")}" data-w="${Math.round(p.reviewsSched/maxR*100)}"></span></span>
+          <span class="bv num">${fmt(p.reviewsSched)}</span>
+        </div>
+      </div>
+      <div class="mini-note">Every review scheduled hands the advisers a warm at-bat (+80 XP each).</div>
+    </article>`;
+  }).join("");
+  attachBarTips(grid);
+}
+
+function describeArc(cx, cy, r, a0, a1){
+  const rad = a => (a-90) * Math.PI/180;
+  const p0 = [cx + r*Math.cos(rad(a0)), cy + r*Math.sin(rad(a0))];
+  const p1 = [cx + r*Math.cos(rad(a1)), cy + r*Math.sin(rad(a1))];
+  const large = (a1-a0) > 180 ? 1 : 0;
+  return `M ${p0[0]} ${p0[1]} A ${r} ${r} 0 ${large} 1 ${p1[0]} ${p1[1]}`;
+}
+
+/* ════════════════════════ ORCHESTRATION ════════════════════════ */
+function animateBars(){
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.querySelectorAll(".bar-fill[data-w], .prog-bar i[data-w]").forEach(b=>{
+      b.style.width = b.dataset.w + "%";
+    });
+  }));
+}
+
+function renderAll(){
+  hideTip();
+  const players = state();
+  $("#track-period-lbl").textContent = PERIODS[period].label;
+  renderTrack(players);
+  renderPodium(players);
+  renderEP(players);
+  renderADV(players);
+  renderMC(players);
+  document.querySelectorAll("[data-team-dot]").forEach(d=>{
+    d.style.background = teamColor(d.dataset.teamDot);
+  });
+  animateBars();
+}
+
+/* period toggle */
+document.querySelectorAll(".period button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".period button").forEach(x=>x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    period = b.dataset.period;
+    renderAll();
+  });
+});
+
+/* tabs */
+const tabIds = ["ep","adv","mc"];
+tabIds.forEach(t=>{
+  $(`#tab-${t}`).addEventListener("click", ()=>{
+    hideTip();
+    tabIds.forEach(x=>{
+      $(`#tab-${x}`).setAttribute("aria-selected", String(x===t));
+      $(`#panel-${x}`).hidden = x!==t;
+    });
+    animateBars();
+  });
+});
+
+/* re-render on theme flips so series colors re-validate per mode */
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+new MutationObserver(renderAll).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+
+renderTicker();
+renderAll();
+</script>
+</body>
+</html>
