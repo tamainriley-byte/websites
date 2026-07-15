@@ -237,11 +237,20 @@ school, certification, machine, gun, massage gun, chair, massage chair, cushion,
 device, amazon, wholesale, tantric, tantra, erotic, sensual, happy ending,
 adult, escort, sexo, erotik, physio insurance, seguridad social,
 alcudia, can picafort, playa de muro, pollensa, cala d'or, cala millor,
-porto cristo, soller, arta, cala ratjada, menorca, ciutadella, mahon, ibiza
+porto cristo, soller, arta, cala ratjada, menorca, ciutadella, mahon, ibiza,
+thai, thai massage, pedicure, pedicura, manicure, manicura, nails, uñas,
+pilates, yoga, retreat, retiro, gym, fitness, estetica, estética,
+beauty salon, salon de belleza, peluqueria, hairdresser, barber, waxing,
+depilacion, laser, botox, filler, eyelash, pestañas, spa day, spa hotel
 ```
 
-The last two lines are the out-of-area towns (north/east Mallorca + other islands):
-home visits don't go there, so don't pay for those clicks.
+Lines 5–6 are the out-of-area towns (north/east Mallorca + other islands): home
+visits don't go there, so don't pay for those clicks. Lines 7–10 (added 15 Jul
+from the live "Searches" insight: pedicure cala millor, pilates studio, yoga
+retreat, estetica en palma…) close off every adjacent-wellness vertical —
+STRICTLY massage keywords only (owner decision). Note: this also excludes
+facial/beauty searches; if facials ever deserve their own campaign, run them
+as a separate ad group with their own page, never mixed into massage terms.
 
 Also **pause** these existing generic keywords: `massage studio`, `massage and wellness`,
 and any other broad single-word `massage` variants — they pull studio-bargain traffic
