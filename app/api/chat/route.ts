@@ -21,6 +21,48 @@ function clean(value: unknown, max = MAX_LEN) {
   return typeof value === "string" ? value.trim().slice(0, max) : ""
 }
 
+async function sendBookingSms(
+  to: string,
+  b: { date: string; start_time: string; duration_minutes: number; treatment: string; location: string }
+) {
+  const sid = process.env.TWILIO_ACCOUNT_SID
+  const token = process.env.TWILIO_AUTH_TOKEN
+  const from = process.env.TWILIO_FROM
+  if (!sid || !token || !from || !to) return
+  const when = new Date(b.date + "T12:00:00Z").toLocaleDateString("en-GB", {
+    timeZone: "Europe/Madrid",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  })
+  const body = [
+    "Calm & Contour — you're booked in ✅",
+    when + " at " + b.start_time,
+    b.location,
+    b.duration_minutes + " min " + b.treatment,
+    "Parissa will WhatsApp you to say hello. See you soon!",
+  ].join("\n")
+  try {
+    const res = await fetch(
+      "https://api.twilio.com/2010-04-01/Accounts/" + sid + "/Messages.json",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Basic " + Buffer.from(sid + ":" + token).toString("base64"),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ To: to, From: from, Body: body }).toString(),
+      }
+    )
+    if (!res.ok) {
+      console.error("[chat] Twilio SMS failed", res.status, await res.text())
+    }
+  } catch (e) {
+    console.error("[chat] Twilio SMS error", e)
+  }
+}
+
+
 // Turn a user-agent string into a short readable label.
 function shortDevice(ua: string): string | null {
   if (!ua) return null
@@ -257,6 +299,7 @@ async function generateReply(
             } catch (e) {
               console.error("[chat] markBookedByPhone failed", e)
             }
+            await sendBookingSms(phone, input)
           }
         }
         messages.push({ role: "assistant", content: blocks })
