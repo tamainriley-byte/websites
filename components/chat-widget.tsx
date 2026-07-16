@@ -1,415 +1,46 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import { MessageCircle, X, Send } from "lucide-react"
+import { useEffect } from "react"
 import { trackLeadConversion } from "@/lib/whatsapp"
 
-type Msg = { role: "user" | "assistant"; content: string }
-
-const SESSION_KEY = "cc_chat_session"
-
-const GREETING =
-  "Hi, I'm Parissa 🌿 Pop your mobile number in below to start, then ask me anything about the massage, prices or areas and I'll get you booked in."
-
-function newSessionId() {
-  return (
-    "s_" +
-    Date.now().toString(36) +
-    "_" +
-    Math.random().toString(36).slice(2, 10)
-  )
-}
-
-// A small human-feeling pause so replies don't appear instantly.
-async function humanPause(startedAt: number) {
-  const wait = Math.max(0, 1100 - (Date.now() - startedAt))
-  if (wait > 0) await new Promise((r) => setTimeout(r, wait))
-}
+// Owner decision (16 Jul 2026): no in-app chat or booking. Every
+// "Message Parissa" button and this floating launcher open WhatsApp
+// directly so Parissa handles enquiries herself. We still fire the
+// Google Ads lead conversion on any WhatsApp click so the campaign
+// keeps optimising.
+const WA = "https://wa.me/34602020734"
 
 export function ChatWidget() {
-  const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Msg[]>([])
-  const [input, setInput] = useState("")
-  const [sending, setSending] = useState(false)
-  const [phone, setPhone] = useState("")
-  const [phoneSaved, setPhoneSaved] = useState(false)
-  const [savingPhone, setSavingPhone] = useState(false)
-  const [phoneError, setPhoneError] = useState(false)
-  const sessionRef = useRef<string>("")
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const phoneSavedRef = useRef(false)
-  const hasChattedRef = useRef(false)
-  phoneSavedRef.current = phoneSaved
-  hasChattedRef.current = messages.some((m) => m.role === "user")
-
-  // Init session id.
-  useEffect(() => {
-    let id = ""
-    try {
-      id = localStorage.getItem(SESSION_KEY) || ""
-      if (!id) {
-        id = newSessionId()
-        localStorage.setItem(SESSION_KEY, id)
-      }
-    } catch {
-      id = newSessionId()
-    }
-    sessionRef.current = id
-  }, [])
-
-  const openChat = useCallback(() => setOpen(true), [])
-
-  // OWNER DECISION (11 Jul 2026): every green button opens THIS chat — the
-  // number gate, working AI and direct calendar booking make it the funnel.
-  // The Google Ads conversion fires later, when the number is saved — a
-  // button click alone is NOT a conversion (owner decision, 12 Jul 2026).
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null
       const link = target?.closest?.(
         'a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href*="web.whatsapp.com"]',
-      ) as HTMLAnchorElement | null
-      if (link) {
-        e.preventDefault()
-        openChat()
-      }
+      )
+      if (link) trackLeadConversion()
     }
     document.addEventListener("click", handler)
-    window.addEventListener("open-parissa-chat", openChat as EventListener)
-    return () => {
-      document.removeEventListener("click", handler)
-      window.removeEventListener("open-parissa-chat", openChat as EventListener)
-    }
-  }, [openChat])
-
-  // Load saved history when first opened.
-  useEffect(() => {
-    if (!open || messages.length > 0) return
-    let cancelled = false
-    ;(async () => {
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            type: "history",
-            sessionId: sessionRef.current,
-          }),
-        })
-        const data = await res.json()
-        if (cancelled) return
-        if (data.hasPhone) setPhoneSaved(true)
-        if (Array.isArray(data.messages) && data.messages.length > 0) {
-          setMessages(
-            data.messages.map((m: { role: Msg["role"]; content: string }) => ({
-              role: m.role,
-              content: m.content,
-            })),
-          )
-        } else {
-          setMessages([{ role: "assistant", content: GREETING }])
-        }
-      } catch {
-        setMessages([{ role: "assistant", content: GREETING }])
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [open, messages.length])
-
-  // Keep scrolled to the newest message.
-  useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    })
-  }, [messages, sending])
-
-  // While the chat is open, check for new messages every few seconds so
-  // Parissa's replies from /admin appear live in the conversation.
-  useEffect(() => {
-    if (!open) return
-    const timer = setInterval(async () => {
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            type: "history",
-            sessionId: sessionRef.current,
-          }),
-        })
-        const data = await res.json()
-        if (Array.isArray(data.messages)) {
-          setMessages((current) =>
-            data.messages.length > current.length
-              ? data.messages.map(
-                  (m: { role: Msg["role"]; content: string }) => ({
-                    role: m.role,
-                    content: m.content,
-                  }),
-                )
-              : current,
-          )
-        }
-      } catch {
-        // network blip, try again next tick
-      }
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [open])
-
-  // When the visitor leaves the page mid-conversation, tell the server so
-  // Parissa gets the final transcript straight away ("they've gone, call now").
-  useEffect(() => {
-    const onLeave = () => {
-      if (!hasChattedRef.current || !sessionRef.current) return
-      try {
-        navigator.sendBeacon(
-          "/api/chat",
-          new Blob(
-            [JSON.stringify({ type: "left", sessionId: sessionRef.current })],
-            { type: "application/json" },
-          ),
-        )
-      } catch {
-        // best effort only
-      }
-    }
-    window.addEventListener("pagehide", onLeave)
-    return () => window.removeEventListener("pagehide", onLeave)
+    return () => document.removeEventListener("click", handler)
   }, [])
 
-  // One-tap number save. autocomplete="tel" lets the phone's keyboard offer
-  // the visitor's own number, so this is a single tap on mobile.
-  async function savePhone() {
-    const value = phone.trim()
-    if (!value || savingPhone) return
-    // A real mobile has 7-15 digits; stop partial numbers before they start.
-    const digits = (value.match(/\d/g) || []).length
-    if (digits < 7 || digits > 15) {
-      setPhoneError(true)
-      return
-    }
-    setPhoneError(false)
-    setSavingPhone(true)
-    const startedAt = Date.now()
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          type: "register",
-          sessionId: sessionRef.current,
-          phone: value,
-        }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setPhoneSaved(true)
-        // A saved mobile number is the real conversion.
-        trackLeadConversion()
-        if (data.reply) {
-          await humanPause(startedAt)
-          setMessages((m) => [...m, { role: "assistant", content: data.reply }])
-        }
-      }
-    } catch {
-      // leave the bar up so they can retry
-    } finally {
-      setSavingPhone(false)
-    }
-  }
-
-  async function send() {
-    const text = input.trim()
-    if (!text || sending) return
-    setInput("")
-    setMessages((m) => [...m, { role: "user", content: text }])
-    setSending(true)
-    const startedAt = Date.now()
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          type: "message",
-          sessionId: sessionRef.current,
-          message: text,
-        }),
-      })
-      const data = await res.json()
-      // Parissa has taken over this chat: no AI reply — her message will
-      // arrive via polling when she answers from /admin.
-      if (data.muted) return
-      const reply =
-        data.reply ||
-        "Thanks, tell me a little more and I'll sort it out for you."
-      await humanPause(startedAt)
-      setMessages((m) => [...m, { role: "assistant", content: reply }])
-    } catch {
-      await humanPause(startedAt)
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          content: "Sorry, I didn't catch that, please try again in a moment.",
-        },
-      ])
-    } finally {
-      setSending(false)
-    }
-  }
-
   return (
-    <>
-      {/* Floating launcher */}
-      {!open && (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Chat with Parissa"
-          className="fixed bottom-5 right-5 z-[60] inline-flex items-center gap-2 rounded-full bg-whatsapp px-4 py-3 text-whatsapp-foreground shadow-xl transition-transform hover:scale-105 md:bottom-6 md:right-6"
-        >
-          <MessageCircle className="size-6" aria-hidden="true" />
-          <span className="hidden text-sm font-medium sm:inline">
-            Chat with Parissa
-          </span>
-        </button>
-      )}
-
-      {/* Chat panel */}
-      {open && (
-        <div className="fixed inset-x-0 bottom-0 z-[60] flex justify-center sm:inset-auto sm:bottom-6 sm:right-6">
-          <div className="flex h-[85svh] w-full flex-col overflow-hidden rounded-t-2xl bg-[#ece5dd] shadow-2xl sm:h-[560px] sm:w-[380px] sm:rounded-2xl">
-            {/* Header */}
-            <div className="flex items-center gap-3 bg-whatsapp px-4 py-3 text-whatsapp-foreground">
-              <img
-                src="/images/paris-portrait.jpeg"
-                alt="Parissa"
-                className="size-10 rounded-full object-cover ring-2 ring-white/40"
-              />
-              <div className="flex-1 leading-tight">
-                <p className="font-medium">Parissa</p>
-                <p className="text-xs opacity-80">Calm &amp; Contour · Mallorca</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close chat"
-                className="rounded-full p-1 transition-colors hover:bg-white/15"
-              >
-                <X className="size-5" aria-hidden="true" />
-              </button>
-            </div>
-
-            {/* Messages */}
-            <div
-              ref={scrollRef}
-              className="flex-1 space-y-2 overflow-y-auto px-3 py-4"
-            >
-              {messages.map((m, i) => (
-                <div
-                  key={i}
-                  className={`flex ${
-                    m.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
-                  <div
-                    className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm ${
-                      m.role === "user"
-                        ? "rounded-br-sm bg-[#dcf8c6] text-[#111b21]"
-                        : "rounded-bl-sm bg-white text-[#111b21]"
-                    }`}
-                  >
-                    {m.content}
-                  </div>
-                </div>
-              ))}
-
-              {sending && (
-                <div className="flex justify-start">
-                  <div className="rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-[#667781] shadow-sm">
-                    Parissa is typing…
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* One composer box: first it captures the mobile (autocomplete
-                offers the visitor's own number = one tap), then it becomes
-                the normal message box. */}
-            {!phoneSaved ? (
-              <div className="bg-[#f0f2f5] px-3 py-2">
-                {phoneError && (
-                  <p className="mb-1 px-2 text-xs text-red-600">
-                    That number looks too short, please enter your full mobile
-                    with country code.
-                  </p>
-                )}
-                <div className="flex items-center gap-2">
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value)
-                    setPhoneError(false)
-                  }}
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault()
-                      savePhone()
-                    }
-                  }}
-                  placeholder="Enter mobile number to talk with Parissa"
-                  className={`min-w-0 flex-1 rounded-full border bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp ${
-                    phoneError ? "border-red-400" : "border-[#d1d7db]"
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={savePhone}
-                  disabled={savingPhone || !phone.trim()}
-                  aria-label="Start chat"
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
-                >
-                  <Send className="size-5" aria-hidden="true" />
-                </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 bg-[#f0f2f5] px-3 py-2">
-                <input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault()
-                      send()
-                    }
-                  }}
-                  placeholder="Ask about the massage, or say hello…"
-                  className="min-w-0 flex-1 rounded-full border border-[#d1d7db] bg-white px-4 py-2 text-sm outline-none focus:border-whatsapp"
-                />
-                <button
-                  type="button"
-                  onClick={send}
-                  disabled={sending || !input.trim()}
-                  aria-label="Send"
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground transition-transform hover:scale-105 disabled:opacity-50"
-                >
-                  <Send className="size-5" aria-hidden="true" />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </>
+    <a
+      href={WA}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Message Parissa on WhatsApp"
+      className="fixed bottom-5 right-5 z-[60] inline-flex items-center gap-2 rounded-full bg-whatsapp px-4 py-3 text-whatsapp-foreground shadow-xl transition-transform hover:scale-105 md:bottom-6 md:right-6"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="size-5"
+        aria-hidden="true"
+      >
+        <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.86 9.86 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01a8.2 8.2 0 01-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.19 8.19 0 01-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.69 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/>
+      </svg>
+      Chat with Parissa
+    </a>
   )
 }
