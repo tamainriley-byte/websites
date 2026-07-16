@@ -173,8 +173,16 @@ async function generateReply(
   } catch {
     availability = null
   }
+  const today = new Date().toLocaleDateString("en-GB", {
+    timeZone: "Europe/Madrid",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })
   const system =
     SYSTEM_PROMPT +
+    `\n\nTODAY is ${today} (Mallorca time). Work out real calendar dates from today, and ALWAYS use the correct current year in the date you pass to the book_appointment tool.` +
     "\n\nPARISSA'S REAL AVAILABILITY (next 7 days, Mallorca time). Only ever offer a time that is free here:\n" +
     (availability ||
       "(the calendar is not readable right now, so offer to confirm the exact time personally rather than guessing a slot)")
