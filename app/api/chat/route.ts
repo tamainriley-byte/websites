@@ -165,7 +165,7 @@ async function generateReply(
 ): Promise<string | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return null
-  const model = process.env.PARISSA_MODEL || "claude-3-5-haiku-latest"
+  const model = process.env.PARISSA_MODEL || "claude-3-5-haiku-20241022"
 
   let availability: string | null = null
   try {
