@@ -89,13 +89,12 @@ app/
   mobile-massage-mallorca/     SEO service page
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
-  massage-near-me/             SEO service page ("near me", same-day; links the town pages)
-  massage-palma/               SEO town page (Palma hotels/yachts)
-  massage-magaluf/             SEO town page ┐
-  massage-santa-ponsa/         SEO town page │ south-coast towns, all share
-  massage-palmanova/           SEO town page │ components/town-page.tsx with
-  massage-paguera/             SEO town page │ unique local copy per town
-  massage-el-arenal/           SEO town page ┘ (ads group 8 → per-town URLs)
+  massage-near-me/             SEO service page ("near me", same-day, all towns)
+  massage-palma/               SEO town page (Palma hotels/yachts). NOTE: five more
+                               town pages + body-contouring page existed briefly on
+                               14-15 Jul and were REMOVED (owner decision 15 Jul) —
+                               don't recreate without asking. Ads town keywords all
+                               land on /massage-near-me.
   treatments/                  Lists all massage types + facials + pricing
 components/
   site-header.tsx              Nav: navLinks[] + services[] drive desktop dropdown & mobile menu

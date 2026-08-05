@@ -58,13 +58,9 @@ const areas = [
 ]
 
 // Towns with their own landing page get a link (SEO: crawlable from here).
+// The other town pages were removed 15 Jul 2026 (owner decision).
 const townPages: Record<string, string> = {
   Palma: "/massage-palma",
-  "El Arenal": "/massage-el-arenal",
-  Magaluf: "/massage-magaluf",
-  Palmanova: "/massage-palmanova",
-  "Santa Ponsa": "/massage-santa-ponsa",
-  Paguera: "/massage-paguera",
 }
 
 const faqs = [

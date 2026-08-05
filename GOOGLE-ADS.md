@@ -154,12 +154,9 @@ their town"**. The first headline echoes the exact town they typed. SOUTH/SOUTHW
 TOWNS ONLY (owner decision 14 Jul: the north is too far for home visits) — the
 northern resort towns are in the negative list below so broad match can't leak there.
 
-**Per-town final URLs (14 Jul):** these towns now have their own landing pages — use
-them as the final URL for their keyword instead of /massage-near-me (better Quality
-Score: keyword ↔ ad ↔ page all match): magaluf → `/massage-magaluf` · santa ponsa →
-`/massage-santa-ponsa` · palmanova → `/massage-palmanova` · paguera + peguera →
-`/massage-paguera` · el arenal → `/massage-el-arenal` · (palma already →
-`/massage-palma` in group 5). Remaining towns keep `/massage-near-me`.
+**Final URLs (updated 15 Jul):** all town keywords land on `/massage-near-me`
+(the separate town pages were removed — owner decision). Palma keywords keep
+`/massage-palma` in group 5.
 
 **Keywords (broad):** massage magaluf · massage el arenal · massage paguera · massage peguera · massage port andratx · massage santa ponsa · massage palmanova · massage portals nous · massage illetas · massage bendinat · massage camp de mar · massage llucmajor
 
