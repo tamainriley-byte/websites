@@ -8,10 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
     { path: "", priority: 1.0 },
     { path: "/treatments", priority: 0.9 },
-    { path: "/mobile-massage-mallorca", priority: 0.9 },
     { path: "/villa-massage-mallorca", priority: 0.8 },
     { path: "/yacht-massage-mallorca", priority: 0.8 },
-    { path: "/massage-near-me", priority: 0.8 },
     { path: "/massage-palma", priority: 0.8 },
     { path: "/lymphatic-drainage-mallorca", priority: 0.8 },
     { path: "/ritual-massage-mallorca", priority: 0.8 },

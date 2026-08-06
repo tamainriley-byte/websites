@@ -24,7 +24,7 @@ the studio, and the ad copy below reflects that.
 
 ---
 
-## 1. Mobile Massage → `/mobile-massage-mallorca`
+## 1. Mobile Massage → `/` (homepage — the dedicated page was removed 5 Aug)
 
 **Keywords (broad):** mobile massage mallorca · massage at home mallorca · in villa massage mallorca · massage to my hotel mallorca · massage home visit mallorca · outcall massage mallorca
 
@@ -85,7 +85,7 @@ the studio, and the ad copy below reflects that.
 - Table and oils brought aboard. Guests, owners and crew all welcome.
 - Message with your berth or anchorage and we'll fit around your plans.
 
-## 4. Near Me / Same Day → `/massage-near-me`
+## 4. Near Me / Same Day → `/` (homepage — the dedicated page was removed 5 Aug)
 
 **Keywords (broad):** massage near me · massage today mallorca · same day massage mallorca · massage now mallorca · last minute massage mallorca
 
@@ -147,16 +147,18 @@ the studio, and the ad copy below reflects that.
 - Tell us how you want to feel afterwards and the session is built around you.
 - Facials and body contouring too: wood therapy, lymphatic sculpting and more.
 
-## 8. Town Searches → `/massage-near-me` ⭐ DATA-DRIVEN
+## 8. Town Searches → `/` (homepage) ⭐ DATA-DRIVEN
 
 Built from the account's real search terms (10 Jul 2026): people search **"massage +
 their town"**. The first headline echoes the exact town they typed. SOUTH/SOUTHWEST
 TOWNS ONLY (owner decision 14 Jul: the north is too far for home visits) — the
 northern resort towns are in the negative list below so broad match can't leak there.
 
-**Final URLs (updated 15 Jul):** all town keywords land on `/massage-near-me`
-(the separate town pages were removed — owner decision). Palma keywords keep
-`/massage-palma` in group 5.
+**Final URLs (updated 5 Aug):** all town and near-me keywords land on the
+homepage `/` (the near-me page and the separate town pages were removed —
+owner decision). Palma keywords keep `/massage-palma` in group 5. The
+removed URLs 301-redirect to the homepage, so nothing 404s if an old final
+URL is still live in the account.
 
 **Keywords (broad):** massage magaluf · massage el arenal · massage paguera · massage peguera · massage port andratx · massage santa ponsa · massage palmanova · massage portals nous · massage illetas · massage bendinat · massage camp de mar · massage llucmajor
 

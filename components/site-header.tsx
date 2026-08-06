@@ -12,10 +12,8 @@ const navLinks = [
 ]
 
 const services = [
-  { label: "Mobile Massage", href: "/mobile-massage-mallorca" },
   { label: "Villa Massage", href: "/villa-massage-mallorca" },
   { label: "Yacht Massage", href: "/yacht-massage-mallorca" },
-  { label: "Massage Near Me", href: "/massage-near-me" },
   { label: "Massage in Palma", href: "/massage-palma" },
   { label: "Lymphatic Drainage", href: "/lymphatic-drainage-mallorca" },
   { label: "The Ritual · VIP", href: "/ritual-massage-mallorca" },

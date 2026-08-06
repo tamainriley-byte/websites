@@ -86,15 +86,14 @@ app/
   ritual-massage-mallorca/     SEO service page (The Ritual, 2h VIP €200, ad group 10 cross-sell)
   serene-flow-ritual-mallorca/ Signature ritual page (2h lymphatic + Balinese, €200 anywhere)
   tension-release-massage-mallorca/ Signature ritual page (2h trigger point + myofascial, €200 anywhere)
-  mobile-massage-mallorca/     SEO service page
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
-  massage-near-me/             SEO service page ("near me", same-day, all towns)
-  massage-palma/               SEO town page (Palma hotels/yachts). NOTE: five more
-                               town pages + body-contouring page existed briefly on
-                               14-15 Jul and were REMOVED (owner decision 15 Jul) —
-                               don't recreate without asking. Ads town keywords all
-                               land on /massage-near-me.
+  massage-palma/               SEO town page (Palma hotels/yachts). NOTE: the
+                               mobile-massage, massage-near-me, five town pages and
+                               body-contouring pages were REMOVED (owner decisions
+                               15 Jul & 5 Aug) — don't recreate without asking. Their
+                               URLs 301 → homepage (next.config.mjs); ads groups 1,
+                               4 and 8 land on the homepage now.
   treatments/                  Lists all massage types + facials + pricing
 components/
   site-header.tsx              Nav: navLinks[] + services[] drive desktop dropdown & mobile menu
