@@ -1,323 +1,362 @@
 # Faceless AI content plan — Instagram + TikTok
 
-Product: an AI training manual that takes a total beginner to "genuinely
-understands AI and can build with it" in about two hours.
+Product: **The Open-Source AI Stack — A Plain-English Course.** 27 pages,
+~6,700 words, 9 chapters + glossary. Teaches the seven open-source tools most
+AI products are built on (vLLM, LangChain, LlamaIndex, Postgres + pgvector,
+FastAPI, Playwright, Redis) — and fact-checks a viral Instagram carousel about
+them, chapter by chapter.
 
-Audience: both B2B and general public (see §2 — one account, segment at the
-funnel, not in the feed).
-
-_Written 14 Aug 2026._
-
----
-
-## 1. The format decision: don't lead with an animated character
-
-**Recommendation: no animated character as the primary format.** Use a
-recurring *mark* + a single consistent *voice* instead, and let real screen
-recordings carry the content.
-
-Why:
-
-- **Your moat is the proof.** "Snippets of our work" — real screens, real
-  outputs, real builds — is the one thing a competitor cannot copy this week.
-  An animated presenter covers the strongest ingredient with the weakest one.
-  Anyone can generate a cartoon; nobody else has your screen.
-- **A character is a retention tax.** The viewer came for the result. Every
-  second of mascot before the result is a second of drop-off, and the first 3
-  seconds decide the reach of the whole video.
-- **Volume is the whole game.** You need 2 posts/day for 60+ days before you
-  have any signal. Screen-record + voice = ~8 min per video. Consistent
-  animated character = 40–90 min per video, and character drift between
-  generations means constant re-rolls. The character format will quietly
-  reduce you to 3 posts a week, which is the actual reason most faceless pages
-  fail.
-- **Trust.** You are selling AI credibility. A synthetic avatar talking head
-  reads as "AI slop" to exactly the audience that has to believe you know your
-  stuff, and the comments section will say so — which tanks watch-through.
-
-### What to do instead — "faceless identity without a mascot"
-
-Five things, held rigidly constant, are what make a page feel like a brand:
-
-1. **One voice, forever.** Either your own voice or one licensed AI voice
-   (ElevenLabs). Never change it. The voice *is* the character. This is the
-   single biggest driver of "oh, this account again" recognition.
-2. **One caption style.** Same font, same size, same position, same highlight
-   colour on the emphasised word. Burned in, not platform auto-captions.
-3. **A static mark.** A simple logo/mascot used as the profile picture, a
-   small corner watermark, and a 1.5s end card. This is where a character
-   earns its place — as a *stamp*, not a *presenter*.
-4. **A cold-open sting.** The same 0.6s sound + flash before the hook on every
-   video. Trains the thumb to stop.
-5. **A signature sign-off line.** Same 4 words at the end of every video.
-
-### Where animation *is* worth it
-
-One of your four series (§3, "Under the hood") explains abstract things —
-tokens, weights, training, why a model hallucinates. There is nothing real to
-film. Use **motion graphics** there: moving diagrams, words dissolving into
-numbers, arrows through layers. That is animation doing work no screen
-recording can do. It is not a character, and that's fine.
-
-If you want a character regardless: use it as a **2-second recurring cold
-open only** — same clip every time, generated once, reused forever. Zero
-ongoing cost, all of the recognition, none of the retention tax.
+_Written 14 Aug 2026. Revised after reading the course PDF._
 
 ---
 
-## 2. B2B vs public — one account
+## 0. Read this first: the pitch and the product don't match yet
 
-Run **one public-facing account**. Reasons: TikTok/IG reach is consumer-shaped,
-and B2B buyers are consumers when they're on their phone at 10pm. Broad-appeal
-content gets distribution; a "digital transformation for SMEs" account gets 200
-views.
+The original brief for this content was: *understand AI · be the centre of
+attention at dinner parties · build your own ChatGPT or Claude · build an
+off-grid AI to protect you and your loved ones · use AI securely so nobody
+steals your data.*
 
-Segment **at the funnel, not in the feed**: the same video sends everyone to
-one link; the landing page splits "for me" vs "for my team", and the team path
-routes to a higher-priced group licence.
+Against the actual manuscript:
 
-If B2B is where the real money is, **repost the identical asset to LinkedIn**.
-Same file, same captions, different caption text. That is where B2B actually
-buys, and it costs you nothing extra.
+| Promise | In the course? |
+|---|---|
+| Understand how AI products work, end to end | **Yes — this is the whole book.** Ch 0 and Ch 8 nail it. |
+| Hold your own in any AI conversation | **Yes.** ~40 glossary terms, all in plain English. |
+| Be the person at the dinner party | **Yes — literally a stated outcome** on the "before you start" page. |
+| Build your own ChatGPT / Claude | **No.** No build steps. Ch 8's closing note suggests a tiny RAG app as a weekend project, with an AI assistant walking you through it. That's a signpost, not a build. |
+| Off-grid AI, works without internet | **No.** Open-weight models and self-hosting get a few lines in Ch 1. Nothing on running one yourself. |
+| Use AI securely, nobody steals your data | **No.** One passing clause about enterprises that can't send data outside. |
+
+**Market the last three and you will get refunds and one-star reviews**, and
+you'll have burned the ad account building an audience for a product that
+isn't this one. Two options, and I'd take the first:
+
+1. **Sell what the book actually is** — it's a sharper, more defensible
+   position than the generic one (see §1). Add the missing three as a
+   *second* product later; "Run AI on your own machine" is a great volume two
+   and the audience this content builds is exactly who buys it.
+2. Write the missing chapters first. That's real work — a local-model setup
+   walkthrough, a data-security chapter — and it delays launch by weeks.
+
+Everything below assumes option 1.
+
+---
+
+## 1. The position: not "learn AI" — "stop being bluffed about AI"
+
+Ch 9, *How to read AI hype*, is the best chapter in the book and it should be
+the front door of the whole brand. The book's real promise isn't "you'll
+understand AI." It's:
+
+> **You'll be able to read any confident AI post and know which half is true.**
+
+Why this is the right position:
+
+- **It's unoccupied.** "Learn AI in 2026" is the most saturated niche on both
+  platforms. "The person who calls out AI nonsense, accurately, with the
+  correction" is basically empty, because it requires actually knowing things.
+- **It's native to the platform.** The book was written *about* an Instagram
+  carousel. Your product's source material is the exact medium you're
+  publishing into. That's a gift — the content writes itself and the
+  self-reference is the joke.
+- **It's an infinite content engine.** Viral AI posts are produced daily by
+  other people, for free. Your recurring format is: take one, grade it. You
+  will never run out and you never need to invent a topic.
+- **It's shareable in a way "learn AI" isn't.** People don't share lessons.
+  They share corrections, so they can send them to someone.
+- **It skews B2B for free.** The buyer is the exec, founder, marketer or
+  investor who keeps getting pitched "AI-powered" things and can't tell.
+  That's a much better customer than "curious beginner."
+
+Working account name candidates (check availability): **@plainenglishai ·
+@thestackinplainenglish · @readtheai · @whattheystoldyou**. The line under the
+handle: *"AI, fact-checked. No code, no hype."*
+
+---
+
+## 2. Format: no animated presenter — but more animation than I first said
+
+Recommendation stands: **don't build an animated character as the host.** A
+mascot presenter is a retention tax (viewers came for the payoff), it costs
+40–90 min per video against ~8 for the alternative, which quietly drops you
+from 2 posts a day to 3 a week — the real reason faceless pages fail. And a
+synthetic talking head reads as "AI slop" to precisely the audience that has
+to believe you know your stuff.
+
+But the product changed my split. This course is **conceptual** — there's no
+client work to screen-record for most of it. What it does have is a set of
+genuinely excellent analogies that are *made* for motion graphics:
+
+- vLLM = a **taxi rank vs a bus service** (one passenger per car, engine idle,
+  vs everyone moving at once)
+- Embeddings = **GPS coordinates for meaning** (two sentences with no shared
+  words landing on the same spot on a map)
+- Postgres = **filing cabinet**, Redis = **whiteboard**
+- FastAPI = the **waiter** carrying orders between tables and the kitchen
+- Playwright = **hands** on a brain in a jar
+
+So: heavier on animated diagrams than my first draft, still no animated host.
+The animation does work no camera can do; a cartoon presenter would only be
+decoration.
+
+**Identity, held rigid (this is what makes a faceless page feel like a brand):**
+one voice forever · one burned-in caption style · a static mark used as
+profile pic, corner watermark and 1.5s end card · a 0.6s cold-open sting · one
+sign-off line, never changed. The voice *is* the character.
 
 ---
 
 ## 3. The four series
 
-A faceless page works when viewers can name what they're going to get. Four
-recurring formats, posted in rotation:
-
-| Series | % of posts | Length | Format | Job |
+| Series | % | Length | Format | Job |
 |---|---|---|---|---|
-| **Watch this** | 40% | 15–25s | Screen recording, VO | Proof. Real work, real output, jaw drop. |
-| **Under the hood** | 25% | 35–50s | Motion graphics | Authority. One mechanism explained properly. |
-| **Off the grid** | 20% | 25–40s | Screen recording, wifi visibly off | Differentiation. Private/local AI. |
-| **Two hours** | 15% | 20–35s | Mixed, offer-led | Conversion. The transformation promise. |
+| **Reality check** | 35% | 20–35s | Screenshot of a claim + motion graphics correction | The signature. Identity + shares. |
+| **Plain English** | 30% | 25–40s | Motion graphics analogy | Authority. One term, one picture. |
+| **Under the bonnet** | 20% | 20–30s | Screen recording of a real AI product | Proof. See §4. |
+| **Dinner party** | 15% | 20–30s | Mixed, offer-led | Conversion. |
 
-Rules:
-- Every video teaches **one** thing. One. If you have two, that's two videos.
-- Never explain the value of the thing before showing the thing.
-- Post the same asset to both platforms; write different captions (§7).
+**Reality check** is the flagship. Structure every one identically:
+
+```
+"Here's a claim you've seen." → show it →
+"Here's the bit that's true." → "Here's the bit that isn't." →
+"Here's how you'd have spotted it."
+```
+
+That last beat is the one that earns the follow — you're not just correcting,
+you're handing over the detector.
+
+**One rule, non-negotiable:** grade the *claim*, never the person. Blur
+handles, don't show faces, never name the poster. The moment this becomes
+dunking on an individual you get pile-ons, harassment reports and an audience
+that came for blood instead of for the product.
 
 ---
 
-## 4. Script anatomy
+## 4. Your unfair advantage: use Calm & Contour as the live specimen
 
-Your instinct — pain → transformation → proof — is right. Formalised into a
-5-beat structure that fits 25 seconds:
+The "Under the bonnet" series has a problem — you can't screen-record someone
+else's stack. But you already run a real, live AI product: the Calm & Contour
+site has an AI chat that captures leads, reads Google Calendar free/busy,
+books appointments via a tool call, writes to Postgres, and notifies over
+WhatsApp.
 
-```
-0.0–0.6s   STING          same every video
-0.6–3.0s   HOOK           the pain, stated as a fact about them, not a question
-3.0–6.0s   TURN           "that's not stupidity, that's just nobody showing you X"
-6.0–18s    PROOF          the actual thing on screen. No narration of what
-                          you're about to do — just do it.
-18–23s     PROMISE        the 2-hour transformation, one concrete image
-23–25s     CTA            one action, always the same wording
-```
+That is Ch 8's walkthrough running on a real business you own. Film it:
 
-Two hard rules that decide whether this works:
+- The chat answering a real question → "that's the model. One component."
+- The Postgres row appearing in /admin → "that's the archive."
+- The calendar event being written → "that's a tool call. This is what people
+  mean by 'agent'."
+- The whole thing costing a fraction of a cent → the exact claim in Ch 8.
 
-- **Never open with a question.** "Do you struggle with AI?" is a scroll. "You
-  nod along when people talk about AI and you have no idea what they're
-  saying" is a stop, because it's an accusation and they have to check whether
-  it's true.
-- **Show the result before you explain it.** The proof beat starts at 6s, not
-  15s. Most beginner scripts spend 15 seconds setting up a 5-second payoff.
+Nobody else in this niche can show a working product end to end. It also
+proves the book's thesis better than the book does: *an AI product is mostly
+not AI.*
 
 ---
 
-## 5. Hook bank
+## 5. Hook bank — all drawn from the actual manuscript
 
-Written from your own points. These are the actual first lines.
+**Reality check**
+1. "Anthropic. Perplexity. Together. Groq — all running vLLM." One of those four built its entire business on not using it.
+2. That AI post you saved has four made-up numbers in it. Here's how to spot them in three seconds.
+3. "The browser Claude uses." It isn't a browser. It doesn't browse. Here's what it actually is.
+4. Whenever an AI post gives you a number with no source, mentally replace it with the word "lots." Watch what happens to the post.
+5. "35,000 GitHub stars" is not proof of anything. A star is a bookmark. That's it.
+6. "Pinecone raised $138M, pgvector is free — guess which one runs at scale." Both do. Here's the honest version.
+7. In any list of impressive company names, check the biggest one. It's usually the shakiest.
+8. This viral AI post is about 70% true. That's higher than most. Here's the 30%.
 
-**Pain (the "that's me" stop)**
-1. You nod along when people talk about AI. You have no idea what they're saying.
-2. Everyone at work became an "AI person" this year. You're pretending you kept up.
-3. You've used ChatGPT for a year and you still couldn't explain what it actually does.
-4. You're not bad at AI. Nobody ever showed you the first twenty minutes.
-5. Your kids are growing up inside this and you can't answer one question about it.
-6. There's a conversation happening about the biggest shift of your lifetime and you're not in it.
-7. You've been Googling "what is an LLM" and closing the tab every time.
+**Plain English**
+9. AI doesn't search your documents by words. It searches by *coordinates*. Let me show you.
+10. "How do I reset my password" and "I can't log into my account" share no words. To an AI they're almost the same point on a map.
+11. Running an AI badly is a taxi rank. Running it well is a bus. That difference is why AI got cheap.
+12. Everyone says "RAG" like you should know it. It's two words: search first, then answer.
+13. There are two completely different things people call "using AI," and almost nobody knows which one they mean.
+14. Your app has a filing cabinet and a whiteboard. Knowing which is which explains most of how software works.
+15. An "agent" is not a smarter AI. It's the same AI in a loop, allowed to press buttons.
 
-**Transformation (the promise)**
-8. Two hours from now you could explain how ChatGPT works to a table of adults. Here's the first ten minutes.
-9. By dinner tonight you'll know more about AI than everyone in the room. Watch.
-10. In the time it takes to watch one film you can build a working chatbot. I'll prove it.
-11. You don't need to be technical. You need two hours and the right order.
-12. This is the difference between using AI and understanding it. It's about two hours wide.
+**Myth-busting (highest share rate — people send these)**
+16. When a legal AI answers from your contracts, it was never trained on your contracts. Here's what actually happened.
+17. No, it didn't "learn" your document. It read it once, answered, and forgot it immediately.
+18. The AI startup charging you £50 a month per user is running free software. You're paying for polish — which is fine, but know what you're buying.
+19. An AI product is mostly not AI. The model is one box out of seven.
+20. Every "we built our own agent framework" pitch you've heard is usually a thin layer over something free.
+21. That three-second AI answer cost the company a fraction of a penny.
 
-**Mechanism (the "wait, what" stop)**
-13. ChatGPT doesn't know anything. Here's what it's actually doing.
-14. AI doesn't read words. It reads numbers. Watch what happens.
-15. There is no thinking happening. There's a very fast guessing machine.
-16. This is what a "token" is, and once you see it you can't unsee it.
-17. Every AI you've used is built on one idea from one 2017 paper. Here it is in 40 seconds.
-18. The reason it lies to you is not a bug. Let me show you the actual mechanism.
-19. "Training" and "using" an AI are completely different things. Almost nobody knows which one they're doing.
+**Story (these travel further than explainers)**
+22. In 2024 a company took its free software private. Amazon and Google forked it out of spite. A year later they backed down. Here's what it tells you about "free forever."
+23. The tool every AI browser agent is built on was made in 2020 to test websites. Nobody built it for AI.
+24. One Italian programmer wrote the thing holding the memory of most AI apps. In 2009.
+25. The clever bit that made AI cheap was borrowed from how your operating system manages memory.
 
-**Privacy / local (your strongest differentiator)**
-20. Everything you've ever typed into a free AI tool — here's where it went.
-21. I turned the wifi off. The AI still works. Watch.
-22. Your company banned ChatGPT. Here's the version they can't ban.
-23. This runs on a normal laptop, offline, and your data never leaves the machine.
-24. Nine minutes to set up an AI that nobody else can see. Starting now.
-25. If your internet died tomorrow, this one still answers.
-
-**Proof of work**
-26. This took 40 seconds. It used to take a person a day.
-27. Watch me build a working chatbot before this video ends.
-28. I gave it the worst possible instructions on purpose. Look what came back.
-29. Here's the same question to four different AIs. Only one got it right.
-30. This is a real client job. Watch the whole thing, it's 22 seconds.
+**Dinner party / offer**
+26. One sentence that will make you sound like you actually understand AI: "the model is one component."
+27. By dinner tonight you'll be able to explain how an AI app works, end to end. It takes about 40 minutes to learn.
+28. Next time someone pitches you "AI-powered," ask them this one question and watch their face.
+29. You don't need to code. You need the map. It's about 40 minutes wide.
 
 ---
 
 ## 6. Three finished scripts
 
-### 6.1 "Dinner party" — Two hours series, ~28s
+### 6.1 "The Groq tell" — Reality check, ~30s
 
 ```
 [STING]
 
-HOOK (screen: a dinner table, muted, unremarkable)
-"You nod along when people talk about AI.
- You've got no idea what any of them are actually saying."
+HOOK (screenshot of the claim, one line highlighted)
+"Anthropic. Perplexity. Together. Groq — all running vLLM under the hood."
 
-TURN (cut to screen recording, cursor moving)
-"That's not a you problem. Nobody ever showed you the first twenty minutes."
+TURN
+"Three of those are fine. The fourth one built its entire company
+ on not doing that."
 
-PROOF (screen: type a prompt, result streams in; hard cut; a diagram of
-       tokens appears; hard cut; a local model answering with wifi icon
-       crossed out in the corner)
-"This is what it's doing. This is why it gets things wrong.
- And this one is running on my laptop with the internet switched off."
+PROOF (motion graphics: four logos; Groq slides out; a custom chip animates in)
+"Groq makes its own chips with its own software. That IS the pitch.
+ And Anthropic runs its own models on its own systems — labs at that
+ level always build their own.
+ The true version: vLLM dominates open-weight model serving.
+ The frontier labs mostly roll their own."
 
-PROMISE
-"Two hours. That's the whole gap between nodding along
- and being the person everyone at the table turns to."
+DETECTOR (the beat that earns the follow)
+"Here's the trick. In any list of impressive names, check the biggest one.
+ It's doing persuasion work, not information work — and it's almost always
+ the one that doesn't hold up."
 
 CTA
-"The two-hour path is in the bio. It's free to start."
-
-[END CARD — mark + sign-off line]
+"Comment HYPE and I'll send you the checklist."
 ```
 
-### 6.2 "What a token actually is" — Under the hood, ~40s
+### 6.2 "GPS for meaning" — Plain English, ~35s
 
 ```
 [STING]
 
-HOOK (black, white text typing out)
-"AI doesn't read words. It reads numbers. Here's the swap."
+HOOK (black screen, two sentences typing out side by side)
+"'How do I reset my password.' 'I can't log into my account.'
+ Not one word in common. To an AI, these are nearly the same thing.
+ Here's how."
 
 PROOF (motion graphics)
-- The word "unbelievable" appears.
-- It splits: un | believ | able. "It doesn't see a word. It sees three pieces."
-- Each piece flips to a number: 359 | 21054 | 429. "Every piece is just an ID."
-- Numbers slide into a grid of dots. "The model has never seen a letter in
-  its life. Only these."
-- One number lights up, and a fan of next-numbers appears with percentages.
-  "All it does is guess the next one. Then it does it again. That's it.
-   That's the whole trick."
+- Sentence one dissolves into a long row of numbers. "Every sentence gets
+  turned into a list of numbers. Hundreds of them."
+- The numbers collapse into a single dot landing on a map.
+- Sentence two does the same — lands almost on top of it.
+  "Similar meaning, similar numbers. It's GPS coordinates for meaning."
+- A question drops onto the map; the nearest dots light up.
+  "So searching stops being about matching words and becomes geometry.
+   Find the nearest point."
 
-PROMISE
-"Once you've seen that, half of AI stops being magic and starts being
- something you can actually reason about."
+PAYOFF
+"That's why AI search can find the document that answers your question
+ without containing a single one of your words. That's the whole trick
+ behind every 'chat with your data' product you've ever seen."
 
 CTA
-"Comment TOKEN and I'll send you the full breakdown."
+"Comment MAP for the plain-English version of the rest of it."
 ```
 
-### 6.3 "Offline AI" — Off the grid, ~30s
+### 6.3 "It was never trained on your data" — Myth-bust, ~28s
 
 ```
 [STING]
 
-HOOK (screen: hand toggles wifi off, on camera, unmistakable)
-"Internet's off. Watch."
+HOOK (screen recording: a real chat answering a question about a document)
+"People think this thing learned their document. It didn't.
+ It read it once and forgot it instantly."
 
-PROOF (screen recording, uncut, real-time)
-- Type a real question into a local model.
-- It answers. No loading spinner, no network.
-- Pan to the wifi icon. Still off.
-"No account. No subscription. No company reading it.
- That answer was generated on this machine and it never left."
+PROOF (motion graphics, then screen)
+- A document → cut into chunks → chunks become dots on the map.
+- A question arrives, five nearest chunks light up.
+- Those five get pasted into a prompt, alongside the question.
+  "Your file is found, copied into the question, and sent.
+   The model answers from what's in front of it. Then it's gone.
+   No training. Nothing learned. Nothing kept."
 
-PROMISE
-"Same for your business documents. Same for anything you'd never paste into
- a website. Setup is about nine minutes."
+WHY IT MATTERS
+"Which is worth knowing for two reasons. It's why these things can answer
+ about a contract signed yesterday. And it's why 'is my data being trained
+ on' is the wrong question to be asking."
 
 CTA
-"Comment OFFLINE and I'll send the setup."
+"Comment RAG and I'll send you the breakdown."
 ```
 
 ---
 
-## 7. Cadence, platforms, production
+## 7. Repackaging the product before you launch
 
-**Cadence:** 2 posts/day TikTok, 1–2/day Instagram Reels, 1 repost/day
-LinkedIn. Minimum 60 days before judging anything.
+Four changes, in priority order:
 
-**Batching:** one 3-hour session per week produces 15–20 videos. Do it in
-stages, not video-by-video: write 20 hooks → record 20 screen captures → record
-all VO in one sitting (this is what keeps the voice consistent) → assemble in
-one editing session using a locked template.
+1. **Title.** "The Open-Source AI Stack" sells to people who already know what
+   a stack is — i.e. not your buyer. The subtitle is the real title. Try:
+   **"How AI Actually Works — and how to tell when someone's lying about it."**
+2. **The time claim.** It's a ~40-minute read, not two hours. That's *better*
+   — "one flight," "one commute," "shorter than a film." If you want the two
+   hours honestly: the course's own closing chapter offers Route 2 (an hour
+   looking at the real projects). Read + Route 2 = a defensible two hours.
+   Say which is which.
+3. **"Prepared for Terry · August 2026"** is on the cover. Change it before a
+   single copy ships.
+4. **The free lead magnet writes itself: Chapter 9.** It stands alone, it's the
+   most shareable chapter, and it's the one that makes people want the rest.
+   Give it away whole — teasing it would waste it.
 
-**Cross-posting:** same video file, but:
-- Download TikTok drafts, don't export with the watermark — IG suppresses it.
-- TikTok caption: short, one line, one hashtag-free sentence.
-- IG caption: 3–4 lines, ends with the comment-keyword CTA.
-- Different cover frame per platform (IG grid matters, TikTok's doesn't).
-
-**Tools:** OBS or QuickTime for screen capture · Descript or CapCut for the
-cut and captions · ElevenLabs for the voice if not using your own ·
-After Effects or CapCut for the motion-graphics series. You also have
-Higgsfield connected in this environment (video/image/audio generation, a
-shorts studio, and direct TikTok publishing) — worth using for the
-"Under the hood" motion pieces and for scheduling.
-
----
-
-## 8. Funnel
-
-```
-video → bio link → free "20-minute AI starter" (email) → 5-email sequence → manual
-                 ↘ comment-keyword → DM automation → same starter
-```
-
-- **The comment-keyword mechanic is the highest-converting thing on Instagram
-  right now.** "Comment TOKEN and I'll send it" — automated via ManyChat.
-  Comments boost reach *and* capture the lead, so the mechanic pays twice.
-- **Don't hard-sell for the first 3 weeks.** Soft CTA (free starter) from day
-  one; introduce the paid manual around day 21 once there's a pattern to
-  interrupt.
-- **The free starter must be genuinely the first 20 minutes of the manual**,
-  not a teaser. People who finish it buy; people who feel teased don't.
+**Volume two, already scoped by the gap in §0:** *Run AI on your own machine* —
+local models, no internet, no company reading it. Every hook I wrote in the
+first draft of this plan for the off-grid angle still applies, it just needs
+the book to exist first. Sell it to this audience.
 
 ---
 
-## 9. Claims — read this before writing a single script
+## 8. Accuracy is now the product
 
-These are the four places this offer can drift into something that generates
-refunds, bad reviews, or ad rejections. Fix the wording now, not later.
+If the brand is "we're the accurate ones," being caught wrong once costs more
+than fifty good videos earn. The manuscript's facts held up everywhere I
+checked them — Playwright/Microsoft/2020, FastAPI/Sebastián Ramírez/2018,
+Redis/Salvatore Sanfilippo/2009, the 2024 relicence → Valkey fork → 2025
+reversal, PagedAttention out of UC Berkeley, Pinecone's raise. It's a well
+sourced piece of work.
 
-1. **"Build your own ChatGPT / Claude."** Say **"build your own private
-   chatbot on open models."** True, deliverable in an afternoon, still
-   impressive. The literal claim invites "so where's my GPT-5" refunds.
-2. **"Two hours."** The manual must actually contain a two-hour path. If it's
-   a 300-page reference, add an explicit **"Two-hour fast track"** chapter list
-   at the front. If the hook promises two hours and the product is a week, the
-   reviews will say so and that's the ballgame.
-3. **"No one steals your data."** Say **"your data never leaves your
-   machine"** — for a local model that is literally true and verifiable on
-   camera, which is far stronger than a promise.
-4. **"Protect you and your loved ones in an unknown world."** Keep the
-   off-grid angle *practical* — privacy, no vendor lock-in, works with no
-   internet, works when a provider changes its terms. Doom framing converts
-   in week one and destroys the brand by week six, and both platforms throttle
-   it. You don't need it; "nobody can see this" is already the strongest
-   thing you've got.
+But some of it is volatile — LangChain's standing, who serves what, GitHub
+star counts, "the current default." **Re-check any moving fact the week you
+post about it**, and never quote a number you haven't seen a source for
+yourself. That's the book's own Ch 9 rule; apply it to your own output first.
+
+Corrections policy: if you get one wrong, post the correction *as a video*,
+same format. That's on-brand, it outperforms the original, and it's the
+cheapest trust you'll ever buy.
+
+---
+
+## 9. Cadence, production, funnel
+
+**Cadence:** 2/day TikTok, 1–2/day IG Reels, 1 repost/day LinkedIn (same file,
+different caption — LinkedIn is where the B2B buyer actually is, and it costs
+you nothing). Minimum 60 days before judging anything.
+
+**Batching:** one 3-hour session per week → 15–20 videos. Work in stages, not
+video-by-video: write 20 hooks → build all the motion graphics from a locked
+template → record all VO in one sitting (this is what keeps the voice
+consistent) → assemble.
+
+**Tools:** CapCut or After Effects for the diagrams · Descript or CapCut for
+cuts and captions · ElevenLabs if not using your own voice · OBS for the
+"Under the bonnet" screen captures. Higgsfield is connected in this repo's
+environment (video/image/audio generation, shorts studio, direct TikTok
+publishing) — useful for the sting, end card and the motion pieces.
+
+**Funnel:**
+
+```
+video → comment keyword → ManyChat DM → Chapter 9 free → email sequence → course
+```
+
+The comment-keyword mechanic is the highest-converting thing on Instagram
+right now: comments boost reach *and* capture the lead, so it pays twice. Soft
+CTA from day one, paid course introduced around day 21.
 
 ---
 
@@ -327,30 +366,34 @@ Judge after 30 videos, never after 5.
 
 | Metric | Gate |
 |---|---|
-| 3-second retention | ≥ 50% — below this, the hook is the problem, nothing else |
-| Average watch (sub-30s video) | ≥ 60% |
-| Saves + shares per 1,000 views | the real buy-intent signal; track it weekly |
+| 3-second retention | ≥ 50% — below this the hook is the problem, nothing else is |
+| Average watch (sub-30s) | ≥ 60% |
+| **Shares** per 1,000 views | the one that matters most for this position — corrections get *sent* |
 | Follows per 1,000 views | ≥ 5 means the identity is landing |
-| Email signups per 1,000 views | the only number that matters commercially |
+| Email signups per 1,000 views | the only commercial number |
 
 Kill a series after 10 videos if its median views sit below a third of the
-account median. Double the frequency of any series in the top third.
+account median. Double down on the top third.
 
 ---
 
 ## 11. First 14 days
 
-- **Day 1–2** — lock the five identity constants (§1): voice, caption style,
-  mark, sting, sign-off. Do not start posting until these exist.
-- **Day 2** — write the free "20-minute AI starter", set up the email capture
-  and the ManyChat keyword.
-- **Day 3–4** — batch 20 videos: 8 × Watch this, 5 × Under the hood,
-  4 × Off the grid, 3 × Two hours. Use hooks 1, 3, 9, 13, 14, 16, 20, 21, 23,
-  26, 27, 29 first.
-- **Day 5** — start posting, 2/day, both platforms, same times daily.
-- **Day 12** — first review: 3-second retention per video, sorted. Rewrite the
-  bottom five hooks, keep everything else identical. Batch the next 20.
+- **Day 1** — decide §0: sell the book as it is (recommended) or write the
+  missing chapters. Everything waits on this.
+- **Day 1–2** — retitle, strip "Prepared for Terry", split Ch 9 out as the
+  free lead magnet, set up email capture + ManyChat keywords (HYPE, MAP, RAG,
+  STACK).
+- **Day 2–3** — lock the five identity constants: voice, captions, mark,
+  sting, sign-off. Build the motion-graphics template once, properly. Don't
+  post until these exist.
+- **Day 4–5** — batch 20 videos: 7 × Reality check, 6 × Plain English,
+  4 × Under the bonnet (film the Calm & Contour chat), 3 × Dinner party.
+  Use hooks 1, 3, 4, 5, 9, 10, 11, 16, 17, 19, 22, 23, 27.
+- **Day 6** — start posting, 2/day, both platforms, same times daily.
+- **Day 12** — first review: sort every video by 3-second retention. Rewrite
+  the bottom five hooks, change nothing else. Batch the next 20.
 
 The only failure mode that matters in the first 60 days is not posting enough
-to learn anything. Protect the volume above all else — which is, in the end,
-the real argument against the animated character.
+to learn anything. Protect the volume above everything else — which is, in the
+end, the real argument against the animated character.
