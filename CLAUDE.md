@@ -63,6 +63,7 @@ You need the env vars below (a `.env.local`) for the DB and AI chat to work loca
 - `CRON_SECRET` = optional but recommended. When set, Vercel Cron authenticates to `/api/report` with it; a signed-in owner can always open `/api/report` in the browser regardless.
 - `PAYMENT_LINK_URL` = NOT set. Any provider's hosted payment page (Stripe Payment Link, SumUp, Wise payment request…). When set: booked chats in /admin get a "Request payment" one-tap WhatsApp button, and the client confirmation message includes the link. Set + redeploy to activate.
 - `GOOGLE_REVIEW_URL` = NOT set. The Google Business Profile "write a review" share link (Business Profile → Ask for reviews / Share review form). When set: chats marked **Shown** get an "Ask for review · €5–€20" one-tap WhatsApp button (review €5 / referral €15 / both €20 off next massage — owner's offer, 14 Jul 2026). NOTE: Google's review policy prohibits incentivised reviews; risk = reviews filtered or profile penalised. Owner was told; wording lives in `reviewRequestMessage()` in `lib/whatsapp.ts` if it needs softening.
+- `GRATITUDE_EMAIL_TO` = optional, defaults to terry@tabifa.com. Recipient of the 4×-daily gratitude email (owner request, 16 Aug 2026): `/api/gratitude` emails Terry's gratitude affirmation + a rotating site image, fired by GitHub Actions cron (`.github/workflows/gratitude.yml`, 6/10/14/18 UTC ≈ 8am/12/4pm/8pm Mallorca summer). Needs `RESEND_API_KEY` to actually send, and the workflow only runs once merged to `main`. Message text lives in `lib/gratitude.ts`.
 - `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` = NOT set. Required for Google Calendar booking. Setup: Google Cloud Console → new project → enable "Google Calendar API" → OAuth consent screen (External, add Parissa's email as test user) → Credentials → OAuth client ID (Web application) with redirect URI `https://calmandcontour.com/api/gcal/callback` → copy ID+secret into Vercel and redeploy. Then sign into `/admin` and click "Connect calendar" while signed into Parissa's Google account (one time). After that the chat AI sees her real free/busy and books confirmed appointments straight into her calendar.
 
 ---
@@ -80,6 +81,7 @@ app/
   api/chat/route.ts            CHAT BACKEND (AI reply, capture, notify) — key file
   api/enquiries/route.ts       Booking-form submissions
   api/report/route.ts          Daily report endpoint (Vercel Cron, daily 18:00 UTC ≈ 8pm Mallorca) + cold-lead sweep backstop
+  api/gratitude/route.ts       4×-daily gratitude email to Terry (GitHub Actions cron; see lib/gratitude.ts)
   api/gcal/auth/route.ts       Starts Google Calendar OAuth (open while signed into /admin)
   api/gcal/callback/route.ts   OAuth callback, stores Parissa's refresh token
   lymphatic-drainage-mallorca/ SEO service page (signature treatment, ad group 9)

@@ -1,0 +1,22 @@
+# Sends Terry's gratitude email four times a day by hitting /api/gratitude.
+# GitHub cron is UTC: 6,10,14,18 UTC = 08:00, 12:00, 16:00, 20:00 in Mallorca
+# during summer time (an hour earlier in winter — shift +1 in late October if
+# it matters). Scheduled workflows only run from the default branch, so this
+# activates once merged to main. The CRON_SECRET repo secret is optional and
+# only needed if CRON_SECRET is also set in Vercel.
+name: Gratitude notifications
+
+on:
+  schedule:
+    - cron: "0 6,10,14,18 * * *"
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send gratitude email
+        run: |
+          curl -fsS -m 30 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://calmandcontour.com/api/gratitude"
