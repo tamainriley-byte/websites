@@ -75,30 +75,46 @@ handle: *"AI, fact-checked. No code, no hype."*
 
 ---
 
-## 2. Format: no animated presenter — but more animation than I first said
+## 2. Format: real footage, and nothing that looks generated
 
-Recommendation stands: **don't build an animated character as the host.** A
-mascot presenter is a retention tax (viewers came for the payoff), it costs
-40–90 min per video against ~8 for the alternative, which quietly drops you
-from 2 posts a day to 3 a week — the real reason faceless pages fail. And a
-synthetic talking head reads as "AI slop" to precisely the audience that has
-to believe you know your stuff.
+Two rules, and the second one was learned the expensive way.
 
-But the product changed my split. This course is **conceptual** — there's no
-client work to screen-record for most of it. What it does have is a set of
-genuinely excellent analogies that are *made* for motion graphics:
+**No animated presenter.** A mascot host is a retention tax (viewers came for
+the payoff), it costs 40–90 min per video against ~8 for the alternative, which
+quietly drops you from 2 posts a day to 3 a week — the real reason faceless
+pages fail. And a synthetic talking head reads as "AI slop" to precisely the
+audience that has to believe you know your stuff.
 
-- vLLM = a **taxi rank vs a bus service** (one passenger per car, engine idle,
-  vs everyone moving at once)
-- Embeddings = **GPS coordinates for meaning** (two sentences with no shared
-  words landing on the same spot on a map)
-- Postgres = **filing cabinet**, Redis = **whiteboard**
-- FastAPI = the **waiter** carrying orders between tables and the kitchen
-- Playwright = **hands** on a brain in a jar
+**No generated visuals at all, as the spine.** We tried it — three style
+rosters, generated illustration — and it failed on the thing that actually
+decides reach:
 
-So: heavier on animated diagrams than my first draft, still no animated host.
-The animation does work no camera can do; a cartoon presenter would only be
-decoration.
+> **The picture has to land the message. The text goes on top of it.** If the
+> viewer has to work out what they're looking at, they've already scrolled.
+
+Generated illustration pushes you toward *symbols* — a lattice standing for
+meaning, a monolith standing for a sentence — and a symbol has to be decoded.
+A login error, a terminal, a chat window is recognised instantly. That gap is
+the whole difference between a stop and a scroll. On top of that, generated
+animation reads as AI to exactly the audience you're asking to trust your
+accuracy, which is a strange price to pay on a channel whose entire position is
+"we're the accurate ones."
+
+So the spine is **real capture**: screen recordings, hands, desks, your own
+running product. Faceless is easy here — over-the-shoulder, hands on keys, and
+the screen. No faces to film, no faces to get wrong.
+
+**Where "animation" survives, honestly:** the course's analogies still need
+pictures, but the picture should be a real artefact on a real screen, not an
+illustration of the idea. A scatter plot of embeddings is far stronger footage
+when a real model actually produced it and you filmed the terminal — it is a
+diagram *and* it is evidence. `capture/embed_demo.py` in this repo does exactly
+that, locally, on open weights, with no API key: the same open-source stack the
+course is about, which is a nice piece of consistency for free.
+
+The five identity constants are unchanged and still do the branding work: one
+voice forever, one burned-in caption style, a static mark, a 0.6s cold-open
+sting, one sign-off line.
 
 **Identity, held rigid (this is what makes a faceless page feel like a brand):**
 one voice forever · one burned-in caption style · a static mark used as
