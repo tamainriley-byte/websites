@@ -1,6 +1,6 @@
 // Terry's gratitude affirmation, emailed four times a day by the GitHub
 // Actions schedule in .github/workflows/gratitude.yml → /api/gratitude.
-// Recipient defaults to terry@tabifa.com, override with GRATITUDE_EMAIL_TO.
+// Recipient defaults to tamainriley@gmail.com, override with GRATITUDE_EMAIL_TO.
 
 const SITE = "https://calmandcontour.com"
 
@@ -60,7 +60,7 @@ export async function sendGratitudeEmail(now = new Date()): Promise<boolean> {
     console.warn("[gratitude] RESEND_API_KEY not set, skipping email send")
     return false
   }
-  const to = process.env.GRATITUDE_EMAIL_TO || "terry@tabifa.com"
+  const to = process.env.GRATITUDE_EMAIL_TO || "tamainriley@gmail.com"
   const from =
     process.env.REPORT_EMAIL_FROM || "Calm & Contour <onboarding@resend.dev>"
 
