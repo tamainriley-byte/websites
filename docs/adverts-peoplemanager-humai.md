@@ -84,6 +84,15 @@ Software Your Staff Will Use · Bespoke AI Systems, Built Once · No Per-User Li
 - **The calculator (lead magnet):** build a **Shelfware Calculator** — "How much are you paying per year for software your staff don't use?" Inputs: tools in use, seats paid vs seats active, price per seat. Output headline: "£X,XXX/year on software nobody opens." Gate the full breakdown behind name/email/phone. This IS the ad theme as a lead machine.
 - **Tracking:** lead event on submit, one campaign per product, search-terms mined weekly.
 
-## 6. ⚠️ Consistency check before launch
+## 6. Canonical pricing model (confirmed Aug 2026)
 
-Demo calls in April quoted **£3,000 setup + ~£100+/month subscription (tiered by staff size)**. The new ad promise is **"one-off build, NO per-user licence"**. These clash — a prospect who saw the old pricing will call it out. Decide the canonical model (e.g. monthly fee = the Assimilate support service, explicitly NOT a per-user licence) and script the sales team's answer before the ads run.
+- **The build:** specced per job, **£25k–£500k one-off** depending on scope. Client owns it outright — the system AND the data. No SaaS, no per-user licence, ever.
+- **The AI team (optional):** we hire and train a dedicated person to run the client's AI — **£20k per person**, onshore or offshore. The client owns their AI support, not a vendor's ticket queue.
+- **Changes:** piece-work. The system improves as the tech improves.
+- Old £3k setup + monthly subscription quotes (April demos) are superseded — script the sales answer for any prospect holding the old deck.
+
+### What high-ticket changes about the campaign
+- **Ownership is the ad.** Anti-SaaS lines lead: "Stop renting software. Own it." / "Your system. Your data. Your AI team. No landlord."
+- **Payback math is the calculator.** Shelfware Calculator upgrade: seats × price × 5 years of SaaS vs a one-off build — "You'll hand £180k to licence vendors over 5 years. A £45k build is yours forever."
+- **Qualify hard.** At £25k+ entry, the form must ask budget band and team size — a wasted appointment costs more than a wasted click. Fewer, richer leads beats volume.
+- **AI books the diary.** At this ticket you need 3–5 serious appointments/month, not 40 — which per the planner's own staffing rule means AI runs the follow-up end to end.
