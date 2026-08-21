@@ -53,10 +53,53 @@ I'm holding two slots next week: **Tuesday 25th at 10:00** or
 
 Terry
 
-### Per-prospect first lines
-- **Jane Yeo, FundOnion** — pain: B2B sales team hiring, onboarding ramp time costing revenue.
-- **Sarah Andrews, GSL Education** — pain: fragmented, repetitive manual training across branches; compliance certs.
-- **Asya Duru (hospitality)** — pain: two-week informal onboarding, turnover eating management time. NOTE: was quoted £3k setup — do NOT lead with the new build price; pitch ownership and let the call scope it (or keep her on the legacy tier).
+### Ready-to-send emails (copy/paste — Outlook draft API lacks write consent)
+
+**→ jane@fundonion.com — subject: We've killed the subscription**
+
+> Hi Jane,
+>
+> When we showed you PeopleManager back in April for FundOnion's sales onboarding, the deal was a setup fee plus a monthly subscription. We've scrapped that model.
+>
+> Now: we spec the job, build the system around your own training materials and processes, train your team on it — and you own it outright. The system and the data. No per-seat licences, ever. Changes are billed as piece-work, and it keeps improving as the AI does.
+>
+> One more thing that's new: if you don't want to run it, we'll hire and train a dedicated person to run it for you — your AI support, on your team, not ours.
+>
+> You told us onboarding ramp time was costing revenue on every sales hire. The ownership version attacks that harder than what we showed you — and there's no meter running while you scale the team.
+>
+> I'm holding two slots next week: **Tuesday 25th at 10:00** or **Thursday 27th at 14:00**. Reply with one and it's yours.
+>
+> Terry
+
+**→ sarah.andrews@gsleducation.com — subject: We've killed the subscription**
+
+> Hi Sarah,
+>
+> When we walked you through PeopleManager in April, the model was a setup fee plus a monthly subscription. We've scrapped that.
+>
+> Now we spec the job, build the system around GSL's own processes and compliance materials, train your teams on it — and you own it outright. The system and the data. No per-seat licences, so rolling it across every branch costs nothing extra per head. Candidates still complete certifications remotely; changes are piece-work; it improves as the AI does.
+>
+> And if you don't want to run it internally, we'll hire and train a dedicated person to run it for you — your AI support, on your payroll, not a vendor's queue.
+>
+> You described training as fragmented and repetitive across branches — ownership fixes the economics of standardising it.
+>
+> Two slots held next week: **Tuesday 25th at 10:00** or **Thursday 27th at 14:00**. Reply with one and it's yours.
+>
+> Terry
+
+**→ asyaduru@gmail.com — subject: PeopleManager, without the subscription**
+
+> Hi Asya,
+>
+> When we spoke in April, the sticking point was another monthly cost on the books. Fair. So here's what's changed: PeopleManager is moving to an ownership model — we build your onboarding and training system around your own materials, train the team on it, and it's yours. No ongoing per-seat subscription.
+>
+> Given how much management time turnover was eating, I'd like to re-scope what this looks like for you under the new model before assuming the old quote still stands — it may land very differently.
+>
+> Two slots next week: **Tuesday 25th at 10:00** or **Thursday 27th at 14:00**. Reply with one and it's yours.
+>
+> Terry
+
+*(Asya deliberately gets no build-price anchor — she held a £3k legacy quote; the call scopes it.)*
 
 ## Sequencing
 1. Wire calculator form → CRM + live booking link (BOOKING_URL in the page).
