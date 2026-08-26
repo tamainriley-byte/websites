@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "The Tension Release Ritual | 2-Hour Trigger Point & Myofascial Ritual Mallorca | Calm & Contour",
   description:
-    "The Tension Release Ritual: two hours of trigger point therapy, myofascial release and assisted stretching for chronic tension, headaches and restricted movement. €200 at your villa, yacht, hotel or the studio.",
+    "The Tension Release Ritual: two hours of trigger point therapy, myofascial release and assisted stretching for chronic tension, headaches and restricted movement. €245 at your villa, yacht, hotel or the studio.",
   alternates: { canonical: "https://www.calmandcontour.com/tension-release-massage-mallorca" },
   openGraph: {
     title: "The Tension Release Ritual | Calm & Contour Mallorca",
@@ -129,7 +129,7 @@ export default function Page() {
             Book the Tension Release
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            €200 · 2 hours · Villa, yacht, hotel or studio
+            €245 · 2 hours · Villa, yacht, hotel or studio
           </p>
         </div>
       </section>
@@ -209,11 +209,11 @@ export default function Page() {
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
               <span>At your villa, yacht or hotel</span>
-              <span className="text-foreground">€200</span>
+              <span className="text-foreground">€245</span>
             </li>
             <li className="flex justify-between">
               <span>At the studio, Portals Nous</span>
-              <span className="text-foreground">€200</span>
+              <span className="text-foreground">€245</span>
             </li>
           </ul>
           <a

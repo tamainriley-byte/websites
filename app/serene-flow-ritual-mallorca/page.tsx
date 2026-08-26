@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "The Serene Flow Ritual | 2-Hour Lymphatic & Balinese Ritual Mallorca | Calm & Contour",
   description:
-    "The Serene Flow Ritual: two hours of lymphatic drainage, Balinese-inspired flowing massage and grounding relaxation. De-bloat, sculpt gently and reset the nervous system. €200 at your villa, yacht, hotel or the studio.",
+    "The Serene Flow Ritual: two hours of lymphatic drainage, Balinese-inspired flowing massage and grounding relaxation. De-bloat, sculpt gently and reset the nervous system. €245 at your villa, yacht, hotel or the studio.",
   alternates: { canonical: "https://www.calmandcontour.com/serene-flow-ritual-mallorca" },
   openGraph: {
     title: "The Serene Flow Ritual | Calm & Contour Mallorca",
@@ -127,7 +127,7 @@ export default function Page() {
             Book the Serene Flow
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            €200 · 2 hours · Villa, yacht, hotel or studio
+            €245 · 2 hours · Villa, yacht, hotel or studio
           </p>
         </div>
       </section>
@@ -195,11 +195,11 @@ export default function Page() {
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li className="flex justify-between border-b border-border/60 pb-2">
               <span>At your villa, yacht or hotel</span>
-              <span className="text-foreground">€200</span>
+              <span className="text-foreground">€245</span>
             </li>
             <li className="flex justify-between">
               <span>At the studio, Portals Nous</span>
-              <span className="text-foreground">€200</span>
+              <span className="text-foreground">€245</span>
             </li>
           </ul>
           <a

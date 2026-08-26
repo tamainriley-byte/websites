@@ -16,7 +16,7 @@ _Last updated: 9 July 2026._
 - WhatsApp for bookings: **+34 602 02 07 34**
 - Studio address: **Calle Benito Jerónimo Feijoo 4, Portals Nous (Costa d'en Blanes), 07181 Mallorca** (Calvià, by Puerto Portals; ~10 min Magaluf, ~15 min Palma).
 - **Service area (owner decision 14 Jul 2026): home visits cover the SOUTH/SOUTHWEST of Mallorca only** — Palma, El Arenal/Llucmajor coast, Illetas, Bendinat, Portals, Palmanova, Magaluf, Santa Ponsa, Paguera, Camp de Mar, Andratx. North/east of the island and other islands (a Menorca lead once slipped through) → studio only. Enforced in the chat prompt, all service pages, and GOOGLE-ADS.md (location targeting Mallorca + presence-only, northern towns as negatives).
-- Pricing (mobile raised 5 Aug 2026; studio = €1.50/min): mobile (villa/yacht/hotel) €135/€175/€225 for 60/90/120 min. Studio €90/€135/€180. NOTE: the €200 rituals now sit BELOW a plain 120-min mobile (€225) — owner has not yet said whether ritual prices rise; flagged 5 Aug. **The Ritual** (VIP, 120 min, warm oils + hot stones + hot towel rub down + herbal tea) €200 anywhere — 2-hour option ONLY, sits €20 above plain 120 min. ALL rituals (The Ritual, Serene Flow, Tension Release) are 2h-only, €200 anywhere. COUPLES REMOVED 11 Jul 2026 (no second therapist available) — two people = back-to-back sessions, same per-person prices; /couples-massage-mallorca page deleted.
+- Pricing (mobile + rituals raised 5 Aug 2026; studio = €1.50/min): mobile (villa/yacht/hotel) €135/€175/€225 for 60/90/120 min. Studio €90/€135/€180. **The Ritual** (VIP, 120 min, warm oils + hot stones + hot towel rub down + herbal tea) — 2-hour option ONLY, sits €20 above plain 120-min mobile. ALL rituals (The Ritual, Serene Flow, Tension Release) are 2h-only, €245 anywhere. COUPLES REMOVED 11 Jul 2026 (no second therapist available) — two people = back-to-back sessions, same per-person prices; /couples-massage-mallorca page deleted.
 
 **Business goal:** get more real leads into the team's hands and know the unit economics (cost per booking) so ad spend and team size can be scaled. Longer term, turn this into a booking + payment app (see Roadmap) and roll out city by city.
 
@@ -83,9 +83,9 @@ app/
   api/gcal/auth/route.ts       Starts Google Calendar OAuth (open while signed into /admin)
   api/gcal/callback/route.ts   OAuth callback, stores Parissa's refresh token
   lymphatic-drainage-mallorca/ SEO service page (signature treatment, ad group 9)
-  ritual-massage-mallorca/     SEO service page (The Ritual, 2h VIP €200, ad group 10 cross-sell)
-  serene-flow-ritual-mallorca/ Signature ritual page (2h lymphatic + Balinese, €200 anywhere)
-  tension-release-massage-mallorca/ Signature ritual page (2h trigger point + myofascial, €200 anywhere)
+  ritual-massage-mallorca/     SEO service page (The Ritual, 2h VIP €245, ad group 10 cross-sell)
+  serene-flow-ritual-mallorca/ Signature ritual page (2h lymphatic + Balinese, €245 anywhere)
+  tension-release-massage-mallorca/ Signature ritual page (2h trigger point + myofascial, €245 anywhere)
   villa-massage-mallorca/      SEO service page (discretion/NDA angle)
   yacht-massage-mallorca/      SEO service page (onboard/NDA/crew)
   massage-palma/               SEO town page (Palma hotels/yachts). NOTE: the

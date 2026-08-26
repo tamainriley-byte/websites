@@ -33,7 +33,7 @@ the studio, and the ad copy below reflects that.
 - Massage At Your Villa
 - Across The South Coast
 - Table, Oils & Setup Included
-- From €130 · 60 Minutes
+- From €135 · 60 Minutes
 - Qualified Local Therapist
 - Villa · Yacht · Hotel Visits
 - Same-Day Slots Often Free
@@ -43,7 +43,7 @@ the studio, and the ad copy below reflects that.
 **Descriptions**
 - Luxury mobile massage to your villa, yacht or hotel across the south of Mallorca.
 - Parissa brings the table, oils and everything. You simply lie back and unwind.
-- From €130 for 60 minutes. Message us and get booked in within minutes.
+- From €135 for 60 minutes. Message us and get booked in within minutes.
 - Swedish, deep tissue, sports & more, tailored to you, wherever you're staying.
 
 ## 2. Villa Massage → `/villa-massage-mallorca`
@@ -56,13 +56,13 @@ the studio, and the ad copy below reflects that.
 - Discreet & Fully Insured
 - NDA Available On Request
 - Massage On Your Terrace
-- From €130 At Your Villa
+- From €135 At Your Villa
 - Full Setup Brought To You
 
 **Descriptions**
 - Discreet private massage at your villa in Mallorca. Vetted, insured therapists.
 - Full spa setup on your terrace: table, linens, oils. NDA for private guests.
-- €130 for 60 min, €155 for 90, €180 for 120. Full setup brought to your villa.
+- €135 for 60 min, €175 for 90, €225 for 120. Full setup brought to your villa.
 - Tell us your villa's area and dates and we'll confirm your time in minutes.
 
 ## 3. Yacht Massage → `/yacht-massage-mallorca`
@@ -95,13 +95,13 @@ the studio, and the ad copy below reflects that.
 - We Come To Your Hotel
 - Often Bookable Today
 - Across The Whole Island
-- From €130 · At Your Place
+- From €135 · At Your Place
 - No Travel, No Waiting Room
 - Book In Minutes On Chat
 
 **Descriptions**
 - Looking for a massage near you? We come to your villa, hotel or yacht, often same day.
-- Portals, Palma, Magaluf, Santa Ponsa and across Mallorca. From €130.
+- Portals, Palma, Magaluf, Santa Ponsa and across Mallorca. From €135.
 - Skip the spa trip. The table, oils and therapist come to you.
 - Message now and we'll confirm today's availability in minutes.
 
@@ -115,13 +115,13 @@ the studio, and the ad copy below reflects that.
 - To Your Hotel Or Apartment
 - Palma Marina & Old Town
 - Same-Day Where Possible
-- From €130 In Palma
+- From €135 In Palma
 - Full Setup Brought To You
 - Qualified Local Therapist
 
 **Descriptions**
 - Luxury mobile massage in Palma, to your hotel, apartment or yacht in the marina.
-- Qualified therapist, full setup brought to you. From €130 for 60 minutes.
+- Qualified therapist, full setup brought to you. From €135 for 60 minutes.
 - Staying in Palma? Get a tailored massage without leaving your room.
 - 15 minutes from our Portals Nous studio, easy same-day visits to Palma.
 
@@ -143,7 +143,7 @@ the studio, and the ad copy below reflects that.
 
 **Descriptions**
 - Swedish, deep tissue, sports, hot stone, lymphatic drainage and prenatal massage.
-- At the Portals Nous studio from €90, or brought to you across Mallorca from €130.
+- At the Portals Nous studio from €90, or brought to you across Mallorca from €135.
 - Tell us how you want to feel afterwards and the session is built around you.
 - Facials and body contouring too: wood therapy, lymphatic sculpting and more.
 
@@ -168,13 +168,13 @@ URL is still live in the account.
 - Across The South Coast
 - Palma To Andratx Covered
 - Same-Day Where Possible
-- From €130 · At Your Place
+- From €135 · At Your Place
 - Table & Oils Brought To You
 - Qualified Local Therapist
 
 **Descriptions**
 - Palma, El Arenal, Magaluf, Santa Ponsa, Paguera, Portals, Palmanova and Andratx.
-- Mobile massage to your hotel, villa or yacht. The full setup comes to you, from €130.
+- Mobile massage to your hotel, villa or yacht. The full setup comes to you, from €135.
 - No spa trip needed. Message us your town and we'll confirm your time in minutes.
 - Staying further north? Visit the Portals Nous studio instead, from €90 for 60 minutes.
 
@@ -191,13 +191,13 @@ in the account's real search terms with basically nobody bidding on them.
 - Specialist Therapist
 - Post-Flight Leg Rescue
 - Studio From €90 · 60 Min
-- Or We Come To You · €130
+- Or We Come To You · €135
 - Maderoterapia Available
 - Popular Before Events
 
 **Descriptions**
 - Signature lymphatic drainage by specialist Parissa. De-bloat, define and recover.
-- Studio in Portals Nous from €90, or brought to your villa, hotel or yacht from €130.
+- Studio in Portals Nous from €90, or brought to your villa, hotel or yacht from €135.
 - Feel lighter after one session. Popular before events, beach days and after flights.
 - Pairs beautifully with wood therapy (maderoterapia) and lymphatic sculpting.
 
@@ -218,13 +218,13 @@ now profitable traffic. Keep the shared negatives (jobs/courses/chairs etc.).
 - 15 Min From Palma
 - Shower Available
 - Deep Tissue To Relaxation
-- The Ritual · 2h VIP · €200
+- The Ritual · 2h VIP · €245
 
 **Descriptions**
 - Boutique massage studio in Portals Nous, right by Puerto Portals marina.
 - €90 for 60 minutes, €135 for 90. Deep tissue, Swedish, lymphatic drainage and more.
 - Easy parking, shower available, 10 minutes from Magaluf and 15 from Palma.
-- Prefer to stay put? We also come to your villa, hotel or yacht from €130.
+- Prefer to stay put? We also come to your villa, hotel or yacht from €135.
 
 ---
 

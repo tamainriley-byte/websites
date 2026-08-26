@@ -119,7 +119,7 @@ export default function Page() {
           VIP Experience
         </p>
         <h2 className="mt-2 font-serif text-3xl font-medium text-foreground md:text-4xl">
-          The Ritual · 2 hours · €200
+          The Ritual · 2 hours · €245
         </h2>
         <p className="mt-4 leading-relaxed text-muted-foreground">
           Our most indulgent treatment. Two unhurried hours of full body
@@ -140,7 +140,7 @@ export default function Page() {
             className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted"
           >
             <h3 className="font-serif text-xl text-foreground">
-              The Serene Flow Ritual · 2 hours · €200
+              The Serene Flow Ritual · 2 hours · €245
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Lymphatic drainage meets Balinese flowing massage. De-bloat,
@@ -153,7 +153,7 @@ export default function Page() {
             className="rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted"
           >
             <h3 className="font-serif text-xl text-foreground">
-              The Tension Release Ritual · 2 hours · €200
+              The Tension Release Ritual · 2 hours · €245
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Trigger point therapy and myofascial release for chronic tension,
@@ -188,7 +188,7 @@ export default function Page() {
           </div>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">
-          The Ritual (120 minutes, everything included) is €200 anywhere.
+          The Ritual (120 minutes, everything included) is €245 anywhere.
           Booking for more than one person? Parissa treats you back to back
           in the same visit. Just ask.
         </p>

@@ -9,12 +9,12 @@ const WA =
 export const metadata: Metadata = {
   title: "The Ritual | 2-Hour VIP Massage Experience in Mallorca | Calm & Contour",
   description:
-    "The Ritual: Calm & Contour's 2-hour VIP massage experience in Mallorca. Warm aromatherapy oils, hot stones, hot towel rub down and herbal tea to finish. €200 at your villa, yacht, hotel or the studio.",
+    "The Ritual: Calm & Contour's 2-hour VIP massage experience in Mallorca. Warm aromatherapy oils, hot stones, hot towel rub down and herbal tea to finish. €245 at your villa, yacht, hotel or the studio.",
   alternates: { canonical: "https://www.calmandcontour.com/ritual-massage-mallorca" },
   openGraph: {
     title: "The Ritual | 2-Hour VIP Massage | Calm & Contour Mallorca",
     description:
-      "Two unhurried hours: warm oils, hot stones, hot towels and herbal tea. The VIP massage experience, €200.",
+      "Two unhurried hours: warm oils, hot stones, hot towels and herbal tea. The VIP massage experience, €245.",
     url: "https://www.calmandcontour.com/ritual-massage-mallorca",
     images: ["/images/villa-terrace.png"],
   },
@@ -78,11 +78,11 @@ const faqs = [
   },
   {
     q: "Where can I have The Ritual?",
-    a: "Anywhere: your villa, yacht or hotel suite (Parissa brings everything, including the stones and tea), or at the studio in Portals Nous. The price is €200 either way.",
+    a: "Anywhere: your villa, yacht or hotel suite (Parissa brings everything, including the stones and tea), or at the studio in Portals Nous. The price is €245 either way.",
   },
   {
     q: "Can two of us book it?",
-    a: "One after the other, yes. Parissa treats you back to back in the same visit, €200 each, so you can share the evening without sharing the table.",
+    a: "One after the other, yes. Parissa treats you back to back in the same visit, €245 each, so you can share the evening without sharing the table.",
   },
   {
     q: "When should I book it?",
@@ -127,7 +127,7 @@ export default function Page() {
             Book The Ritual
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            €200 · 120 minutes · Villa, yacht, hotel or studio
+            €245 · 120 minutes · Villa, yacht, hotel or studio
           </p>
         </div>
       </section>
@@ -162,17 +162,17 @@ export default function Page() {
             <ul className="mt-4 space-y-2 text-muted-foreground">
               <li className="flex justify-between border-b border-border/60 pb-2">
                 <span>At your villa, yacht or hotel</span>
-                <span className="text-foreground">€200</span>
+                <span className="text-foreground">€245</span>
               </li>
               <li className="flex justify-between">
                 <span>At the studio, Portals Nous</span>
-                <span className="text-foreground">€200</span>
+                <span className="text-foreground">€245</span>
               </li>
             </ul>
             <p className="mt-4 text-sm text-muted-foreground">
               Includes warm aromatherapy oils, hot stones, heated towels, the
               hot towel finish and herbal tea. Booking for two? Back to back
-              sessions in the same visit, €200 per person.
+              sessions in the same visit, €245 per person.
             </p>
             <a
               href={WA}
