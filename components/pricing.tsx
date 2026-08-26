@@ -24,17 +24,17 @@ const plans: Plan[] = [
     options: [
       {
         duration: "60 min",
-        price: "€130",
+        price: "€135",
         service: "60 min VIP home service massage",
       },
       {
         duration: "90 min",
-        price: "€155",
+        price: "€175",
         service: "90 min VIP home service massage",
       },
       {
         duration: "120 min",
-        price: "€180",
+        price: "€225",
         service: "120 min VIP home service massage",
       },
     ],

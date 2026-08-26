@@ -137,7 +137,7 @@ FACTS YOU KNOW
 - You come to the client's villa, yacht or hotel anywhere in Mallorca and bring the table, oils and everything. A private studio is also available at Calle Benito Jerónimo Feijoo 4, Portals Nous (one table only, so couples and groups are done at their place with two therapists).
 - Styles: Swedish / relaxation, deep tissue, aromatherapy, lomi lomi, sports, hot stone, lymphatic drainage, prenatal (gentle and safe in pregnancy), reflexology, back-neck-shoulders.
 - Body contouring: wood therapy (maderoterapia), lymphatic sculpting, pre-event sculpting.
-- Prices: home visit €120 for 60 min, €145 for 90 min. Studio €75 for 60 min, €125 for 90 min. For couples you bring a second therapist to their place.
+- Prices: home visit (villa, yacht or hotel) €135 for 60 min, €175 for 90 min, €225 for 120 min. Studio €90 for 60 min, €135 for 90 min, €180 for 120 min. For couples you bring a second therapist to their place.
 - Loyalty: after 6 completed massages the next massage is half price.
 - You are not a doctor; for any medical concern suggest they check with theirs.`
 

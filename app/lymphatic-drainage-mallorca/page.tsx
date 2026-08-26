@@ -9,7 +9,7 @@ const WA =
 export const metadata: Metadata = {
   title: "Lymphatic Drainage Massage Mallorca | De-bloat, Sculpt & Recover | Calm & Contour",
   description:
-    "Lymphatic drainage massage in Mallorca by specialist Parissa. De-bloat, reduce water retention, recover after flights or sun. Studio in Portals Nous from €90, or brought to your villa, hotel or yacht from €130.",
+    "Lymphatic drainage massage in Mallorca by specialist Parissa. De-bloat, reduce water retention, recover after flights or sun. Studio in Portals Nous from €90, or brought to your villa, hotel or yacht from €135.",
   alternates: { canonical: "https://www.calmandcontour.com/lymphatic-drainage-mallorca" },
   openGraph: {
     title: "Lymphatic Drainage Massage Mallorca | Calm & Contour",
@@ -65,7 +65,7 @@ const faqs = [
   },
   {
     q: "Where can I have it?",
-    a: "At the studio in Portals Nous (€90 for 60 minutes, €135 for 90), or Parissa brings everything to your villa, hotel or yacht across the south and southwest of Mallorca (€130 for 60 minutes, €155 for 90).",
+    a: "At the studio in Portals Nous (€90 for 60 minutes, €135 for 90), or Parissa brings everything to your villa, hotel or yacht across the south and southwest of Mallorca (€135 for 60 minutes, €175 for 90).",
   },
   {
     q: "Is it the same as maderoterapia?",
@@ -110,7 +110,7 @@ export default function Page() {
             Book lymphatic drainage
           </a>
           <p className="mt-4 text-sm text-cream/70">
-            Studio from €90 · To you from €130
+            Studio from €90 · To you from €135
           </p>
         </div>
       </section>
@@ -159,10 +159,10 @@ export default function Page() {
               </div>
               <ul className="mt-4 space-y-2 text-muted-foreground">
                 <li className="flex justify-between border-b border-border/60 pb-2">
-                  <span>60 minutes</span><span className="text-foreground">€130</span>
+                  <span>60 minutes</span><span className="text-foreground">€135</span>
                 </li>
                 <li className="flex justify-between">
-                  <span>90 minutes</span><span className="text-foreground">€155</span>
+                  <span>90 minutes</span><span className="text-foreground">€175</span>
                 </li>
               </ul>
             </div>

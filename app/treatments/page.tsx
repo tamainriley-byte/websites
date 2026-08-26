@@ -181,9 +181,9 @@ export default function Page() {
           <div className="rounded-2xl border border-border bg-card p-6">
             <span className="font-serif text-xl text-foreground">Mobile, to you</span>
             <ul className="mt-4 space-y-2 text-muted-foreground">
-              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€130</span></li>
-              <li className="flex justify-between border-b border-border/60 pb-2"><span>90 minutes</span><span className="text-foreground">€155</span></li>
-              <li className="flex justify-between"><span>120 minutes</span><span className="text-foreground">€180</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>60 minutes</span><span className="text-foreground">€135</span></li>
+              <li className="flex justify-between border-b border-border/60 pb-2"><span>90 minutes</span><span className="text-foreground">€175</span></li>
+              <li className="flex justify-between"><span>120 minutes</span><span className="text-foreground">€225</span></li>
             </ul>
           </div>
         </div>
