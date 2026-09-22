@@ -70,12 +70,15 @@ export function paymentRequestMessage(paymentLink: string): string {
 // Post-massage review + referral ask, sent to clients marked "shown".
 // The tiered offer is the owner's (14 Jul 2026): review €5, referral €15,
 // both €20 off the next massage.
+// Owner, 22 Sep 2026: "We don't offer the service for a review. But it's
+// encouraged. All we ask is you give some honest feedback of our service."
+// The €5 / €15 / €20 offer is gone: Google's policy forbids paying for
+// reviews, and the owner does not want to.
 export function reviewRequestMessage(reviewUrl: string): string {
   return (
     `Hi, it's Parissa from Calm & Contour 🌿 I hope you're still floating after your massage! ` +
-    `A little thank you from me: leave a Google review (${reviewUrl}) and get €5 off your next massage. ` +
-    `Refer a friend who books and it's €15 off. Do both and enjoy €20 off your next visit 💆 ` +
-    `Just message me here to claim. See you soon!`
+    `All we ask is that you give some honest feedback of our service, if you have a minute: ${reviewUrl} ` +
+    `It helps more than you know. See you soon!`
   )
 }
 
